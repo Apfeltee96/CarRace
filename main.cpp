@@ -1,5 +1,6 @@
 #include "raylib.h"
-#include "level.h" // NEU: Wir binden unsere Level-Datei ein!
+#include "level.h"
+#include "scoreboard.h" // NEU: Scoreboard einbinden!
 #include <vector>
 #include <string>
 
@@ -20,7 +21,8 @@ struct Obstacle {
     Color color;
 };
 
-enum GameState { MAIN_MENU, DESCRIPTION, PLAYING, PAUSED, GAMEOVER, LEVEL_CLEARED };
+// NEUER ZUSTAND: SCOREBOARD
+enum GameState { MAIN_MENU, DESCRIPTION, SCOREBOARD_MENU, PLAYING, PAUSED, GAMEOVER, LEVEL_CLEARED };
 
 void ResetObstacle(Obstacle &obs, float startY) {
     obs.rect.width = (float)GetRandomValue(60, 120);
@@ -31,7 +33,7 @@ void ResetObstacle(Obstacle &obs, float startY) {
 }
 
 int main() {
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Vector Evasion - Dynamische Level");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Car Race - Scoreboard");
     SetTargetFPS(60);
 
     Player player;
@@ -40,9 +42,8 @@ int main() {
     player.speed = 400.0f;
     player.color = BLUE;
 
-    // --- VARIABLEN ---
     int currentLevel = 1;          
-    LevelData activeLevelData = GetLevelData(currentLevel); // Holt die Daten für Lvl 1
+    LevelData activeLevelData = GetLevelData(currentLevel); 
     float timeLeft = activeLevelData.targetTime;        
     float currentSpeed = activeLevelData.baseSpeed; 
 
@@ -50,10 +51,14 @@ int main() {
     int letterCount = 0; 
     int framesCounter = 0; 
 
-    Rectangle startButton = { SCREEN_WIDTH/2.0f - 100, 450, 200, 50 };
-    Rectangle descButton = { SCREEN_WIDTH/2.0f - 100, 520, 200, 50 };
-    Rectangle backButton = { SCREEN_WIDTH/2.0f - 100, 650, 200, 50 };
-    Rectangle inputBox = { SCREEN_WIDTH/2.0f - 125, 300, 250, 50 };
+    // Buttons für das Hauptmenü (etwas verschoben, damit 3 hinpassen)
+    Rectangle startButton = { SCREEN_WIDTH/2.0f - 100, 420, 200, 50 };
+    Rectangle scoreBtn    = { SCREEN_WIDTH/2.0f - 100, 490, 200, 50 };
+    Rectangle descButton  = { SCREEN_WIDTH/2.0f - 100, 560, 200, 50 };
+    
+    Rectangle backButton  = { SCREEN_WIDTH/2.0f - 100, 680, 200, 50 };
+    Rectangle inputBox    = { SCREEN_WIDTH/2.0f - 125, 300, 250, 50 };
+    
     Rectangle nextLevelButton = { SCREEN_WIDTH/2.0f - 125, 400, 250, 50 };
     Rectangle returnMenuButton = { SCREEN_WIDTH/2.0f - 125, 480, 250, 50 };
 
@@ -69,7 +74,8 @@ int main() {
         if (currentState == MAIN_MENU) {
             int key = GetCharPressed();
             while (key > 0) {
-                if ((key >= 32) && (key <= 125) && (letterCount < MAX_NAME_LENGTH)) {
+                // Wir verbieten Leerzeichen (Key 32), da unser Scoreboard Namen durch Leerzeichen getrennt speichert!
+                if ((key > 32) && (key <= 125) && (letterCount < MAX_NAME_LENGTH)) {
                     playerName[letterCount] = (char)key;
                     playerName[letterCount+1] = '\0';
                     letterCount++;
@@ -85,9 +91,9 @@ int main() {
 
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 if (CheckCollisionPointRec(mousePoint, descButton)) currentState = DESCRIPTION;
+                if (CheckCollisionPointRec(mousePoint, scoreBtn)) currentState = SCOREBOARD_MENU; // Neues Menü öffnen
                 
                 if (CheckCollisionPointRec(mousePoint, startButton) && letterCount > 0) {
-                    // SPIELSTART: Level 1 laden
                     currentLevel = 1;
                     activeLevelData = GetLevelData(currentLevel);
                     timeLeft = activeLevelData.targetTime;
@@ -99,7 +105,7 @@ int main() {
                 }
             }
         }
-        else if (currentState == DESCRIPTION) {
+        else if (currentState == DESCRIPTION || currentState == SCOREBOARD_MENU) {
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mousePoint, backButton)) {
                 currentState = MAIN_MENU;
             }
@@ -108,8 +114,6 @@ int main() {
             if (IsKeyPressed(KEY_P)) currentState = PAUSED;
 
             timeLeft -= deltaTime;
-
-            // NEUER ALGORITHMUS: Nutzt die dynamischen Werte aus level.cpp!
             currentSpeed = activeLevelData.baseSpeed + ((activeLevelData.targetTime - timeLeft) * activeLevelData.speedMultiplier); 
 
             if (timeLeft <= 0.0f) {
@@ -135,7 +139,11 @@ int main() {
                     ResetObstacle(obstacles[i], highestY - neuerAbstand); 
                 }
 
-                if (CheckCollisionRecs(player.rect, obstacles[i].rect)) currentState = GAMEOVER; 
+                if (CheckCollisionRecs(player.rect, obstacles[i].rect)) {
+                    // NEU: Beim Crash wird das Level im Scoreboard gespeichert!
+                    AddOrUpdateScore(std::string(playerName), currentLevel);
+                    currentState = GAMEOVER; 
+                }
             }
         } 
         else if (currentState == PAUSED) {
@@ -146,11 +154,9 @@ int main() {
         }
         else if (currentState == LEVEL_CLEARED) {
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-                
                 if (CheckCollisionPointRec(mousePoint, nextLevelButton)) {
-                    // NÄCHSTES LEVEL LADEN
                     currentLevel++; 
-                    activeLevelData = GetLevelData(currentLevel); // Holt die neuen, schwereren Settings!
+                    activeLevelData = GetLevelData(currentLevel); 
                     timeLeft = activeLevelData.targetTime; 
                     
                     player.rect.x = (SCREEN_WIDTH / 2) - (player.rect.width / 2); 
@@ -158,6 +164,8 @@ int main() {
                     currentState = PLAYING;
                 }
                 else if (CheckCollisionPointRec(mousePoint, returnMenuButton)) {
+                    // NEU: Auch wenn wir freiwillig abbrechen, speichern wir unseren Fortschritt!
+                    AddOrUpdateScore(std::string(playerName), currentLevel);
                     currentState = MAIN_MENU;
                 }
             }
@@ -167,16 +175,18 @@ int main() {
         BeginDrawing();
         ClearBackground(DARKGREEN);
 
-        if (currentState == MAIN_MENU || currentState == DESCRIPTION) {
+        if (currentState == MAIN_MENU || currentState == DESCRIPTION || currentState == SCOREBOARD_MENU) {
             DrawRectangle(ROAD_OFFSET, 0, ROAD_WIDTH, SCREEN_HEIGHT, DARKGRAY);
             DrawLineEx({(float)ROAD_OFFSET, 0}, {(float)ROAD_OFFSET, (float)SCREEN_HEIGHT}, 5, WHITE); 
             DrawLineEx({(float)(ROAD_OFFSET + ROAD_WIDTH), 0}, {(float)(ROAD_OFFSET + ROAD_WIDTH), (float)SCREEN_HEIGHT}, 5, WHITE);
             DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.6f));
 
             if (currentState == MAIN_MENU) {
-                DrawText("VECTOR EVASION", 120, 150, 40, ORANGE);
+                // Der Text wird jetzt dynamisch zentriert berechnet, da "CAR RACE" kürzer ist!
+const char* titleText = "CAR RACE";
+DrawText(titleText, SCREEN_WIDTH/2 - MeasureText(titleText, 40)/2, 150, 40, ORANGE);
                 
-                DrawText("Dein Name:", (int)inputBox.x, (int)inputBox.y - 30, 20, WHITE);
+                DrawText("Dein Name (ohne Leerzeichen):", (int)inputBox.x - 30, (int)inputBox.y - 30, 20, WHITE);
                 DrawRectangleRec(inputBox, LIGHTGRAY);
                 DrawRectangleLines((int)inputBox.x, (int)inputBox.y, (int)inputBox.width, (int)inputBox.height, DARKBLUE);
                 DrawText(playerName, (int)inputBox.x + 10, (int)inputBox.y + 15, 20, MAROON);
@@ -191,9 +201,32 @@ int main() {
                 DrawRectangleRec(startButton, startColor);
                 DrawText("SPIEL STARTEN", (int)startButton.x + 15, (int)startButton.y + 15, 20, WHITE);
 
+                // Neuer Scoreboard Button
+                Color sColor = CheckCollisionPointRec(mousePoint, scoreBtn) ? GOLD : ORANGE;
+                DrawRectangleRec(scoreBtn, sColor);
+                DrawText("BESTENLISTE", (int)scoreBtn.x + 30, (int)scoreBtn.y + 15, 20, WHITE);
+
                 Color descColor = CheckCollisionPointRec(mousePoint, descButton) ? BLUE : DARKBLUE;
                 DrawRectangleRec(descButton, descColor);
                 DrawText("DESCRIPTION", (int)descButton.x + 30, (int)descButton.y + 15, 20, WHITE);
+            }
+            else if (currentState == SCOREBOARD_MENU) {
+                DrawText("TOP 10 SPIELER", 150, 150, 40, GOLD);
+                
+                // Lade und zeichne die Liste
+                std::vector<ScoreEntry> scores = LoadScoreboard();
+                if (scores.empty()) {
+                    DrawText("Noch keine Eintraege vorhanden!", 120, 300, 20, LIGHTGRAY);
+                } else {
+                    for (int i = 0; i < scores.size(); i++) {
+                        DrawText(TextFormat("%d. %s", i+1, scores[i].name.c_str()), 120, 250 + (i * 35), 25, WHITE);
+                        DrawText(TextFormat("Level %d", scores[i].level), 380, 250 + (i * 35), 25, ORANGE);
+                    }
+                }
+
+                Color backColor = CheckCollisionPointRec(mousePoint, backButton) ? RED : MAROON;
+                DrawRectangleRec(backButton, backColor);
+                DrawText("ZURUECK", (int)backButton.x + 50, (int)backButton.y + 15, 20, WHITE);
             }
             else if (currentState == DESCRIPTION) {
                 DrawText("SPIELANLEITUNG", 140, 150, 40, ORANGE);
@@ -202,9 +235,7 @@ int main() {
                 DrawText("Steuerung:", 100, 360, 25, YELLOW);
                 DrawText("[Pfeil Links / Rechts]: Auto bewegen", 100, 400, 20, WHITE);
                 DrawText("[P]: Spiel pausieren", 100, 430, 20, WHITE);
-                DrawText("Achtung: Jedes Level hat eigene Regeln", 100, 500, 20, RED);
-                DrawText("und wird zunehmend schwerer!", 100, 530, 20, RED);
-
+                
                 Color backColor = CheckCollisionPointRec(mousePoint, backButton) ? RED : MAROON;
                 DrawRectangleRec(backButton, backColor);
                 DrawText("ZURUECK", (int)backButton.x + 50, (int)backButton.y + 15, 20, WHITE);
@@ -233,6 +264,7 @@ int main() {
                 DrawText("CRASH!", 220, 300, 50, RED);
                 DrawText(TextFormat("Schade %s, du bist in", playerName), 100, 380, 25, LIGHTGRAY);
                 DrawText(TextFormat("Level %i gecrasht.", currentLevel), 180, 415, 25, LIGHTGRAY);
+                DrawText("Dein Ergebnis wurde gespeichert!", 110, 460, 20, GREEN); // Kleiner Hinweis!
                 DrawText("Druecke ENTER fuer das Hauptmenue", 70, 520, 25, WHITE);
             }
             else if (currentState == LEVEL_CLEARED) {

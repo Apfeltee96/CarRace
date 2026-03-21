@@ -9,7 +9,7 @@ set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(raylib)
 
 # Deine ausführbare Datei definieren
-add_executable(${PROJECT_NAME} main.cpp level.cpp)
+add_executable(${PROJECT_NAME} main.cpp level.cpp scoreboard.cpp)
 
 # Raylib mit deinem Spiel verknüpfen
 target_link_libraries(${PROJECT_NAME} raylib)
