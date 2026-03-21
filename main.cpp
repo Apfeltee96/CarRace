@@ -1,8 +1,8 @@
 #include "raylib.h"
+#include "level.h" // NEU: Wir binden unsere Level-Datei ein!
 #include <vector>
 #include <string>
 
-// --- KONSTANTEN ---
 const int SCREEN_WIDTH = 600;
 const int SCREEN_HEIGHT = 800;
 const int ROAD_WIDTH = 400;
@@ -31,49 +31,42 @@ void ResetObstacle(Obstacle &obs, float startY) {
 }
 
 int main() {
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "CarRace - Level Menue");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Vector Evasion - Dynamische Level");
     SetTargetFPS(60);
 
     Player player;
     player.rect.width = 60;
     player.rect.height = 100;
-    player.rect.x = (SCREEN_WIDTH / 2) - (player.rect.width / 2);
-    player.rect.y = SCREEN_HEIGHT - 150;
     player.speed = 400.0f;
     player.color = BLUE;
 
+    // --- VARIABLEN ---
     int currentLevel = 1;          
-    float timeLeft = 60.0f;        
-    float baseSpeed = 200.0f;      
-    float currentSpeed = baseSpeed; 
+    LevelData activeLevelData = GetLevelData(currentLevel); // Holt die Daten für Lvl 1
+    float timeLeft = activeLevelData.targetTime;        
+    float currentSpeed = activeLevelData.baseSpeed; 
 
     char playerName[MAX_NAME_LENGTH + 1] = "\0"; 
     int letterCount = 0; 
     int framesCounter = 0; 
 
-    // Alle Button-Rechtecke definieren
     Rectangle startButton = { SCREEN_WIDTH/2.0f - 100, 450, 200, 50 };
     Rectangle descButton = { SCREEN_WIDTH/2.0f - 100, 520, 200, 50 };
     Rectangle backButton = { SCREEN_WIDTH/2.0f - 100, 650, 200, 50 };
     Rectangle inputBox = { SCREEN_WIDTH/2.0f - 125, 300, 250, 50 };
-    
-    // NEU: Buttons für den Level-Geschafft-Bildschirm
     Rectangle nextLevelButton = { SCREEN_WIDTH/2.0f - 125, 400, 250, 50 };
     Rectangle returnMenuButton = { SCREEN_WIDTH/2.0f - 125, 480, 250, 50 };
 
     std::vector<Obstacle> obstacles(4);
-    
     GameState currentState = MAIN_MENU;
 
     while (!WindowShouldClose()) {
         float deltaTime = GetFrameTime();
         framesCounter++;
-
         Vector2 mousePoint = GetMousePosition(); 
 
-        // --- UPDATE (Logik) ---
+        // --- UPDATE ---
         if (currentState == MAIN_MENU) {
-            
             int key = GetCharPressed();
             while (key > 0) {
                 if ((key >= 32) && (key <= 125) && (letterCount < MAX_NAME_LENGTH)) {
@@ -91,17 +84,17 @@ int main() {
             }
 
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-                if (CheckCollisionPointRec(mousePoint, descButton)) {
-                    currentState = DESCRIPTION;
-                }
+                if (CheckCollisionPointRec(mousePoint, descButton)) currentState = DESCRIPTION;
                 
                 if (CheckCollisionPointRec(mousePoint, startButton) && letterCount > 0) {
+                    // SPIELSTART: Level 1 laden
                     currentLevel = 1;
-                    timeLeft = 60.0f;
+                    activeLevelData = GetLevelData(currentLevel);
+                    timeLeft = activeLevelData.targetTime;
+                    
                     player.rect.x = (SCREEN_WIDTH / 2) - (player.rect.width / 2);
-                    for (int i = 0; i < 4; i++) {
-                        ResetObstacle(obstacles[i], -200.0f - (i * 350.0f));
-                    }
+                    player.rect.y = SCREEN_HEIGHT - 150;
+                    for (int i = 0; i < 4; i++) ResetObstacle(obstacles[i], -200.0f - (i * 350.0f));
                     currentState = PLAYING;
                 }
             }
@@ -112,14 +105,12 @@ int main() {
             }
         }
         else if (currentState == PLAYING) {
-            if (IsKeyPressed(KEY_P)) {
-                currentState = PAUSED;
-            }
+            if (IsKeyPressed(KEY_P)) currentState = PAUSED;
 
             timeLeft -= deltaTime;
 
-            float levelBonusSpeed = (currentLevel - 1) * 20.0f; 
-            currentSpeed = baseSpeed + levelBonusSpeed + ((60.0f - timeLeft) * 3.0f); 
+            // NEUER ALGORITHMUS: Nutzt die dynamischen Werte aus level.cpp!
+            currentSpeed = activeLevelData.baseSpeed + ((activeLevelData.targetTime - timeLeft) * activeLevelData.speedMultiplier); 
 
             if (timeLeft <= 0.0f) {
                 timeLeft = 0.0f;                 
@@ -130,9 +121,7 @@ int main() {
             if (IsKeyDown(KEY_RIGHT)) player.rect.x += player.speed * deltaTime;
 
             if (player.rect.x < ROAD_OFFSET) player.rect.x = ROAD_OFFSET;
-            if (player.rect.x > ROAD_OFFSET + ROAD_WIDTH - player.rect.width) {
-                player.rect.x = ROAD_OFFSET + ROAD_WIDTH - player.rect.width;
-            }
+            if (player.rect.x > ROAD_OFFSET + ROAD_WIDTH - player.rect.width) player.rect.x = ROAD_OFFSET + ROAD_WIDTH - player.rect.width;
 
             for (int i = 0; i < 4; i++) {
                 obstacles[i].rect.y += currentSpeed * deltaTime;
@@ -146,40 +135,35 @@ int main() {
                     ResetObstacle(obstacles[i], highestY - neuerAbstand); 
                 }
 
-                if (CheckCollisionRecs(player.rect, obstacles[i].rect)) {
-                    currentState = GAMEOVER; 
-                }
+                if (CheckCollisionRecs(player.rect, obstacles[i].rect)) currentState = GAMEOVER; 
             }
         } 
         else if (currentState == PAUSED) {
             if (IsKeyPressed(KEY_P)) currentState = PLAYING;
         }
         else if (currentState == GAMEOVER) {
-            if (IsKeyPressed(KEY_ENTER)) {
-                currentState = MAIN_MENU;
-            }
+            if (IsKeyPressed(KEY_ENTER)) currentState = MAIN_MENU;
         }
-        // NEU: Logik für den LEVEL_CLEARED Bildschirm
         else if (currentState == LEVEL_CLEARED) {
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-                // Klick auf "Nächstes Level"
+                
                 if (CheckCollisionPointRec(mousePoint, nextLevelButton)) {
+                    // NÄCHSTES LEVEL LADEN
                     currentLevel++; 
-                    timeLeft = 60.0f; 
+                    activeLevelData = GetLevelData(currentLevel); // Holt die neuen, schwereren Settings!
+                    timeLeft = activeLevelData.targetTime; 
+                    
                     player.rect.x = (SCREEN_WIDTH / 2) - (player.rect.width / 2); 
-                    for (int i = 0; i < 4; i++) {
-                        ResetObstacle(obstacles[i], -200.0f - (i * 350.0f)); 
-                    }
+                    for (int i = 0; i < 4; i++) ResetObstacle(obstacles[i], -200.0f - (i * 350.0f)); 
                     currentState = PLAYING;
                 }
-                // Klick auf "Hauptmenü"
                 else if (CheckCollisionPointRec(mousePoint, returnMenuButton)) {
                     currentState = MAIN_MENU;
                 }
             }
         }
 
-        // --- DRAW (Zeichnen) ---
+        // --- DRAW ---
         BeginDrawing();
         ClearBackground(DARKGREEN);
 
@@ -190,7 +174,7 @@ int main() {
             DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.6f));
 
             if (currentState == MAIN_MENU) {
-                DrawText("CarRace", 120, 150, 40, ORANGE);
+                DrawText("VECTOR EVASION", 120, 150, 40, ORANGE);
                 
                 DrawText("Dein Name:", (int)inputBox.x, (int)inputBox.y - 30, 20, WHITE);
                 DrawRectangleRec(inputBox, LIGHTGRAY);
@@ -214,13 +198,12 @@ int main() {
             else if (currentState == DESCRIPTION) {
                 DrawText("SPIELANLEITUNG", 140, 150, 40, ORANGE);
                 DrawText("Ziel:", 100, 250, 25, YELLOW);
-                DrawText("Ueberlebe 60 Sekunden, um", 100, 290, 20, WHITE);
-                DrawText("in das naechste Level zu kommen.", 100, 320, 20, WHITE);
-                DrawText("Steuerung:", 100, 380, 25, YELLOW);
-                DrawText("[Pfeil Links / Rechts]: Auto bewegen", 100, 420, 20, WHITE);
-                DrawText("[P]: Spiel pausieren", 100, 450, 20, WHITE);
-                DrawText("Achtung: Das Spiel wird im", 100, 520, 20, RED);
-                DrawText("Verlauf immer schneller!", 100, 550, 20, RED);
+                DrawText("Ueberlebe, bis der Timer auf 0 faellt.", 100, 290, 20, WHITE);
+                DrawText("Steuerung:", 100, 360, 25, YELLOW);
+                DrawText("[Pfeil Links / Rechts]: Auto bewegen", 100, 400, 20, WHITE);
+                DrawText("[P]: Spiel pausieren", 100, 430, 20, WHITE);
+                DrawText("Achtung: Jedes Level hat eigene Regeln", 100, 500, 20, RED);
+                DrawText("und wird zunehmend schwerer!", 100, 530, 20, RED);
 
                 Color backColor = CheckCollisionPointRec(mousePoint, backButton) ? RED : MAROON;
                 DrawRectangleRec(backButton, backColor);
@@ -233,13 +216,9 @@ int main() {
             DrawLineEx({(float)(ROAD_OFFSET + ROAD_WIDTH), 0}, {(float)(ROAD_OFFSET + ROAD_WIDTH), (float)SCREEN_HEIGHT}, 5, WHITE);
 
             DrawRectangleRec(player.rect, player.color);
-
-            for (int i = 0; i < 4; i++) {
-                DrawRectangleRec(obstacles[i].rect, obstacles[i].color);
-            }
+            for (int i = 0; i < 4; i++) DrawRectangleRec(obstacles[i].rect, obstacles[i].color);
 
             DrawText(TextFormat("Zeit: 00:%02i", (int)timeLeft), 20, 20, 30, WHITE);
-            
             const char* levelText = TextFormat("Level: %i", currentLevel);
             DrawText(levelText, SCREEN_WIDTH - MeasureText(levelText, 30) - 20, 20, 30, ORANGE);
             DrawText(playerName, SCREEN_WIDTH/2 - MeasureText(playerName, 20)/2, 25, 20, LIGHTGRAY);
@@ -256,17 +235,14 @@ int main() {
                 DrawText(TextFormat("Level %i gecrasht.", currentLevel), 180, 415, 25, LIGHTGRAY);
                 DrawText("Druecke ENTER fuer das Hauptmenue", 70, 520, 25, WHITE);
             }
-            // NEU: Zeichnen der neuen Buttons im LEVEL_CLEARED Bildschirm
             else if (currentState == LEVEL_CLEARED) {
                 DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.7f));
                 DrawText(TextFormat("LEVEL %i GESCHAFFT!", currentLevel), 80, 250, 45, GREEN);
                 
-                // Button 1: Nächstes Level
                 Color nextColor = CheckCollisionPointRec(mousePoint, nextLevelButton) ? GREEN : DARKGREEN;
                 DrawRectangleRec(nextLevelButton, nextColor);
                 DrawText("NAECHSTES LEVEL", (int)nextLevelButton.x + 35, (int)nextLevelButton.y + 15, 20, WHITE);
 
-                // Button 2: Zurück ins Hauptmenü
                 Color menuColor = CheckCollisionPointRec(mousePoint, returnMenuButton) ? GRAY : DARKGRAY;
                 DrawRectangleRec(returnMenuButton, menuColor);
                 DrawText("HAUPTMENUE", (int)returnMenuButton.x + 60, (int)returnMenuButton.y + 15, 20, WHITE);
