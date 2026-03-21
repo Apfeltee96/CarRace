@@ -1,0 +1,11 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Users/kerem/Desktop/C++Projekt/CarRace/build/cmake_install.cmake",
+		"C:/Users/kerem/Desktop/C++Projekt/CarRace/build/raylib/cmake_install.cmake",
+		"C:/Users/kerem/Desktop/C++Projekt/CarRace/build/raylib/raylib/cmake_install.cmake",
+		"C:/Users/kerem/Desktop/C++Projekt/CarRace/build/raylib/raylib/external/glfw/cmake_install.cmake",
+		"C:/Users/kerem/Desktop/C++Projekt/CarRace/build/raylib/raylib/external/glfw/src/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
