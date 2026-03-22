@@ -10,6 +10,10 @@ add_subdirectory(raylib)
 
 # Deine ausführbare Datei definieren
 add_executable(${PROJECT_NAME} main.cpp level.cpp scoreboard.cpp)
+# Zwingt den Compiler, alle C++ Hilfsdateien fest in die EXE zu integrieren
+if(WIN32)
+    target_link_options(${PROJECT_NAME} PRIVATE "-static" "-static-libgcc" "-static-libstdc++" "-mwindows")
+endif()
 
 # Raylib mit deinem Spiel verknüpfen
 target_link_libraries(${PROJECT_NAME} raylib)

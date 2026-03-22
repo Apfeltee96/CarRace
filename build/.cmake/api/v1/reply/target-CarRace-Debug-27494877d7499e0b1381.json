@@ -14,6 +14,7 @@
 		"commands" : 
 		[
 			"add_executable",
+			"target_link_options",
 			"target_link_libraries"
 		],
 		"files" : 
@@ -39,19 +40,25 @@
 				"parent" : 0
 			},
 			{
-				"command" : 1,
+				"command" : 2,
 				"file" : 0,
 				"line" : 19,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 23,
 				"parent" : 0
 			},
 			{
 				"file" : 1
 			},
 			{
-				"command" : 1,
+				"command" : 2,
 				"file" : 1,
 				"line" : 99,
-				"parent" : 4
+				"parent" : 5
 			}
 		]
 	},
@@ -63,7 +70,7 @@
 	"compileDependencies" : 
 	[
 		{
-			"backtrace" : 2,
+			"backtrace" : 3,
 			"id" : "raylib::@7d429ebd5d102775094d"
 		}
 	],
@@ -79,18 +86,18 @@
 			"defines" : 
 			[
 				{
-					"backtrace" : 2,
+					"backtrace" : 3,
 					"define" : "GRAPHICS_API_OPENGL_33"
 				},
 				{
-					"backtrace" : 2,
+					"backtrace" : 3,
 					"define" : "PLATFORM_DESKTOP"
 				}
 			],
 			"includes" : 
 			[
 				{
-					"backtrace" : 2,
+					"backtrace" : 3,
 					"path" : "C:/Users/kerem/Desktop/C++Projekt/CarRace/raylib/src"
 				}
 			],
@@ -114,11 +121,11 @@
 	"dependencies" : 
 	[
 		{
-			"backtrace" : 2,
+			"backtrace" : 3,
 			"id" : "raylib::@7d429ebd5d102775094d"
 		},
 		{
-			"backtrace" : 2,
+			"backtrace" : 3,
 			"id" : "glfw::@a896dd99b4a5c6eab3d9"
 		}
 	],
@@ -141,41 +148,61 @@
 			},
 			{
 				"backtrace" : 2,
+				"fragment" : "-static",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-static-libgcc",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-static-libstdc++",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-mwindows",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 3,
 				"fragment" : "raylib\\raylib\\raylib.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 3,
+				"backtrace" : 4,
 				"fragment" : "opengl32.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 3,
+				"backtrace" : 4,
 				"fragment" : "gdi32.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 3,
+				"backtrace" : 4,
 				"fragment" : "winmm.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 3,
+				"backtrace" : 4,
 				"fragment" : "user32.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 3,
+				"backtrace" : 4,
 				"fragment" : "shell32.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 5,
+				"backtrace" : 6,
 				"fragment" : "glu32.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 3,
+				"backtrace" : 4,
 				"fragment" : "winmm.lib",
 				"role" : "libraries"
 			},
@@ -189,27 +216,27 @@
 	"linkLibraries" : 
 	[
 		{
-			"backtrace" : 2,
+			"backtrace" : 3,
 			"id" : "raylib::@7d429ebd5d102775094d"
 		},
 		{
-			"backtrace" : 3,
+			"backtrace" : 4,
 			"fragment" : "opengl32"
 		},
 		{
-			"backtrace" : 3,
+			"backtrace" : 4,
 			"fragment" : "gdi32"
 		},
 		{
-			"backtrace" : 3,
+			"backtrace" : 4,
 			"fragment" : "winmm"
 		},
 		{
-			"backtrace" : 3,
+			"backtrace" : 4,
 			"fragment" : "user32"
 		},
 		{
-			"backtrace" : 3,
+			"backtrace" : 4,
 			"fragment" : "shell32"
 		}
 	],

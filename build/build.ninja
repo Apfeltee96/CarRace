@@ -93,7 +93,7 @@ build CMakeFiles\CarRace.dir\scoreboard.cpp.obj: CXX_COMPILER__CarRace_unscanned
 build CarRace.exe: CXX_EXECUTABLE_LINKER__CarRace_Debug CMakeFiles\CarRace.dir\main.cpp.obj CMakeFiles\CarRace.dir\level.cpp.obj CMakeFiles\CarRace.dir\scoreboard.cpp.obj | raylib\raylib\raylib.lib || raylib\raylib\external\glfw\src\glfw raylib\raylib\raylib.lib
   CONFIG = Debug
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
-  LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
+  LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console -static -static-libgcc -static-libstdc++ -mwindows
   LINK_LIBRARIES = raylib\raylib\raylib.lib  opengl32.lib  gdi32.lib  winmm.lib  user32.lib  shell32.lib  glu32.lib  winmm.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
   OBJECT_DIR = CMakeFiles\CarRace.dir
   POST_BUILD = cd .
