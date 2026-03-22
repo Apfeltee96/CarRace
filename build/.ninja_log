@@ -1,4 +1,5 @@
 # ninja log v6
+72	710	7959144918358971	CMakeFiles/CarRace.dir/ui.cpp.obj	20a7c83d6a5e53df
 2286	3213	7959123208872105	raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/win32_module.c.obj	885022f6cad8168d
 1817	2682	7959123204184654	raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/osmesa_context.c.obj	477d02cb0594d806
 61	1458	7959123186630999	raylib/raylib/CMakeFiles/raylib.dir/rshapes.c.obj	e1afeb5c9faa5230
@@ -18,7 +19,7 @@
 1832	2934	7959123204344234	raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/null_init.c.obj	ee6bf3c55616f127
 1460	2627	7959123200624174	raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/platform.c.obj	7fd3031f6d3f2415
 1856	2730	7959123204573612	raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/null_window.c.obj	5667c54c35e987d5
-45	632	7959140925567279	CMakeFiles/CarRace.dir/main.cpp.obj	76d1dd3815d302b5
+65	756	7959144918279185	CMakeFiles/CarRace.dir/main.cpp.obj	76d1dd3815d302b5
 2731	3337	7959123213330203	raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/win32_window.c.obj	61fb4d3c89692339
 45	2285	7959123186471419	raylib/raylib/CMakeFiles/raylib.dir/raudio.c.obj	1726845f785a56ec
 1864	2701	7959123204653401	raylib/raylib/external/glfw/src/CMakeFiles/glfw.dir/null_joystick.c.obj	afc13ee077522cba
@@ -32,5 +33,3 @@
 632	900	7959140931441003	CarRace.exe	8104b839e65c9786
 53	163	7959138854688342	CMakeFiles/CarRace.dir/level.cpp.obj	5714464a8ee51528
 54	156	7959140925657024	CMakeFiles/CarRace.dir/player.cpp.obj	eb3a640428af5f72
-72	710	7959144918358971	CMakeFiles/CarRace.dir/ui.cpp.obj	20a7c83d6a5e53df
-65	756	7959144918279185	CMakeFiles/CarRace.dir/main.cpp.obj	76d1dd3815d302b5
