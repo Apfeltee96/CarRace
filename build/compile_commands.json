@@ -7,15 +7,27 @@
 },
 {
   "directory": "C:/Users/kerem/Desktop/C++Projekt/CarRace/build",
+  "command": "C:\\PROGRA~1\\MIB055~1\\18\\Insiders\\VC\\Tools\\MSVC\\1450~1.357\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -IC:\\Users\\kerem\\Desktop\\C++Projekt\\CarRace\\raylib\\src /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17 /FoCMakeFiles\\CarRace.dir\\scoreboard.cpp.obj /FdCMakeFiles\\CarRace.dir\\ /FS -c C:\\Users\\kerem\\Desktop\\C++Projekt\\CarRace\\scoreboard.cpp",
+  "file": "C:/Users/kerem/Desktop/C++Projekt/CarRace/scoreboard.cpp",
+  "output": "C:/Users/kerem/Desktop/C++Projekt/CarRace/build/CMakeFiles/CarRace.dir/scoreboard.cpp.obj"
+},
+{
+  "directory": "C:/Users/kerem/Desktop/C++Projekt/CarRace/build",
   "command": "C:\\PROGRA~1\\MIB055~1\\18\\Insiders\\VC\\Tools\\MSVC\\1450~1.357\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -IC:\\Users\\kerem\\Desktop\\C++Projekt\\CarRace\\raylib\\src /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17 /FoCMakeFiles\\CarRace.dir\\level.cpp.obj /FdCMakeFiles\\CarRace.dir\\ /FS -c C:\\Users\\kerem\\Desktop\\C++Projekt\\CarRace\\level.cpp",
   "file": "C:/Users/kerem/Desktop/C++Projekt/CarRace/level.cpp",
   "output": "C:/Users/kerem/Desktop/C++Projekt/CarRace/build/CMakeFiles/CarRace.dir/level.cpp.obj"
 },
 {
   "directory": "C:/Users/kerem/Desktop/C++Projekt/CarRace/build",
-  "command": "C:\\PROGRA~1\\MIB055~1\\18\\Insiders\\VC\\Tools\\MSVC\\1450~1.357\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -IC:\\Users\\kerem\\Desktop\\C++Projekt\\CarRace\\raylib\\src /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17 /FoCMakeFiles\\CarRace.dir\\scoreboard.cpp.obj /FdCMakeFiles\\CarRace.dir\\ /FS -c C:\\Users\\kerem\\Desktop\\C++Projekt\\CarRace\\scoreboard.cpp",
-  "file": "C:/Users/kerem/Desktop/C++Projekt/CarRace/scoreboard.cpp",
-  "output": "C:/Users/kerem/Desktop/C++Projekt/CarRace/build/CMakeFiles/CarRace.dir/scoreboard.cpp.obj"
+  "command": "C:\\PROGRA~1\\MIB055~1\\18\\Insiders\\VC\\Tools\\MSVC\\1450~1.357\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -IC:\\Users\\kerem\\Desktop\\C++Projekt\\CarRace\\raylib\\src /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17 /FoCMakeFiles\\CarRace.dir\\player.cpp.obj /FdCMakeFiles\\CarRace.dir\\ /FS -c C:\\Users\\kerem\\Desktop\\C++Projekt\\CarRace\\player.cpp",
+  "file": "C:/Users/kerem/Desktop/C++Projekt/CarRace/player.cpp",
+  "output": "C:/Users/kerem/Desktop/C++Projekt/CarRace/build/CMakeFiles/CarRace.dir/player.cpp.obj"
+},
+{
+  "directory": "C:/Users/kerem/Desktop/C++Projekt/CarRace/build",
+  "command": "C:\\PROGRA~1\\MIB055~1\\18\\Insiders\\VC\\Tools\\MSVC\\1450~1.357\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -IC:\\Users\\kerem\\Desktop\\C++Projekt\\CarRace\\raylib\\src /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17 /FoCMakeFiles\\CarRace.dir\\ui.cpp.obj /FdCMakeFiles\\CarRace.dir\\ /FS -c C:\\Users\\kerem\\Desktop\\C++Projekt\\CarRace\\ui.cpp",
+  "file": "C:/Users/kerem/Desktop/C++Projekt/CarRace/ui.cpp",
+  "output": "C:/Users/kerem/Desktop/C++Projekt/CarRace/build/CMakeFiles/CarRace.dir/ui.cpp.obj"
 },
 {
   "directory": "C:/Users/kerem/Desktop/C++Projekt/CarRace/build",

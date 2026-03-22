@@ -8,9 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(raylib)
 
-# Deine ausführbare Datei definieren
-# NEU: Das WIN32 hier sorgt dafür, dass sich das schwarze Terminal nicht mehr öffnet!
-add_executable(${PROJECT_NAME} WIN32 main.cpp level.cpp scoreboard.cpp)
+add_executable(${PROJECT_NAME} WIN32 main.cpp scoreboard.cpp level.cpp player.cpp ui.cpp)
 
 # Raylib mit deinem Spiel verknüpfen
 target_link_libraries(${PROJECT_NAME} raylib)

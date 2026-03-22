@@ -1,12 +1,15 @@
-#pragma once // Wichtig: Verhindert, dass C++ die Datei aus Versehen doppelt lädt
+#ifndef LEVEL_H
+#define LEVEL_H
 
-// Diese Struktur hält alle Einstellungen für ein einzelnes Level
-struct LevelData {
-    int levelNumber;
-    float targetTime;      // Wie lange muss man überleben? (z.B. 60 Sekunden)
-    float baseSpeed;       // Startgeschwindigkeit der Hindernisse
-    float speedMultiplier; // Wie stark steigt die Geschwindigkeit über Zeit an?
-};
+#include "raylib.h"
 
-// Diese Funktion rufen wir später auf, um die Level-Einstellungen zu holen
-LevelData GetLevelData(int level);
+// Gibt die Dauer eines Levels in Sekunden zurück
+float GetLevelDuration();
+
+// Gibt die Hintergrundfarbe für das aktuelle Level zurück
+Color GetLevelColor(int currentLevel);
+
+// Berechnet, wie schnell die Hindernisse aktuell sein sollen
+float CalculateObstacleSpeed(int currentLevel, float timeLeft);
+
+#endif
