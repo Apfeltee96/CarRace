@@ -1,10 +1,12 @@
 #include "raylib.h"
 #include "level.h"
-#include "scoreboard.h" // NEU: Scoreboard einbinden!
+#include "scoreboard.h"
 #include <vector>
 #include <string>
 
-const int SCREEN_WIDTH = 600;
+// NEU: Das Fenster ist jetzt breiter (800 statt 600). Die Straße bleibt bei 400!
+// Dadurch haben wir links und rechts jeweils 200 Pixel Grasfläche für das HUD.
+const int SCREEN_WIDTH = 800; 
 const int SCREEN_HEIGHT = 800;
 const int ROAD_WIDTH = 400;
 const int ROAD_OFFSET = (SCREEN_WIDTH - ROAD_WIDTH) / 2;
@@ -21,8 +23,7 @@ struct Obstacle {
     Color color;
 };
 
-// NEUER ZUSTAND: SCOREBOARD
-enum GameState { MAIN_MENU, DESCRIPTION, SCOREBOARD_MENU, PLAYING, PAUSED, GAMEOVER, LEVEL_CLEARED };
+enum GameState { MAIN_MENU, DESCRIPTION, SCOREBOARD_MENU, PLAYING, PAUSED, GAMEOVER, GAME_WON };
 
 void ResetObstacle(Obstacle &obs, float startY) {
     obs.rect.width = (float)GetRandomValue(60, 120);
@@ -33,34 +34,34 @@ void ResetObstacle(Obstacle &obs, float startY) {
 }
 
 int main() {
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Car Race - Scoreboard");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Car Race");
     SetTargetFPS(60);
 
     Player player;
     player.rect.width = 60;
     player.rect.height = 100;
-    player.speed = 400.0f;
+    player.speed = 650.0f;
     player.color = BLUE;
 
     int currentLevel = 1;          
     LevelData activeLevelData = GetLevelData(currentLevel); 
     float timeLeft = activeLevelData.targetTime;        
     float currentSpeed = activeLevelData.baseSpeed; 
+    
+    float totalTimeSurvived = 0.0f; 
 
     char playerName[MAX_NAME_LENGTH + 1] = "\0"; 
     int letterCount = 0; 
     int framesCounter = 0; 
 
-    // Buttons für das Hauptmenü (etwas verschoben, damit 3 hinpassen)
+    // Die Buttons zentrieren sich automatisch durch SCREEN_WIDTH/2.0f
     Rectangle startButton = { SCREEN_WIDTH/2.0f - 100, 420, 200, 50 };
     Rectangle scoreBtn    = { SCREEN_WIDTH/2.0f - 100, 490, 200, 50 };
     Rectangle descButton  = { SCREEN_WIDTH/2.0f - 100, 560, 200, 50 };
-    
-    Rectangle backButton  = { SCREEN_WIDTH/2.0f - 100, 680, 200, 50 };
     Rectangle inputBox    = { SCREEN_WIDTH/2.0f - 125, 300, 250, 50 };
     
-    Rectangle nextLevelButton = { SCREEN_WIDTH/2.0f - 125, 400, 250, 50 };
-    Rectangle returnMenuButton = { SCREEN_WIDTH/2.0f - 125, 480, 250, 50 };
+    Rectangle btnPrimary  = { SCREEN_WIDTH/2.0f - 125, 400, 250, 50 }; 
+    Rectangle btnMenu     = { SCREEN_WIDTH/2.0f - 125, 480, 250, 50 }; 
 
     std::vector<Obstacle> obstacles(4);
     GameState currentState = MAIN_MENU;
@@ -74,7 +75,6 @@ int main() {
         if (currentState == MAIN_MENU) {
             int key = GetCharPressed();
             while (key > 0) {
-                // Wir verbieten Leerzeichen (Key 32), da unser Scoreboard Namen durch Leerzeichen getrennt speichert!
                 if ((key > 32) && (key <= 125) && (letterCount < MAX_NAME_LENGTH)) {
                     playerName[letterCount] = (char)key;
                     playerName[letterCount+1] = '\0';
@@ -91,12 +91,13 @@ int main() {
 
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 if (CheckCollisionPointRec(mousePoint, descButton)) currentState = DESCRIPTION;
-                if (CheckCollisionPointRec(mousePoint, scoreBtn)) currentState = SCOREBOARD_MENU; // Neues Menü öffnen
+                if (CheckCollisionPointRec(mousePoint, scoreBtn)) currentState = SCOREBOARD_MENU; 
                 
                 if (CheckCollisionPointRec(mousePoint, startButton) && letterCount > 0) {
                     currentLevel = 1;
                     activeLevelData = GetLevelData(currentLevel);
                     timeLeft = activeLevelData.targetTime;
+                    totalTimeSurvived = 0.0f; 
                     
                     player.rect.x = (SCREEN_WIDTH / 2) - (player.rect.width / 2);
                     player.rect.y = SCREEN_HEIGHT - 150;
@@ -106,7 +107,8 @@ int main() {
             }
         }
         else if (currentState == DESCRIPTION || currentState == SCOREBOARD_MENU) {
-            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mousePoint, backButton)) {
+            Rectangle backMenuBtn = { SCREEN_WIDTH/2.0f - 125, 680, 250, 50 };
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mousePoint, backMenuBtn)) {
                 currentState = MAIN_MENU;
             }
         }
@@ -114,11 +116,19 @@ int main() {
             if (IsKeyPressed(KEY_P)) currentState = PAUSED;
 
             timeLeft -= deltaTime;
+            totalTimeSurvived += deltaTime; 
+
             currentSpeed = activeLevelData.baseSpeed + ((activeLevelData.targetTime - timeLeft) * activeLevelData.speedMultiplier); 
 
             if (timeLeft <= 0.0f) {
-                timeLeft = 0.0f;                 
-                currentState = LEVEL_CLEARED; 
+                if (currentLevel == 5) {
+                    timeLeft = 0.0f;   
+                    currentState = GAME_WON; 
+                } else {
+                    currentLevel++;
+                    activeLevelData = GetLevelData(currentLevel);
+                    timeLeft = activeLevelData.targetTime;
+                }
             }
 
             if (IsKeyDown(KEY_LEFT)) player.rect.x -= player.speed * deltaTime;
@@ -140,34 +150,33 @@ int main() {
                 }
 
                 if (CheckCollisionRecs(player.rect, obstacles[i].rect)) {
-                    // NEU: Beim Crash wird das Level im Scoreboard gespeichert!
-                    AddOrUpdateScore(std::string(playerName), currentLevel);
+                    AddOrUpdateScore(std::string(playerName), currentLevel, totalTimeSurvived);
                     currentState = GAMEOVER; 
                 }
             }
         } 
         else if (currentState == PAUSED) {
             if (IsKeyPressed(KEY_P)) currentState = PLAYING;
-        }
-        else if (currentState == GAMEOVER) {
-            if (IsKeyPressed(KEY_ENTER)) currentState = MAIN_MENU;
-        }
-        else if (currentState == LEVEL_CLEARED) {
+            
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-                if (CheckCollisionPointRec(mousePoint, nextLevelButton)) {
-                    currentLevel++; 
-                    activeLevelData = GetLevelData(currentLevel); 
-                    timeLeft = activeLevelData.targetTime; 
-                    
-                    player.rect.x = (SCREEN_WIDTH / 2) - (player.rect.width / 2); 
-                    for (int i = 0; i < 4; i++) ResetObstacle(obstacles[i], -200.0f - (i * 350.0f)); 
-                    currentState = PLAYING;
+                if (CheckCollisionPointRec(mousePoint, btnPrimary)) {
+                    currentState = PLAYING; 
                 }
-                else if (CheckCollisionPointRec(mousePoint, returnMenuButton)) {
-                    // NEU: Auch wenn wir freiwillig abbrechen, speichern wir unseren Fortschritt!
-                    AddOrUpdateScore(std::string(playerName), currentLevel);
+                else if (CheckCollisionPointRec(mousePoint, btnMenu)) {
+                    AddOrUpdateScore(std::string(playerName), currentLevel, totalTimeSurvived);
                     currentState = MAIN_MENU;
                 }
+            }
+        }
+        else if (currentState == GAMEOVER) {
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mousePoint, btnMenu)) {
+                currentState = MAIN_MENU;
+            }
+        }
+        else if (currentState == GAME_WON) {
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mousePoint, btnMenu)) {
+                AddOrUpdateScore(std::string(playerName), 5, totalTimeSurvived);
+                currentState = MAIN_MENU;
             }
         }
 
@@ -182,11 +191,11 @@ int main() {
             DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.6f));
 
             if (currentState == MAIN_MENU) {
-                // Der Text wird jetzt dynamisch zentriert berechnet, da "CAR RACE" kürzer ist!
-const char* titleText = "CAR RACE";
-DrawText(titleText, SCREEN_WIDTH/2 - MeasureText(titleText, 40)/2, 150, 40, ORANGE);
+                const char* titleText = "CAR RACE";
+                DrawText(titleText, SCREEN_WIDTH/2 - MeasureText(titleText, 45)/2, 150, 45, ORANGE);
                 
-                DrawText("Dein Name (ohne Leerzeichen):", (int)inputBox.x - 30, (int)inputBox.y - 30, 20, WHITE);
+                // NEU: "(ohne Leerzeichen)" wurde entfernt
+                DrawText("Dein Name:", (int)inputBox.x, (int)inputBox.y - 30, 20, WHITE);
                 DrawRectangleRec(inputBox, LIGHTGRAY);
                 DrawRectangleLines((int)inputBox.x, (int)inputBox.y, (int)inputBox.width, (int)inputBox.height, DARKBLUE);
                 DrawText(playerName, (int)inputBox.x + 10, (int)inputBox.y + 15, 20, MAROON);
@@ -201,7 +210,6 @@ DrawText(titleText, SCREEN_WIDTH/2 - MeasureText(titleText, 40)/2, 150, 40, ORAN
                 DrawRectangleRec(startButton, startColor);
                 DrawText("SPIEL STARTEN", (int)startButton.x + 15, (int)startButton.y + 15, 20, WHITE);
 
-                // Neuer Scoreboard Button
                 Color sColor = CheckCollisionPointRec(mousePoint, scoreBtn) ? GOLD : ORANGE;
                 DrawRectangleRec(scoreBtn, sColor);
                 DrawText("BESTENLISTE", (int)scoreBtn.x + 30, (int)scoreBtn.y + 15, 20, WHITE);
@@ -211,34 +219,38 @@ DrawText(titleText, SCREEN_WIDTH/2 - MeasureText(titleText, 40)/2, 150, 40, ORAN
                 DrawText("DESCRIPTION", (int)descButton.x + 30, (int)descButton.y + 15, 20, WHITE);
             }
             else if (currentState == SCOREBOARD_MENU) {
-                DrawText("TOP 10 SPIELER", 150, 150, 40, GOLD);
+                // Alle X-Werte um +100 angepasst, damit es auf 800px Breite mittig bleibt
+                DrawText("TOP 10 SPIELER", 250, 150, 40, GOLD); 
                 
-                // Lade und zeichne die Liste
                 std::vector<ScoreEntry> scores = LoadScoreboard();
                 if (scores.empty()) {
-                    DrawText("Noch keine Eintraege vorhanden!", 120, 300, 20, LIGHTGRAY);
+                    DrawText("Noch keine Eintraege vorhanden!", 220, 300, 20, LIGHTGRAY);
                 } else {
-                    for (int i = 0; i < scores.size(); i++) {
-                        DrawText(TextFormat("%d. %s", i+1, scores[i].name.c_str()), 120, 250 + (i * 35), 25, WHITE);
-                        DrawText(TextFormat("Level %d", scores[i].level), 380, 250 + (i * 35), 25, ORANGE);
+                    for (size_t i = 0; i < scores.size(); i++) {
+                        DrawText(TextFormat("%d. %s", i+1, scores[i].name.c_str()), 200, 250 + (i * 35), 22, WHITE);
+                        DrawText(TextFormat("Lvl %d", scores[i].level), 430, 250 + (i * 35), 22, ORANGE);
+                        DrawText(TextFormat("(%.1fs)", scores[i].timeSurvived), 510, 250 + (i * 35), 22, LIGHTGRAY);
                     }
                 }
 
-                Color backColor = CheckCollisionPointRec(mousePoint, backButton) ? RED : MAROON;
-                DrawRectangleRec(backButton, backColor);
-                DrawText("ZURUECK", (int)backButton.x + 50, (int)backButton.y + 15, 20, WHITE);
+                Rectangle backMenuBtn = { SCREEN_WIDTH/2.0f - 125, 680, 250, 50 };
+                Color backColor = CheckCollisionPointRec(mousePoint, backMenuBtn) ? RED : MAROON;
+                DrawRectangleRec(backMenuBtn, backColor);
+                DrawText("ZURUECK", (int)backMenuBtn.x + 75, (int)backMenuBtn.y + 15, 20, WHITE);
             }
             else if (currentState == DESCRIPTION) {
-                DrawText("SPIELANLEITUNG", 140, 150, 40, ORANGE);
-                DrawText("Ziel:", 100, 250, 25, YELLOW);
-                DrawText("Ueberlebe, bis der Timer auf 0 faellt.", 100, 290, 20, WHITE);
-                DrawText("Steuerung:", 100, 360, 25, YELLOW);
-                DrawText("[Pfeil Links / Rechts]: Auto bewegen", 100, 400, 20, WHITE);
-                DrawText("[P]: Spiel pausieren", 100, 430, 20, WHITE);
+                // Alle X-Werte um +100 angepasst
+                DrawText("SPIELANLEITUNG", 240, 150, 40, ORANGE);
+                DrawText("Ziel:", 200, 250, 25, YELLOW);
+                DrawText("Ueberlebe, bis der Timer auf 0 faellt.", 200, 290, 20, WHITE);
+                DrawText("Steuerung:", 200, 360, 25, YELLOW);
+                DrawText("[Pfeil Links / Rechts]: Auto bewegen", 200, 400, 20, WHITE);
+                DrawText("[P]: Spiel pausieren", 200, 430, 20, WHITE);
                 
-                Color backColor = CheckCollisionPointRec(mousePoint, backButton) ? RED : MAROON;
-                DrawRectangleRec(backButton, backColor);
-                DrawText("ZURUECK", (int)backButton.x + 50, (int)backButton.y + 15, 20, WHITE);
+                Rectangle backMenuBtn = { SCREEN_WIDTH/2.0f - 125, 680, 250, 50 };
+                Color backColor = CheckCollisionPointRec(mousePoint, backMenuBtn) ? RED : MAROON;
+                DrawRectangleRec(backMenuBtn, backColor);
+                DrawText("ZURUECK", (int)backMenuBtn.x + 75, (int)backMenuBtn.y + 15, 20, WHITE);
             }
         }
         else {
@@ -249,35 +261,60 @@ DrawText(titleText, SCREEN_WIDTH/2 - MeasureText(titleText, 40)/2, 150, 40, ORAN
             DrawRectangleRec(player.rect, player.color);
             for (int i = 0; i < 4; i++) DrawRectangleRec(obstacles[i].rect, obstacles[i].color);
 
-            DrawText(TextFormat("Zeit: 00:%02i", (int)timeLeft), 20, 20, 30, WHITE);
+            // --- PERFEKTIONIERTES HUD ---
+            
+            // LINKS Oben: Name und exakt darunter die reinen Sekunden
+            DrawText(playerName, 20, 20, 25, LIGHTGRAY);
+            DrawText(TextFormat("%.1fs", totalTimeSurvived), 20, 50, 22, WHITE);
+
+            // RECHTS Oben: Level und exakt darunter die verbleibende Zeit
             const char* levelText = TextFormat("Level: %i", currentLevel);
-            DrawText(levelText, SCREEN_WIDTH - MeasureText(levelText, 30) - 20, 20, 30, ORANGE);
-            DrawText(playerName, SCREEN_WIDTH/2 - MeasureText(playerName, 20)/2, 25, 20, LIGHTGRAY);
+            Color lvlColor = (timeLeft > activeLevelData.targetTime - 1.5f) ? GREEN : ORANGE;
+            DrawText(levelText, SCREEN_WIDTH - MeasureText(levelText, 30) - 20, 20, 30, lvlColor);
+            
+            const char* timeLeftText = TextFormat("Zeit: 00:%02i", (int)timeLeft);
+            DrawText(timeLeftText, SCREEN_WIDTH - MeasureText(timeLeftText, 22) - 20, 55, 22, WHITE);
+            // ---------------------------
 
             if (currentState == PAUSED) {
-                DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.5f));
-                DrawText("PAUSIERT", 190, 350, 45, WHITE);
-                DrawText("Druecke 'P' zum Weiterfahren", 130, 420, 20, LIGHTGRAY);
+                DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.6f));
+                DrawText("PAUSIERT", 290, 280, 45, WHITE); // X + 100
+                
+                Color primColor = CheckCollisionPointRec(mousePoint, btnPrimary) ? GREEN : DARKGREEN;
+                DrawRectangleRec(btnPrimary, primColor);
+                DrawText("WEITER SPIELEN", (int)btnPrimary.x + 40, (int)btnPrimary.y + 15, 20, WHITE);
+
+                Color menuColor = CheckCollisionPointRec(mousePoint, btnMenu) ? GRAY : DARKGRAY;
+                DrawRectangleRec(btnMenu, menuColor);
+                DrawText("HAUPTMENUE", (int)btnMenu.x + 60, (int)btnMenu.y + 15, 20, WHITE);
             }
             else if (currentState == GAMEOVER) {
                 DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.7f));
-                DrawText("CRASH!", 220, 300, 50, RED);
-                DrawText(TextFormat("Schade %s, du bist in", playerName), 100, 380, 25, LIGHTGRAY);
-                DrawText(TextFormat("Level %i gecrasht.", currentLevel), 180, 415, 25, LIGHTGRAY);
-                DrawText("Dein Ergebnis wurde gespeichert!", 110, 460, 20, GREEN); // Kleiner Hinweis!
-                DrawText("Druecke ENTER fuer das Hauptmenue", 70, 520, 25, WHITE);
-            }
-            else if (currentState == LEVEL_CLEARED) {
-                DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.7f));
-                DrawText(TextFormat("LEVEL %i GESCHAFFT!", currentLevel), 80, 250, 45, GREEN);
+                DrawText("CRASH!", 320, 250, 50, RED); // X + 100
                 
-                Color nextColor = CheckCollisionPointRec(mousePoint, nextLevelButton) ? GREEN : DARKGREEN;
-                DrawRectangleRec(nextLevelButton, nextColor);
-                DrawText("NAECHSTES LEVEL", (int)nextLevelButton.x + 35, (int)nextLevelButton.y + 15, 20, WHITE);
+                const char* overText1 = TextFormat("Schade %s, du bist in", playerName);
+                DrawText(overText1, SCREEN_WIDTH/2 - MeasureText(overText1, 25)/2, 330, 25, LIGHTGRAY);
+                
+                const char* overText2 = TextFormat("Level %i nach %.1fs gecrasht.", currentLevel, totalTimeSurvived);
+                DrawText(overText2, SCREEN_WIDTH/2 - MeasureText(overText2, 25)/2, 365, 25, LIGHTGRAY);
+                
+                DrawText("Ergebnis im Scoreboard gespeichert!", 195, 410, 20, GREEN); // X + 100
 
-                Color menuColor = CheckCollisionPointRec(mousePoint, returnMenuButton) ? GRAY : DARKGRAY;
-                DrawRectangleRec(returnMenuButton, menuColor);
-                DrawText("HAUPTMENUE", (int)returnMenuButton.x + 60, (int)returnMenuButton.y + 15, 20, WHITE);
+                Color menuColor = CheckCollisionPointRec(mousePoint, btnMenu) ? GRAY : DARKGRAY;
+                DrawRectangleRec(btnMenu, menuColor);
+                DrawText("HAUPTMENUE", (int)btnMenu.x + 60, (int)btnMenu.y + 15, 20, WHITE);
+            }
+            else if (currentState == GAME_WON) {
+                DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.8f));
+                DrawText("HERZLICHEN GLUECKWUNSCH!", 130, 250, 35, GOLD); // X + 100
+                DrawText("Du hast alle 5 Level von", 250, 320, 25, WHITE); // X + 100
+                
+                const char* wonText = TextFormat("Car Race in %.1fs bestanden!", totalTimeSurvived);
+                DrawText(wonText, SCREEN_WIDTH/2 - MeasureText(wonText, 25)/2, 360, 25, WHITE);
+
+                Color menuColor = CheckCollisionPointRec(mousePoint, btnMenu) ? GRAY : DARKGRAY;
+                DrawRectangleRec(btnMenu, menuColor);
+                DrawText("HAUPTMENUE", (int)btnMenu.x + 60, (int)btnMenu.y + 15, 20, WHITE);
             }
         }
 
