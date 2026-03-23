@@ -10,6 +10,17 @@ void DrawHUD(const char* playerName, float totalTimeSurvived, int score, int ear
 
     const char* starText = TextFormat("+ %i Sterne", earnedStars);
     DrawText(starText, sw - MeasureText(starText, 25) - 20, 55, 25, YELLOW);
+
+    // --- NEU: Milestone-Anzeige (Blinkender Text) ---
+    if (score >= 1000 && score < 1150) {
+        DrawText("SPEED UP!", sw/2 - MeasureText("SPEED UP!", 40)/2, 300, 40, ORANGE);
+    }
+    else if (score >= 2500 && score < 2650) {
+        DrawText("TURBO MODE!", sw/2 - MeasureText("TURBO MODE!", 40)/2, 300, 40, RED);
+    }
+    else if (score >= 5000 && score < 5150) {
+        DrawText("SONIC SPEED!", sw/2 - MeasureText("SONIC SPEED!", 40)/2, 300, 40, MAGENTA);
+    }
 }
 
 void DrawMainMenu(const char* playerName, int letterCount, int framesCounter, Vector2 mousePoint, Rectangle inputBox, Rectangle startButton, Rectangle scoreBtn, Rectangle shopBtn, Rectangle descButton, int totalStars, bool isNameSaved) {
@@ -35,9 +46,19 @@ void DrawMainMenu(const char* playerName, int letterCount, int framesCounter, Ve
         DrawText("SPIEL STARTEN", (int)(startButton.x + 15), (int)(startButton.y + 15), 20, WHITE);
     } 
     else {
+        // Spieler ist bekannt: Begrüßung
         const char* welcomeText = TextFormat("Willkommen zurueck, %s!", playerName);
-        DrawText(welcomeText, (int)(sw/2 - MeasureText(welcomeText, 25)/2), (int)(inputBox.y + 10), 25, LIGHTGRAY);
+        int welcomeX = (int)(sw/2 - MeasureText(welcomeText, 25)/2);
+        int welcomeY = (int)(inputBox.y + 10);
+        DrawText(welcomeText, welcomeX, welcomeY, 25, LIGHTGRAY);
 
+        // NEU: Kleiner "Aendern"-Button rechts neben dem Namen
+        Rectangle editBtn = { (float)(welcomeX + MeasureText(welcomeText, 25) + 15), (float)welcomeY, 80, 25 };
+        Color editColor = CheckCollisionPointRec(mousePoint, editBtn) ? RAYWHITE : GRAY;
+        DrawRectangleLinesEx(editBtn, 1, editColor);
+        DrawText("Aendern", (int)editBtn.x + 5, (int)editBtn.y + 5, 15, editColor);
+
+        // Start-Button
         Color startColor = CheckCollisionPointRec(mousePoint, startButton) ? GREEN : DARKGREEN;
         DrawRectangleRec(startButton, startColor);
         DrawText("NOCHMAL SPIELEN", (int)(startButton.x + 8), (int)(startButton.y + 15), 20, WHITE);

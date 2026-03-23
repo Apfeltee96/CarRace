@@ -31,6 +31,12 @@
 },
 {
   "directory": "C:/Users/kerem/Desktop/C++Projekt/CarRace/build",
+  "command": "C:\\PROGRA~1\\MIB055~1\\18\\Insiders\\VC\\Tools\\MSVC\\1450~1.357\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -IC:\\Users\\kerem\\Desktop\\C++Projekt\\CarRace\\raylib\\src /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG -std:c++17 /FoCMakeFiles\\CarRace.dir\\config.cpp.obj /FdCMakeFiles\\CarRace.dir\\ /FS -c C:\\Users\\kerem\\Desktop\\C++Projekt\\CarRace\\config.cpp",
+  "file": "C:/Users/kerem/Desktop/C++Projekt/CarRace/config.cpp",
+  "output": "C:/Users/kerem/Desktop/C++Projekt/CarRace/build/CMakeFiles/CarRace.dir/config.cpp.obj"
+},
+{
+  "directory": "C:/Users/kerem/Desktop/C++Projekt/CarRace/build",
   "command": "C:\\PROGRA~1\\MIB055~1\\18\\Insiders\\VC\\Tools\\MSVC\\1450~1.357\\bin\\Hostx64\\x64\\cl.exe  /nologo -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -D_CRT_SECURE_NO_WARNINGS -IC:\\Users\\kerem\\Desktop\\C++Projekt\\CarRace\\raylib\\src -external:IC:\\Users\\kerem\\Desktop\\C++Projekt\\CarRace\\raylib\\src\\external\\glfw\\include -external:W0 /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /Foraylib\\raylib\\CMakeFiles\\raylib.dir\\raudio.c.obj /Fdraylib\\raylib\\CMakeFiles\\raylib.dir\\raylib.pdb /FS -c C:\\Users\\kerem\\Desktop\\C++Projekt\\CarRace\\raylib\\src\\raudio.c",
   "file": "C:/Users/kerem/Desktop/C++Projekt/CarRace/raylib/src/raudio.c",
   "output": "C:/Users/kerem/Desktop/C++Projekt/CarRace/build/raylib/raylib/CMakeFiles/raylib.dir/raudio.c.obj"

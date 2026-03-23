@@ -12,7 +12,6 @@ struct SaveGame {
 
 SaveGame LoadSaveGame();
 void SaveGameData(const SaveGame& data);
-int CalculateStars(int score);
 Color GetCarColor(int colorId);
 
 #endif

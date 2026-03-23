@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(raylib)
 
-add_executable(${PROJECT_NAME} WIN32 main.cpp scoreboard.cpp player.cpp ui.cpp shop.cpp)
+add_executable(${PROJECT_NAME} WIN32 main.cpp scoreboard.cpp player.cpp ui.cpp shop.cpp config.cpp)
 
 # Raylib mit deinem Spiel verknüpfen
 target_link_libraries(${PROJECT_NAME} raylib)
