@@ -71,17 +71,6 @@ build CMakeFiles\CarRace.dir\scoreboard.cpp.obj: CXX_COMPILER__CarRace_unscanned
   TARGET_PDB = CarRace.pdb
   TARGET_SUPPORT_DIR = CMakeFiles\CarRace.dir
 
-build CMakeFiles\CarRace.dir\level.cpp.obj: CXX_COMPILER__CarRace_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\level.cpp || cmake_object_order_depends_target_CarRace
-  CONFIG = Release
-  DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG -std:c++17
-  INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src
-  OBJECT_DIR = CMakeFiles\CarRace.dir
-  OBJECT_FILE_DIR = CMakeFiles\CarRace.dir
-  TARGET_COMPILE_PDB = CMakeFiles\CarRace.dir\
-  TARGET_PDB = CarRace.pdb
-  TARGET_SUPPORT_DIR = CMakeFiles\CarRace.dir
-
 build CMakeFiles\CarRace.dir\player.cpp.obj: CXX_COMPILER__CarRace_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\player.cpp || cmake_object_order_depends_target_CarRace
   CONFIG = Release
   DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP
@@ -104,6 +93,17 @@ build CMakeFiles\CarRace.dir\ui.cpp.obj: CXX_COMPILER__CarRace_unscanned_Release
   TARGET_PDB = CarRace.pdb
   TARGET_SUPPORT_DIR = CMakeFiles\CarRace.dir
 
+build CMakeFiles\CarRace.dir\shop.cpp.obj: CXX_COMPILER__CarRace_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\shop.cpp || cmake_object_order_depends_target_CarRace
+  CONFIG = Release
+  DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG -std:c++17
+  INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src
+  OBJECT_DIR = CMakeFiles\CarRace.dir
+  OBJECT_FILE_DIR = CMakeFiles\CarRace.dir
+  TARGET_COMPILE_PDB = CMakeFiles\CarRace.dir\
+  TARGET_PDB = CarRace.pdb
+  TARGET_SUPPORT_DIR = CMakeFiles\CarRace.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target CarRace
@@ -112,7 +112,7 @@ build CMakeFiles\CarRace.dir\ui.cpp.obj: CXX_COMPILER__CarRace_unscanned_Release
 #############################################
 # Link the executable CarRace.exe
 
-build CarRace.exe: CXX_EXECUTABLE_LINKER__CarRace_Release CMakeFiles\CarRace.dir\main.cpp.obj CMakeFiles\CarRace.dir\scoreboard.cpp.obj CMakeFiles\CarRace.dir\level.cpp.obj CMakeFiles\CarRace.dir\player.cpp.obj CMakeFiles\CarRace.dir\ui.cpp.obj | raylib\raylib\raylib.lib || raylib\raylib\external\glfw\src\glfw raylib\raylib\raylib.lib
+build CarRace.exe: CXX_EXECUTABLE_LINKER__CarRace_Release CMakeFiles\CarRace.dir\main.cpp.obj CMakeFiles\CarRace.dir\scoreboard.cpp.obj CMakeFiles\CarRace.dir\player.cpp.obj CMakeFiles\CarRace.dir\ui.cpp.obj CMakeFiles\CarRace.dir\shop.cpp.obj | raylib\raylib\raylib.lib || raylib\raylib\external\glfw\src\glfw raylib\raylib\raylib.lib
   CONFIG = Release
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG
   LINK_FLAGS = /machine:x64 /INCREMENTAL:NO /subsystem:windows /ENTRY:mainCRTStartup

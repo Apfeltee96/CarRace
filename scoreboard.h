@@ -1,15 +1,16 @@
-#pragma once
-#include <string>
+#ifndef SCOREBOARD_H
+#define SCOREBOARD_H
 #include <vector>
+#include <string>
 
 struct ScoreEntry {
     std::string name;
-    int level;
-    float timeSurvived; // NEU: Die überlebte Zeit in diesem Level
+    int score; // NEU: Punkte statt Level!
+    float timeSurvived;
 };
 
+void AddOrUpdateScore(const std::string& name, int score, float timeSurvived);
 std::vector<ScoreEntry> LoadScoreboard();
 void SaveScoreboard(const std::vector<ScoreEntry>& scores);
 
-// NEU: Die Funktion nimmt jetzt auch die Zeit entgegen
-void AddOrUpdateScore(std::string name, int level, float timeSurvived);
+#endif
