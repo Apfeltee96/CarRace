@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <fstream>
 #include <vector>
+#include <cstdio> // Für remove()
 
 // Wir nutzen nur noch die .dat Datei für alles!
 const char* SCORE_FILE = "scoreboard.dat";
@@ -54,6 +55,12 @@ void SaveScoreboard(const std::vector<ScoreEntry>& scores) {
         }
         outFile.close();
     }
+}
+
+
+
+void ClearScoreboard() {
+    remove("scoreboard.dat"); // Löscht die Binärdatei der Highscores
 }
 
 void AddOrUpdateScore(const std::string& name, int score, float time) {

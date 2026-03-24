@@ -12,5 +12,6 @@ struct ScoreEntry {
 void AddOrUpdateScore(const std::string& name, int score, float timeSurvived);
 std::vector<ScoreEntry> LoadScoreboard();
 void SaveScoreboard(const std::vector<ScoreEntry>& scores);
+void ClearScoreboard();
 
 #endif

@@ -13,5 +13,6 @@ struct SaveGame {
 SaveGame LoadSaveGame();
 void SaveGameData(const SaveGame& data);
 Color GetCarColor(int colorId);
+void DeleteSaveData();
 
 #endif

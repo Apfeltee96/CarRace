@@ -9,6 +9,7 @@
 #include <string>
 #include <cstring>
 
+// --- KONSTANTEN ---
 const int SCREEN_WIDTH = 1000; 
 const int SCREEN_HEIGHT = 800;
 const int ROAD_WIDTH = 400;
@@ -20,7 +21,7 @@ struct Obstacle {
     Color color;
 };
 
-enum GameState { MAIN_MENU, SHOP_MENU, DESCRIPTION, SCOREBOARD_MENU, PLAYING, PAUSED, GAMEOVER };
+enum GameState { MAIN_MENU, SHOP_MENU, DESCRIPTION, SCOREBOARD_MENU, SETTINGS, PLAYING, PAUSED, GAMEOVER };
 
 void ResetObstacle(Obstacle &obs, float startY) {
     obs.rect.width = (float)GetRandomValue(60, 120);
@@ -31,6 +32,7 @@ void ResetObstacle(Obstacle &obs, float startY) {
 }
 
 int main() {
+    // 1. Initialisierung
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Car Race");
     SetTargetFPS(60);
 
@@ -38,6 +40,7 @@ int main() {
     Player player;
     InitPlayer(player, SCREEN_WIDTH, SCREEN_HEIGHT, GetCarColor(saveData.selectedColorId));
 
+    // 2. Spiel-Variablen
     int currentScore = 0;          
     float currentSpeed = SPEED_START; 
     float totalTimeSurvived = 0.0f; 
@@ -55,16 +58,21 @@ int main() {
     int letterCount = (int)std::strlen(playerName); 
     int framesCounter = 0; 
 
-    // UI Rectangles
-    Rectangle startButton = { SCREEN_WIDTH/2.0f - 100, 400, 200, 50 };
-    Rectangle scoreBtn    = { SCREEN_WIDTH/2.0f - 100, 470, 200, 50 };
-    Rectangle shopBtn     = { SCREEN_WIDTH/2.0f - 100, 540, 200, 50 };
-    Rectangle descButton  = { SCREEN_WIDTH/2.0f - 100, 610, 200, 50 };
+    // --- UI RECTANGLES ---
+    Rectangle startButton = { SCREEN_WIDTH/2.0f - 100, 380, 200, 50 };
+    Rectangle scoreBtn    = { SCREEN_WIDTH/2.0f - 100, 440, 200, 50 };
+    Rectangle shopBtn     = { SCREEN_WIDTH/2.0f - 100, 500, 200, 50 };
+    Rectangle settingsBtn = { SCREEN_WIDTH/2.0f - 100, 560, 200, 50 }; 
+    Rectangle descButton  = { SCREEN_WIDTH/2.0f - 100, 620, 200, 50 };
+    
+    // Buttons für das Settings-Menü
+    Rectangle deleteSaveBtn   = { SCREEN_WIDTH/2.0f - 125, 250, 250, 50 };
+    Rectangle deleteScoreBtn  = { SCREEN_WIDTH/2.0f - 125, 370, 250, 50 };
+    Rectangle backSettingsBtn = { SCREEN_WIDTH/2.0f - 125, 550, 250, 50 };
+
     Rectangle inputBox    = { SCREEN_WIDTH/2.0f - 125, 280, 250, 50 };
     Rectangle btnPrimary  = { SCREEN_WIDTH/2.0f - 125, 400, 250, 50 }; 
     Rectangle btnMenu     = { SCREEN_WIDTH/2.0f - 125, 480, 250, 50 }; 
-    Rectangle shopBtnBlue = { SCREEN_WIDTH/2.0f - 100, 250, 200, 50 };
-    Rectangle shopBtnRed  = { SCREEN_WIDTH/2.0f - 100, 350, 200, 50 };
     Rectangle backMenuBtn = { SCREEN_WIDTH/2.0f - 125, 680, 250, 50 };
 
     std::vector<Obstacle> obstacles(4);
@@ -75,7 +83,7 @@ int main() {
         framesCounter++;
         Vector2 mousePoint = GetMousePosition(); 
 
-        // --- UPDATE ---
+        // --- UPDATE LOGIK ---
         if (currentState == MAIN_MENU) {
             if (!isNameSaved) {
                 int key = GetCharPressed();
@@ -88,9 +96,10 @@ int main() {
                     key = GetCharPressed(); 
                 }
                 if (IsKeyPressed(KEY_BACKSPACE)) {
-                    letterCount--;
-                    if (letterCount < 0) letterCount = 0;
-                    playerName[letterCount] = '\0';
+                    if (letterCount > 0) {
+                        letterCount--;
+                        playerName[letterCount] = '\0';
+                    }
                 }
             }
 
@@ -98,6 +107,7 @@ int main() {
                 if (CheckCollisionPointRec(mousePoint, descButton)) currentState = DESCRIPTION;
                 else if (CheckCollisionPointRec(mousePoint, scoreBtn)) currentState = SCOREBOARD_MENU; 
                 else if (CheckCollisionPointRec(mousePoint, shopBtn)) currentState = SHOP_MENU; 
+                else if (CheckCollisionPointRec(mousePoint, settingsBtn)) currentState = SETTINGS;
                 
                 if (isNameSaved) {
                     const char* welcomeText = TextFormat("Willkommen zurueck, %s!", playerName);
@@ -124,45 +134,38 @@ int main() {
                 }
             }
         }
-        else if (currentState == SHOP_MENU) {
+        else if (currentState == SETTINGS) {
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-                if (CheckCollisionPointRec(mousePoint, backMenuBtn)) currentState = MAIN_MENU;
-                if (CheckCollisionPointRec(mousePoint, shopBtnBlue)) {
-                    saveData.selectedColorId = 0;
-                    SaveGameData(saveData);
+                if (CheckCollisionPointRec(mousePoint, backSettingsBtn)) currentState = MAIN_MENU;
+                
+                // SPIELSTAND LÖSCHEN
+                if (CheckCollisionPointRec(mousePoint, deleteSaveBtn)) {
+                    DeleteSaveData(); 
+                    saveData = {0, false, 0, ""}; 
+                    playerName[0] = '\0';
+                    letterCount = 0;
+                    isNameSaved = false;
+                    currentState = MAIN_MENU; 
                 }
-                if (CheckCollisionPointRec(mousePoint, shopBtnRed)) {
-                    if (saveData.ownsRedCar) {
-                        saveData.selectedColorId = 1;
-                        SaveGameData(saveData);
-                    } else if (saveData.totalStars >= PRICE_RED_CAR) { 
-                        saveData.totalStars -= PRICE_RED_CAR;
-                        saveData.ownsRedCar = true;
-                        saveData.selectedColorId = 1; 
-                        SaveGameData(saveData);
-                    }
+
+                // SCOREBOARD LÖSCHEN
+                if (CheckCollisionPointRec(mousePoint, deleteScoreBtn)) {
+                    ClearScoreboard();
                 }
             }
         }
-        else if (currentState == DESCRIPTION || currentState == SCOREBOARD_MENU) {
+        else if (currentState == SHOP_MENU || currentState == DESCRIPTION || currentState == SCOREBOARD_MENU) {
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mousePoint, backMenuBtn)) {
                 currentState = MAIN_MENU;
             }
         }
         else if (currentState == PLAYING) {
             if (IsKeyPressed(KEY_P)) currentState = PAUSED;
-
             totalTimeSurvived += deltaTime; 
             currentScore = (int)(totalTimeSurvived * 50.0f); 
             currentSpeed = GetCurrentSpeed(currentScore);
             earnedStarsThisRound = CalculateStars(currentScore);
             player.speed = GetPlayerSpeed(currentScore);
-
-            if (currentScore >= 1000 && !messageShown) {
-                messageTimer = 3.0f; 
-                messageShown = true;
-            }
-            if (messageTimer > 0) messageTimer -= deltaTime;
 
             if (IsKeyDown(KEY_LEFT)) player.rect.x -= player.speed * deltaTime;
             if (IsKeyDown(KEY_RIGHT)) player.rect.x += player.speed * deltaTime;
@@ -185,31 +188,24 @@ int main() {
                 }
             }
         }
-        else if (currentState == PAUSED) {
-            if (IsKeyPressed(KEY_P)) currentState = PLAYING;
-            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-                if (CheckCollisionPointRec(mousePoint, btnPrimary)) currentState = PLAYING; 
-                else if (CheckCollisionPointRec(mousePoint, btnMenu)) currentState = MAIN_MENU;
-            }
-        }
-        else if (currentState == GAMEOVER) {
-            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mousePoint, btnMenu)) {
-                currentState = MAIN_MENU;
-            }
+        else if (currentState == PAUSED || currentState == GAMEOVER) {
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mousePoint, btnMenu)) currentState = MAIN_MENU;
+            if (currentState == PAUSED && IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mousePoint, btnPrimary)) currentState = PLAYING;
         }
 
-        // --- DRAW ---
+        // --- ZEICHNEN ---
         BeginDrawing();
         ClearBackground(DARKGREEN); 
 
-        if (currentState == MAIN_MENU || currentState == DESCRIPTION || currentState == SCOREBOARD_MENU || currentState == SHOP_MENU) {
+        if (currentState != PLAYING && currentState != PAUSED && currentState != GAMEOVER) {
             DrawRectangle(ROAD_OFFSET, 0, ROAD_WIDTH, SCREEN_HEIGHT, DARKGRAY);
             DrawLineEx({(float)ROAD_OFFSET, 0}, {(float)ROAD_OFFSET, (float)SCREEN_HEIGHT}, 5, WHITE); 
             DrawLineEx({(float)(ROAD_OFFSET + ROAD_WIDTH), 0}, {(float)(ROAD_OFFSET + ROAD_WIDTH), (float)SCREEN_HEIGHT}, 5, WHITE);
             DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.6f));
 
-            if (currentState == MAIN_MENU) DrawMainMenu(playerName, letterCount, framesCounter, mousePoint, inputBox, startButton, scoreBtn, shopBtn, descButton, saveData.totalStars, isNameSaved);
-            else if (currentState == SHOP_MENU) DrawShopMenu(saveData, mousePoint, shopBtnBlue, shopBtnRed, backMenuBtn);
+            if (currentState == MAIN_MENU) DrawMainMenu(playerName, letterCount, framesCounter, mousePoint, inputBox, startButton, scoreBtn, shopBtn, settingsBtn, descButton, saveData.totalStars, isNameSaved);
+            else if (currentState == SETTINGS) DrawSettingsMenu(mousePoint, deleteSaveBtn, deleteScoreBtn, backSettingsBtn);
+            else if (currentState == SHOP_MENU) DrawShopMenu(saveData, mousePoint, {SCREEN_WIDTH/2.0f-100, 250, 200, 50}, {SCREEN_WIDTH/2.0f-100, 350, 200, 50}, backMenuBtn);
             else if (currentState == SCOREBOARD_MENU) DrawScoreboardMenu(LoadScoreboard(), mousePoint, backMenuBtn);
             else if (currentState == DESCRIPTION) DrawDescriptionMenu(mousePoint, backMenuBtn);
         }
@@ -217,13 +213,9 @@ int main() {
             DrawRectangle(ROAD_OFFSET, 0, ROAD_WIDTH, SCREEN_HEIGHT, DARKGRAY);
             DrawLineEx({(float)ROAD_OFFSET, 0}, {(float)ROAD_OFFSET, (float)SCREEN_HEIGHT}, 5, WHITE); 
             DrawLineEx({(float)(ROAD_OFFSET + ROAD_WIDTH), 0}, {(float)(ROAD_OFFSET + ROAD_WIDTH), (float)SCREEN_HEIGHT}, 5, WHITE);
-
             DrawRectangleRec(player.rect, player.color);
             for (int i = 0; i < 4; i++) DrawRectangleRec(obstacles[i].rect, obstacles[i].color);
-
             DrawHUD(playerName, totalTimeSurvived, currentScore, earnedStarsThisRound);
-            // if (messageTimer > 0) DrawSpecialMessage("okey!");
-
             if (currentState == PAUSED) DrawPauseMenu(mousePoint, btnPrimary, btnMenu);
             else if (currentState == GAMEOVER) DrawGameOverMenu(playerName, currentScore, totalTimeSurvived, earnedStarsThisRound, mousePoint, btnMenu);
         }

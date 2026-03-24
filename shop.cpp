@@ -1,6 +1,7 @@
 #include "shop.h"
 #include "config.h"
 #include <fstream>
+#include <cstdio> // Für remove()
 
 const char* SAVE_FILE = "savegame.txt";
 
@@ -26,6 +27,10 @@ void SaveGameData(const SaveGame& data) {
 
 
 
+
+void DeleteSaveData() {
+    remove(SAVE_FILE); // Löscht die savegame.txt physisch von der Festplatte
+}
 
 
 Color GetCarColor(int colorId) {
