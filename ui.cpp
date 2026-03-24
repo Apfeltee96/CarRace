@@ -166,3 +166,19 @@ void DrawGameOverMenu(const char* playerName, int score, float totalTimeSurvived
     DrawRectangleRec(btnMenu, menuColor);
     DrawText("HAUPTMENUE", (int)(btnMenu.x + 60), (int)(btnMenu.y + 15), 20, WHITE);
 }
+void DrawSpecialMessage(const char* message) {
+    int sw = GetScreenWidth();
+    int sh = GetScreenHeight();
+    
+    // Ein schickes Rechteck in der Mitte
+    Rectangle msgBox = { (float)(sw/2 - 250), (float)(sh/2 - 50), 500, 100 };
+    
+    // Hintergrund mit leichtem Rot-Stich für die Liebe ;)
+    DrawRectangleRec(msgBox, Fade(MAROON, 0.8f));
+    DrawRectangleLinesEx(msgBox, 3, GOLD);
+    
+    // Der Text
+    int fontSize = 25;
+    int textWidth = MeasureText(message, fontSize);
+    DrawText(message, (int)(sw/2 - textWidth/2), (int)(sh/2 - 12), fontSize, WHITE);
+}

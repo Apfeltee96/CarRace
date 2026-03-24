@@ -16,5 +16,7 @@ void DrawScoreboardMenu(const std::vector<ScoreEntry>& scores, Vector2 mousePoin
 void DrawDescriptionMenu(Vector2 mousePoint, Rectangle backMenuBtn);
 void DrawPauseMenu(Vector2 mousePoint, Rectangle btnPrimary, Rectangle btnMenu);
 void DrawGameOverMenu(const char* playerName, int score, float totalTimeSurvived, int earnedStars, Vector2 mousePoint, Rectangle btnMenu);
+// Füge dies am Ende deiner ui.h hinzu:
+void DrawSpecialMessage(const char* message);
 
 #endif
