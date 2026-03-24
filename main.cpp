@@ -9,7 +9,6 @@
 #include <string>
 #include <cstring>
 
-// --- KONSTANTEN ---
 const int SCREEN_WIDTH = 1000; 
 const int SCREEN_HEIGHT = 800;
 const int ROAD_WIDTH = 400;
@@ -32,7 +31,6 @@ void ResetObstacle(Obstacle &obs, float startY) {
 }
 
 int main() {
-    // 1. Initialisierung
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Car Race");
     SetTargetFPS(60);
 
@@ -40,13 +38,10 @@ int main() {
     Player player;
     InitPlayer(player, SCREEN_WIDTH, SCREEN_HEIGHT, GetCarColor(saveData.selectedColorId));
 
-    // 2. Spiel-Variablen
     int currentScore = 0;          
     float currentSpeed = SPEED_START; 
     float totalTimeSurvived = 0.0f; 
     int earnedStarsThisRound = 0; 
-
-    // Pop-up Variablen (Bleiben im Hintergrund aktiv)
     float messageTimer = 0.0f;
     bool messageShown = false;
 
@@ -101,8 +96,8 @@ int main() {
 
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 if (CheckCollisionPointRec(mousePoint, descButton)) currentState = DESCRIPTION;
-                if (CheckCollisionPointRec(mousePoint, scoreBtn)) currentState = SCOREBOARD_MENU; 
-                if (CheckCollisionPointRec(mousePoint, shopBtn)) currentState = SHOP_MENU; 
+                else if (CheckCollisionPointRec(mousePoint, scoreBtn)) currentState = SCOREBOARD_MENU; 
+                else if (CheckCollisionPointRec(mousePoint, shopBtn)) currentState = SHOP_MENU; 
                 
                 if (isNameSaved) {
                     const char* welcomeText = TextFormat("Willkommen zurueck, %s!", playerName);
@@ -120,11 +115,9 @@ int main() {
                     earnedStarsThisRound = 0;
                     messageTimer = 0.0f;
                     messageShown = false; 
-                    
                     saveData.lastPlayerName = std::string(playerName);
                     SaveGameData(saveData);
                     isNameSaved = true; 
-                    
                     InitPlayer(player, SCREEN_WIDTH, SCREEN_HEIGHT, GetCarColor(saveData.selectedColorId));
                     for (int i = 0; i < 4; i++) ResetObstacle(obstacles[i], -200.0f - (i * 350.0f));
                     currentState = PLAYING;
@@ -151,17 +144,20 @@ int main() {
                 }
             }
         }
+        else if (currentState == DESCRIPTION || currentState == SCOREBOARD_MENU) {
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mousePoint, backMenuBtn)) {
+                currentState = MAIN_MENU;
+            }
+        }
         else if (currentState == PLAYING) {
             if (IsKeyPressed(KEY_P)) currentState = PAUSED;
 
             totalTimeSurvived += deltaTime; 
             currentScore = (int)(totalTimeSurvived * 50.0f); 
-
             currentSpeed = GetCurrentSpeed(currentScore);
             earnedStarsThisRound = CalculateStars(currentScore);
             player.speed = GetPlayerSpeed(currentScore);
 
-            // Pop-up Trigger Logik (Zählt im Hintergrund mit, wird aber nicht gezeichnet)
             if (currentScore >= 1000 && !messageShown) {
                 messageTimer = 3.0f; 
                 messageShown = true;
@@ -189,14 +185,16 @@ int main() {
                 }
             }
         }
-        else if (currentState == GAMEOVER || currentState == DESCRIPTION || currentState == SCOREBOARD_MENU) {
-            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mousePoint, backMenuBtn)) currentState = MAIN_MENU;
-        }
         else if (currentState == PAUSED) {
             if (IsKeyPressed(KEY_P)) currentState = PLAYING;
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 if (CheckCollisionPointRec(mousePoint, btnPrimary)) currentState = PLAYING; 
                 else if (CheckCollisionPointRec(mousePoint, btnMenu)) currentState = MAIN_MENU;
+            }
+        }
+        else if (currentState == GAMEOVER) {
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mousePoint, btnMenu)) {
+                currentState = MAIN_MENU;
             }
         }
 
@@ -224,16 +222,13 @@ int main() {
             for (int i = 0; i < 4; i++) DrawRectangleRec(obstacles[i].rect, obstacles[i].color);
 
             DrawHUD(playerName, totalTimeSurvived, currentScore, earnedStarsThisRound);
-
-            // [AUSKOMMENTIERT] - Hier war das Liebes-Pop-up
-            // if (messageTimer > 0) DrawSpecialMessage("Du hast es geschafft, 1000 Punkte zu erreichen! Weiter so!");
+            // if (messageTimer > 0) DrawSpecialMessage("okey!");
 
             if (currentState == PAUSED) DrawPauseMenu(mousePoint, btnPrimary, btnMenu);
             else if (currentState == GAMEOVER) DrawGameOverMenu(playerName, currentScore, totalTimeSurvived, earnedStarsThisRound, mousePoint, btnMenu);
         }
         EndDrawing();
     }
-
     CloseWindow();
     return 0;
 }
