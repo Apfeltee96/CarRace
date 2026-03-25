@@ -20,8 +20,8 @@ struct CollectableStar { Rectangle rect; bool active; };
 enum GameState { MAIN_MENU, SHOP_MENU, DESCRIPTION, SCOREBOARD_MENU, SETTINGS, PLAYING, PAUSED, GAMEOVER };
 
 // TUNNEL VARIABLEN
-float tunnelGapX = ROAD_OFFSET + 150; 
-float tunnelGapWidth = 120.0f;        
+float tunnelGapX = ROAD_OFFSET + 125; 
+float tunnelGapWidth = 150.0f; // Etwas breiterer Tunnel für Fairness
 
 bool IsPositionOccupied(Rectangle newRect, const std::vector<Obstacle>& obstacles) {
     for (const auto& obs : obstacles) {
@@ -35,13 +35,13 @@ void ResetObstacle(Obstacle &obs, float startY, const std::vector<Obstacle>& all
         obs.rect.width = (float)GetRandomValue(70, 100);
         obs.rect.height = 40.0f;
         obs.rect.x = (float)GetRandomValue(ROAD_OFFSET + 5, (ROAD_OFFSET + ROAD_WIDTH) - (int)obs.rect.width - 5);
-        obs.rect.y = startY; // Hier nutzen wir jetzt den festen Wert für einheitliche Abstände
+        obs.rect.y = startY; 
     } 
     else {
-        obs.rect.height = 60.0f;
-        tunnelGapX += GetRandomValue(-30, 30);
-        if (tunnelGapX < ROAD_OFFSET + 20) tunnelGapX = ROAD_OFFSET + 20;
-        if (tunnelGapX > (ROAD_OFFSET + ROAD_WIDTH) - tunnelGapWidth - 20) tunnelGapX = (ROAD_OFFSET + ROAD_WIDTH) - tunnelGapWidth - 20;
+        obs.rect.height = 70.0f; // Massivere Tunnelwände
+        tunnelGapX += GetRandomValue(-40, 40);
+        if (tunnelGapX < ROAD_OFFSET + 10) tunnelGapX = ROAD_OFFSET + 10;
+        if (tunnelGapX > (ROAD_OFFSET + ROAD_WIDTH) - tunnelGapWidth - 10) tunnelGapX = (ROAD_OFFSET + ROAD_WIDTH) - tunnelGapWidth - 10;
 
         if (index % 2 == 0) {
             obs.rect.x = (float)ROAD_OFFSET;
@@ -126,10 +126,9 @@ int main() {
                     saveData.lastPlayerName = std::string(playerName); SaveGameData(saveData); isNameSaved = true; 
                     InitPlayer(player, SCREEN_WIDTH, SCREEN_HEIGHT, GetCarColor(saveData.selectedColorId));
                     
-                    // --- EINHEITLICHE INITIALISIERUNG ---
-                    // Jedes Hindernis startet genau 250 Pixel hinter dem anderen
+                    // --- NEU: ERHÖHTER ABSTAND (400px) ---
                     for (int i = 0; i < 4; i++) {
-                        ResetObstacle(obstacles[i], -150.0f - (i * 250.0f), obstacles, 0, i);
+                        ResetObstacle(obstacles[i], -200.0f - (i * 400.0f), obstacles, 0, i);
                     }
                     currentState = PLAYING;
                 }
@@ -164,13 +163,11 @@ int main() {
             for (int i = 0; i < 4; i++) {
                 obstacles[i].rect.y += currentSpeed * deltaTime;
                 if (obstacles[i].rect.y > SCREEN_HEIGHT) {
-                    // --- EINHEITLICHER RESPAWN ---
-                    // Das Hindernis spawnt oben mit einem festen Abstand zum "höchsten" Hindernis
                     float highestY = 0;
                     for (int j = 0; j < 4; j++) { if (obstacles[j].rect.y < highestY) highestY = obstacles[j].rect.y; }
                     
-                    // Wir setzen es exakt 250 Pixel über das aktuell oberste Hindernis
-                    ResetObstacle(obstacles[i], highestY - 250.0f, obstacles, currentScore, i);
+                    // --- NEU: ERHÖHTER ABSTAND BEIM RESPAWN (400px) ---
+                    ResetObstacle(obstacles[i], highestY - 400.0f, obstacles, currentScore, i);
                 }
                 if (CheckCollisionRecs(player.rect, obstacles[i].rect)) {
                     AddOrUpdateScore(playerName, currentScore, totalTimeSurvived);
