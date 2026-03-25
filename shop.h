@@ -2,23 +2,8 @@
 #define SHOP_H
 
 #include "raylib.h"
-#include <string>
-#include <vector>
+#include "config.h"
 
-struct SaveGame {
-    int totalStars;
-    bool ownsRedCar;
-    int selectedColorId;
-    std::string lastPlayerName;
-    bool isEnglish;
-};
-
-// Funktionen für das Speichersystem
-SaveGame LoadSaveGame();
-void SaveGameData(const SaveGame& data);
-void DeleteSaveData();
-
-// Diese Funktion fehlte in der main.cpp
-Color GetCarColor(int colorId);
+void DrawShopMenu(SaveGame &saveData, Vector2 mousePoint, Rectangle redBtn, Rectangle purpleBtn, Rectangle backBtn, bool isEnglish);
 
 #endif

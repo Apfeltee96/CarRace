@@ -1,96 +1,126 @@
 #include "ui.h"
+#include <string>
 
-void DrawHUD(const char* playerName, float time, int score, int stars, bool isEnglish) {
-    int sw = GetScreenWidth();
-    DrawText(playerName, 20, 20, 25, LIGHTGRAY);
-    DrawText(TextFormat("%.1fs", time), 20, 50, 22, WHITE);
-    DrawText(TextFormat(isEnglish ? "SCORE: %i" : "PUNKTE: %i", score), sw - 250, 20, 30, GOLD);
-    DrawText(TextFormat("+ %i %s", stars, isEnglish ? "Stars" : "Sterne"), sw - 250, 55, 25, YELLOW);
+// Hilfsfunktion für zentrierten Text
+void DrawTextCentered(const char* text, int y, int fontSize, Color color) {
+    int textWidth = MeasureText(text, fontSize);
+    DrawText(text, (GetScreenWidth() - textWidth) / 2, y, fontSize, color);
 }
 
-void DrawMainMenu(const char* name, int letters, int frames, Vector2 mouse, Rectangle start, Rectangle score, Rectangle shop, Rectangle settings, Rectangle desc, int stars, bool saved, bool isEnglish) {
-    int sw = GetScreenWidth();
-    DrawText("CAR RACE", sw/2 - MeasureText("CAR RACE", 60)/2, 60, 60, GOLD);
-    DrawText(TextFormat(isEnglish ? "Total Stars: %i" : "Gesamtsterne: %i", stars), sw/2 - 80, 130, 20, YELLOW);
+void DrawHUD(const char* name, float time, int score, int stars, bool isEnglish) {
+    DrawText(TextFormat(isEnglish ? "Driver: %s" : "Fahrer: %s", name), 20, 20, 20, RAYWHITE);
+    DrawText(TextFormat(isEnglish ? "Score: %d" : "Punkte: %d", score), 20, 50, 20, RAYWHITE);
+    DrawText(TextFormat(isEnglish ? "Time: %.2fs" : "Zeit: %.2fs", time), 20, 80, 20, RAYWHITE);
+    DrawText(TextFormat(isEnglish ? "Stars: %d" : "Sterne: %d", stars), 20, 110, 20, GOLD);
+}
 
-    if (!saved) {
-        DrawRectangleRec({(float)sw/2-125, 280, 250, 50}, RAYWHITE);
-        DrawText(name, sw/2 - 115, 295, 20, BLACK);
-        DrawText(isEnglish ? "Enter Name:" : "Name eingeben:", sw/2 - 125, 250, 20, LIGHTGRAY);
+void DrawMainMenu(const char* name, int letterCount, int framesCounter, Vector2 mousePoint, Rectangle startBtn, Rectangle scoreBtn, Rectangle shopBtn, Rectangle settingsBtn, Rectangle descBtn, int totalStars, bool nameSaved, bool isEnglish) {
+    ClearBackground(DARKGRAY);
+    
+    DrawTextCentered("CAR RACE", 100, 60, GOLD);
+    DrawText(TextFormat(isEnglish ? "Total Stars: %d" : "Gesamt Sterne: %d", totalStars), 20, 20, 20, GOLD);
+
+    if (!nameSaved) {
+        DrawTextCentered(isEnglish ? "ENTER YOUR NAME:" : "NAME EINGEBEN:", 220, 25, LIGHTGRAY);
+        DrawRectangle(GetScreenWidth()/2 - 150, 260, 300, 40, RAYWHITE);
+        DrawText(name, GetScreenWidth()/2 - 140, 270, 20, BLACK);
+        
+        if (letterCount < 15 && (framesCounter / 20) % 2 == 0) {
+            DrawText("_", GetScreenWidth()/2 - 140 + MeasureText(name, 20), 270, 20, DARKGRAY);
+        }
     } else {
-        DrawText(TextFormat(isEnglish ? "Welcome, %s!" : "Willkommen, %s!", name), sw/2 - 100, 295, 25, LIGHTGRAY);
+        DrawTextCentered(TextFormat(isEnglish ? "Welcome, %s!" : "Willkommen, %s!", name), 260, 30, RAYWHITE);
     }
 
-    auto Btn = [&](Rectangle r, const char* tDe, const char* tEn, Color c, Color h) {
-        bool hv = CheckCollisionPointRec(mouse, r);
-        DrawRectangleRec(r, hv ? h : c);
-        const char* txt = isEnglish ? tEn : tDe;
-        DrawText(txt, (int)(r.x + r.width/2 - MeasureText(txt, 20)/2), (int)(r.y + 15), 20, WHITE);
+    auto DrawBtn = [&](Rectangle rect, const char* label, Color col) {
+        bool hover = CheckCollisionPointRec(mousePoint, rect);
+        DrawRectangleRec(rect, hover ? LIGHTGRAY : col);
+        int tw = MeasureText(label, 20);
+        DrawText(label, (int)(rect.x + (rect.width - tw) / 2), (int)(rect.y + 15), 20, hover ? BLACK : WHITE);
     };
 
-    Btn(start, "SPIEL STARTEN", "START GAME", DARKGREEN, GREEN);
-    Btn(score, "BESTENLISTE", "SCOREBOARD", DARKGRAY, GRAY);
-    Btn(shop, "SHOP", "SHOP", {180, 100, 0, 255}, ORANGE);
-    Btn(settings, "EINSTELLUNGEN", "SETTINGS", DARKBLUE, BLUE);
-    Btn(desc, "ANLEITUNG", "HOW TO PLAY", BLACK, DARKGRAY);
+    DrawBtn(startBtn, isEnglish ? "START GAME" : "SPIEL STARTEN", DARKGREEN);
+    DrawBtn(scoreBtn, isEnglish ? "SCOREBOARD" : "BESTENLISTE", DARKBLUE);
+    DrawBtn(shopBtn, isEnglish ? "SHOP" : "LADEN", PURPLE);
+    DrawBtn(settingsBtn, isEnglish ? "SETTINGS" : "EINSTELLUNGEN", GRAY);
+    DrawBtn(descBtn, isEnglish ? "HOW TO PLAY" : "ANLEITUNG", DARKGRAY);
 }
 
-void DrawSettingsMenu(Vector2 mouse, Rectangle lang, Rectangle delSave, Rectangle delScore, Rectangle back, bool isEnglish) {
-    int sw = GetScreenWidth();
-    DrawText(isEnglish ? "SETTINGS" : "EINSTELLUNGEN", sw/2 - 100, 100, 40, GOLD);
-    
-    auto SBtn = [&](Rectangle r, const char* t, Color c) {
-        bool hv = CheckCollisionPointRec(mouse, r);
-        DrawRectangleRec(r, hv ? ColorAlpha(c, 0.8f) : c);
-        DrawText(t, (int)(r.x + r.width/2 - MeasureText(t, 20)/2), (int)(r.y + 15), 20, WHITE);
+void DrawSettingsMenu(Vector2 mousePoint, Rectangle langBtn, Rectangle nameChangeBtn, Rectangle deleteDataBtn, Rectangle backBtn, bool isEnglish) {
+    ClearBackground(BLACK);
+    DrawTextCentered(isEnglish ? "SETTINGS" : "EINSTELLUNGEN", 80, 40, GOLD);
+
+    auto DrawBtn = [&](Rectangle rect, const char* label, Color col, Color textCol) {
+        bool hover = CheckCollisionPointRec(mousePoint, rect);
+        DrawRectangleRec(rect, hover ? LIGHTGRAY : col);
+        int tw = MeasureText(label, 20);
+        DrawText(label, (int)(rect.x + (rect.width - tw) / 2), (int)(rect.y + 15), 20, textCol);
     };
 
-    SBtn(lang, isEnglish ? "Language: EN" : "Sprache: DE", BLUE);
-    SBtn(delSave, isEnglish ? "DELETE SAVE" : "SPIELSTAND LOESCHEN", MAROON);
-    SBtn(delScore, isEnglish ? "CLEAR SCORES" : "BESTENLISTE LEEREN", DARKPURPLE);
-    SBtn(back, isEnglish ? "BACK" : "ZURUECK", DARKGRAY);
+    DrawBtn(langBtn, isEnglish ? "Language: EN" : "Sprache: DE", DARKGRAY, WHITE);
+    DrawBtn(nameChangeBtn, isEnglish ? "Change Name" : "Name aendern", DARKGRAY, WHITE);
+    DrawBtn(deleteDataBtn, isEnglish ? "Delete All Data" : "Daten loeschen", MAROON, WHITE);
+    DrawBtn(backBtn, isEnglish ? "BACK" : "ZURUECK", GRAY, BLACK);
 }
 
-void DrawShopMenu(const SaveGame& data, Vector2 mouse, Rectangle btnB, Rectangle btnR, Rectangle back, bool isEnglish) {
-    DrawText("SHOP", GetScreenWidth()/2 - 50, 100, 40, GOLD);
-    DrawText(TextFormat(isEnglish ? "Stars: %i" : "Sterne: %i", data.totalStars), GetScreenWidth()/2 - 50, 160, 20, YELLOW);
+void DrawScoreboardMenu(std::vector<ScoreEntry> scores, Vector2 mousePoint, Rectangle backBtn, bool isEnglish) {
+    ClearBackground(BLACK);
+    DrawTextCentered(isEnglish ? "TOP SCORES" : "BESTENLISTE", 50, 40, GOLD);
+
+    for (int i = 0; i < (int)scores.size() && i < 10; i++) {
+        Color c = (i == 0) ? GOLD : (i == 1) ? LIGHTGRAY : (i == 2) ? BROWN : WHITE;
+        DrawText(TextFormat("%d. %s", i + 1, scores[i].name), 300, 150 + i * 40, 25, c);
+        DrawText(TextFormat("%d", scores[i].score), 650, 150 + i * 40, 25, c);
+    }
+
+    bool hover = CheckCollisionPointRec(mousePoint, backBtn);
+    DrawRectangleRec(backBtn, hover ? LIGHTGRAY : GRAY);
+    DrawText(isEnglish ? "BACK" : "ZURUECK", (int)backBtn.x + (backBtn.width - MeasureText(isEnglish ? "BACK" : "ZURUECK", 20))/2, (int)backBtn.y + 15, 20, BLACK);
+}
+
+void DrawDescriptionMenu(Vector2 mousePoint, Rectangle backBtn, bool isEnglish) {
+    ClearBackground(BLACK);
+    DrawTextCentered(isEnglish ? "HOW TO PLAY" : "ANLEITUNG", 100, 40, GOLD);
+
+    const char* line1 = isEnglish ? "Use LEFT and RIGHT arrow keys to move." : "Nutze LINKS und RECHTS Pfeiltasten zum Lenken.";
+    const char* line2 = isEnglish ? "Avoid red obstacles!" : "Weiche den roten Hindernissen aus!";
+    const char* line3 = isEnglish ? "Collect yellow stars to buy new cars." : "Sammle gelbe Sterne fuer neue Autos.";
+    const char* line4 = isEnglish ? "The game gets faster over time!" : "Das Spiel wird mit der Zeit schneller!";
+
+    DrawTextCentered(line1, 250, 20, RAYWHITE);
+    DrawTextCentered(line2, 300, 20, RAYWHITE);
+    DrawTextCentered(line3, 350, 20, RAYWHITE);
+    DrawTextCentered(line4, 400, 20, RAYWHITE);
+
+    bool hover = CheckCollisionPointRec(mousePoint, backBtn);
+    DrawRectangleRec(backBtn, hover ? LIGHTGRAY : GRAY);
+    DrawText(isEnglish ? "BACK" : "ZURUECK", (int)backBtn.x + (backBtn.width - MeasureText(isEnglish ? "BACK" : "ZURUECK", 20))/2, (int)backBtn.y + 15, 20, BLACK);
+}
+
+void DrawPauseMenu(Vector2 mousePoint, Rectangle resumeBtn, Rectangle menuBtn, bool isEnglish) {
+    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.5f));
+    DrawTextCentered(isEnglish ? "PAUSED" : "PAUSE", 250, 50, WHITE);
+
+    bool h1 = CheckCollisionPointRec(mousePoint, resumeBtn);
+    DrawRectangleRec(resumeBtn, h1 ? LIGHTGRAY : GRAY);
+    DrawText(isEnglish ? "RESUME" : "WEITER", (int)resumeBtn.x + (resumeBtn.width - MeasureText(isEnglish ? "RESUME" : "WEITER", 20))/2, (int)resumeBtn.y + 15, 20, BLACK);
+
+    bool h2 = CheckCollisionPointRec(mousePoint, menuBtn);
+    DrawRectangleRec(menuBtn, h2 ? LIGHTGRAY : GRAY);
+    DrawText(isEnglish ? "MENU" : "MENUE", (int)menuBtn.x + (menuBtn.width - MeasureText(isEnglish ? "MENU" : "MENUE", 20))/2, (int)menuBtn.y + 15, 20, BLACK);
+}
+
+void DrawGameOverMenu(const char* name, int score, float time, int stars, Vector2 mousePoint, Rectangle menuBtn, bool isEnglish) {
+    // FIX: DARKBORDER durch Fade(BLACK, 0.8f) ersetzt
+    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.8f));
+    DrawTextCentered(isEnglish ? "GAME OVER" : "SPIEL VORBEI", 150, 60, RED);
     
-    DrawRectangleRec(btnB, BLUE); 
-    DrawText(isEnglish ? "BLUE (Default)" : "BLAU (Standard)", (int)btnB.x + 10, (int)btnB.y + 15, 18, WHITE);
-    
-    DrawRectangleRec(btnR, data.ownsRedCar ? RED : MAROON);
-    DrawText(data.ownsRedCar ? (isEnglish ? "RED (Owned)" : "ROT (Besitzt)") : (isEnglish ? "RED (15 Stars)" : "ROT (15 Sterne)"), (int)btnR.x + 10, (int)btnR.y + 15, 18, WHITE);
+    DrawTextCentered(TextFormat(isEnglish ? "Driver: %s" : "Fahrer: %s", name), 250, 25, WHITE);
+    DrawTextCentered(TextFormat(isEnglish ? "Final Score: %d" : "Endstand: %d", score), 300, 30, GOLD);
+    DrawTextCentered(TextFormat(isEnglish ? "Time Survived: %.2fs" : "Zeit: %.2fs", time), 350, 20, LIGHTGRAY);
+    DrawTextCentered(TextFormat(isEnglish ? "Stars Collected: %d" : "Sterne gesammelt: %d", stars), 390, 20, GOLD);
 
-    DrawRectangleRec(back, DARKGRAY);
-    DrawText(isEnglish ? "BACK" : "ZURUECK", (int)back.x + 75, (int)back.y + 15, 20, WHITE);
-}
-
-void DrawScoreboardMenu(const std::vector<ScoreEntry>& scores, Vector2 mouse, Rectangle back, bool isEnglish) {
-    DrawText(isEnglish ? "TOP SCORES" : "BESTENLISTE", GetScreenWidth()/2 - 100, 100, 40, GOLD);
-    for (int i = 0; i < (int)scores.size(); i++) 
-        DrawText(TextFormat("%i. %s - %i", i+1, scores[i].name.c_str(), scores[i].score), GetScreenWidth()/2 - 100, 200 + i*30, 20, WHITE);
-    DrawRectangleRec(back, DARKGRAY);
-    DrawText(isEnglish ? "BACK" : "ZURUECK", (int)back.x + 75, (int)back.y + 15, 20, WHITE);
-}
-
-void DrawDescriptionMenu(Vector2 mouse, Rectangle back, bool isEnglish) {
-    int sw = GetScreenWidth();
-    DrawText(isEnglish ? "HOW TO PLAY" : "ANLEITUNG", sw/2 - 100, 150, 40, GOLD);
-    DrawText(isEnglish ? "- Avoid Red Cars" : "- Weiche roten Autos aus", sw/2 - 150, 250, 20, WHITE);
-    DrawText(isEnglish ? "- Collect Yellow Stars" : "- Sammle gelbe Sterne", sw/2 - 150, 280, 20, WHITE);
-    DrawRectangleRec(back, DARKGRAY);
-    DrawText(isEnglish ? "BACK" : "ZURUECK", (int)back.x + 75, (int)back.y + 15, 20, WHITE);
-}
-
-void DrawPauseMenu(Vector2 mouse, Rectangle btnP, Rectangle btnM, bool isEnglish) {
-    DrawRectangle(0,0,GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.5f));
-    DrawText(isEnglish ? "PAUSED" : "PAUSE", GetScreenWidth()/2-50, 250, 40, WHITE);
-    DrawRectangleRec(btnP, GREEN); DrawText(isEnglish ? "RESUME" : "WEITER", (int)btnP.x+70, (int)btnP.y+15, 20, WHITE);
-    DrawRectangleRec(btnM, GRAY); DrawText(isEnglish ? "MENU" : "HAUPTMENUE", (int)btnM.x+60, (int)btnM.y+15, 20, WHITE);
-}
-
-void DrawGameOverMenu(const char* name, int score, float time, int stars, Vector2 mouse, Rectangle btnM, bool isEnglish) {
-    DrawText("GAME OVER", GetScreenWidth()/2-120, 200, 50, RED);
-    DrawText(TextFormat(isEnglish ? "Score: %i" : "Punkte: %i", score), GetScreenWidth()/2-60, 280, 25, WHITE);
-    DrawRectangleRec(btnM, GRAY); DrawText(isEnglish ? "MENU" : "HAUPTMENUE", (int)btnM.x+60, (int)btnM.y+15, 20, WHITE);
+    bool hover = CheckCollisionPointRec(mousePoint, menuBtn);
+    DrawRectangleRec(menuBtn, hover ? LIGHTGRAY : GRAY);
+    DrawText(isEnglish ? "BACK TO MENU" : "HAUPTMENUE", (int)menuBtn.x + (menuBtn.width - MeasureText(isEnglish ? "BACK TO MENU" : "HAUPTMENUE", 20))/2, (int)menuBtn.y + 15, 20, BLACK);
 }

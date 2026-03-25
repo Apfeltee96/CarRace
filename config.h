@@ -2,30 +2,35 @@
 #define CONFIG_H
 
 #include "raylib.h"
+#include <string>
+#include <vector>
 
 // --- GESCHWINDIGKEITEN ---
 const float SPEED_START  = 400.0f;
-const float SPEED_STEP_1 = 550.0f;
-const float SPEED_STEP_2 = 700.0f;
-const float SPEED_SONIC  = 900.0f;
 const float SPEED_LIGHT  = 1800.0f;
 
-// --- MEILENSTEINE (PUNKTE) ---
-const int MILESTONE_1 = 1000;
-const int MILESTONE_2 = 2500;
-const int MILESTONE_3 = 5000;
-const int MILESTONE_LIGHT = 10000;
-
 // --- SHOP PREISE ---
-const int PRICE_RED_CAR = 15; // Hier definiert
+const int PRICE_RED_CAR    = 100;
+const int PRICE_PURPLE_CAR = 200;
 
-// --- HORIZONTALE GESCHWINDIGKEIT ---
-const float PLAYER_SPEED_NORMAL = 700.0f;
-const float PLAYER_SPEED_FAST   = 950.0f;
-const float PLAYER_SPEED_LIGHT  = 1300.0f;
+// --- STRUKTUREN ---
+struct SaveGame {
+    int totalStars;
+    bool ownsRedCar;
+    bool ownsPurpleCar;
+    int selectedColorId; 
+    bool isEnglish;
+    std::string lastPlayerName;
+};
+
+// --- FUNKTIONEN ---
+SaveGame LoadSaveGame();
+void SaveGameData(SaveGame data);
+void DeleteSaveData();
 
 float GetCurrentSpeed(int score, float currentFrameSpeed, float deltaTime);
+float GetDynamicPlayerSpeed(float currentWorldSpeed);
 int CalculateStars(int score);
-float GetPlayerSpeed(int score);
+Color GetCarColor(int colorId); 
 
 #endif

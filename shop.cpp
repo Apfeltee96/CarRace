@@ -1,51 +1,25 @@
 #include "shop.h"
-#include <fstream>
 
-const char* SAVE_FILE = "savegame.dat";
+void DrawShopMenu(SaveGame &saveData, Vector2 mousePoint, Rectangle redBtn, Rectangle purpleBtn, Rectangle backBtn, bool isEnglish) {
+    ClearBackground(BLACK);
+    
+    DrawText(isEnglish ? "SHOP" : "LADEN", 400, 50, 40, GOLD);
+    DrawText(TextFormat(isEnglish ? "Stars: %d" : "Sterne: %d", saveData.totalStars), 400, 100, 20, WHITE);
 
-SaveGame LoadSaveGame() {
-    SaveGame data = { 0, false, 0, "Gast", false };
-    std::ifstream file(SAVE_FILE, std::ios::binary);
-    if (file.is_open()) {
-        file.read((char*)&data.totalStars, sizeof(int));
-        file.read((char*)&data.ownsRedCar, sizeof(bool));
-        file.read((char*)&data.selectedColorId, sizeof(int));
-        
-        int nameLen = 0;
-        file.read((char*)&nameLen, sizeof(int));
-        char* buffer = new char[nameLen + 1];
-        file.read(buffer, nameLen);
-        buffer[nameLen] = '\0';
-        data.lastPlayerName = buffer;
-        delete[] buffer;
+    // Blau (Standard)
+    Rectangle blueBtn = { 400, 200, 200, 50 };
+    DrawRectangleRec(blueBtn, saveData.selectedColorId == 0 ? DARKBLUE : BLUE);
+    DrawText("Standard (Blue)", 410, 215, 20, WHITE);
 
-        file.read((char*)&data.isEnglish, sizeof(bool)); // Sprache laden
-        file.close();
-    }
-    return data;
-}
+    // Rot (100)
+    DrawRectangleRec(redBtn, saveData.selectedColorId == 1 ? MAROON : RED);
+    DrawText(saveData.ownsRedCar ? "Select Red" : "Buy Red (100)", 410, 315, 20, WHITE);
 
-void SaveGameData(const SaveGame& data) {
-    std::ofstream file(SAVE_FILE, std::ios::binary);
-    if (file.is_open()) {
-        file.write((char*)&data.totalStars, sizeof(int));
-        file.write((char*)&data.ownsRedCar, sizeof(bool));
-        file.write((char*)&data.selectedColorId, sizeof(int));
-        
-        int nameLen = (int)data.lastPlayerName.length();
-        file.write((char*)&nameLen, sizeof(int));
-        file.write(data.lastPlayerName.c_str(), nameLen);
+    // Lila (200)
+    DrawRectangleRec(purpleBtn, saveData.selectedColorId == 2 ? DARKPURPLE : PURPLE);
+    DrawText(saveData.ownsPurpleCar ? "Select Purple" : "Buy Purple (200)", 410, 415, 20, WHITE);
 
-        file.write((char*)&data.isEnglish, sizeof(bool)); // Sprache speichern
-        file.close();
-    }
-}
-
-void DeleteSaveData() {
-    remove(SAVE_FILE);
-}
-
-Color GetCarColor(int colorId) {
-    if (colorId == 1) return RED;
-    return BLUE;
+    // Zurück
+    DrawRectangleRec(backBtn, GRAY);
+    DrawText(isEnglish ? "BACK" : "ZURUECK", (int)backBtn.x + 50, (int)backBtn.y + 15, 20, BLACK);
 }
