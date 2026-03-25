@@ -1,18 +1,24 @@
 #ifndef SHOP_H
 #define SHOP_H
+
 #include "raylib.h"
-#include <string> // Wichtig für den Namen!
+#include <string>
+#include <vector>
 
 struct SaveGame {
     int totalStars;
     bool ownsRedCar;
     int selectedColorId;
-    std::string lastPlayerName; // NEU: Merkt sich den letzten Spieler!
+    std::string lastPlayerName;
+    bool isEnglish;
 };
 
+// Funktionen für das Speichersystem
 SaveGame LoadSaveGame();
 void SaveGameData(const SaveGame& data);
-Color GetCarColor(int colorId);
 void DeleteSaveData();
+
+// Diese Funktion fehlte in der main.cpp
+Color GetCarColor(int colorId);
 
 #endif

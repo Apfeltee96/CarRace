@@ -12,7 +12,7 @@
 
 # =============================================================================
 # Project: CarRace
-# Configurations: Debug
+# Configurations: Release
 # =============================================================================
 
 #############################################
@@ -24,7 +24,7 @@ ninja_required_version = 1.5
 #############################################
 # Set configuration variable for custom commands.
 
-CONFIGURATION = Debug
+CONFIGURATION = Release
 # =============================================================================
 # Include auxiliary files.
 
@@ -49,10 +49,10 @@ cmake_ninja_workdir = C$:\Users\kerem\Desktop\C++Projekt\CarRace\build\
 
 build cmake_object_order_depends_target_CarRace: phony || cmake_object_order_depends_target_glfw cmake_object_order_depends_target_raylib
 
-build CMakeFiles\CarRace.dir\main.cpp.obj: CXX_COMPILER__CarRace_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\main.cpp || cmake_object_order_depends_target_CarRace
-  CONFIG = Debug
+build CMakeFiles\CarRace.dir\main.cpp.obj: CXX_COMPILER__CarRace_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\main.cpp || cmake_object_order_depends_target_CarRace
+  CONFIG = Release
   DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG -std:c++17
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src
   OBJECT_DIR = CMakeFiles\CarRace.dir
   OBJECT_FILE_DIR = CMakeFiles\CarRace.dir
@@ -60,10 +60,10 @@ build CMakeFiles\CarRace.dir\main.cpp.obj: CXX_COMPILER__CarRace_unscanned_Debug
   TARGET_PDB = CarRace.pdb
   TARGET_SUPPORT_DIR = CMakeFiles\CarRace.dir
 
-build CMakeFiles\CarRace.dir\scoreboard.cpp.obj: CXX_COMPILER__CarRace_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\scoreboard.cpp || cmake_object_order_depends_target_CarRace
-  CONFIG = Debug
+build CMakeFiles\CarRace.dir\scoreboard.cpp.obj: CXX_COMPILER__CarRace_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\scoreboard.cpp || cmake_object_order_depends_target_CarRace
+  CONFIG = Release
   DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG -std:c++17
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src
   OBJECT_DIR = CMakeFiles\CarRace.dir
   OBJECT_FILE_DIR = CMakeFiles\CarRace.dir
@@ -71,10 +71,10 @@ build CMakeFiles\CarRace.dir\scoreboard.cpp.obj: CXX_COMPILER__CarRace_unscanned
   TARGET_PDB = CarRace.pdb
   TARGET_SUPPORT_DIR = CMakeFiles\CarRace.dir
 
-build CMakeFiles\CarRace.dir\player.cpp.obj: CXX_COMPILER__CarRace_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\player.cpp || cmake_object_order_depends_target_CarRace
-  CONFIG = Debug
+build CMakeFiles\CarRace.dir\player.cpp.obj: CXX_COMPILER__CarRace_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\player.cpp || cmake_object_order_depends_target_CarRace
+  CONFIG = Release
   DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG -std:c++17
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src
   OBJECT_DIR = CMakeFiles\CarRace.dir
   OBJECT_FILE_DIR = CMakeFiles\CarRace.dir
@@ -82,10 +82,10 @@ build CMakeFiles\CarRace.dir\player.cpp.obj: CXX_COMPILER__CarRace_unscanned_Deb
   TARGET_PDB = CarRace.pdb
   TARGET_SUPPORT_DIR = CMakeFiles\CarRace.dir
 
-build CMakeFiles\CarRace.dir\ui.cpp.obj: CXX_COMPILER__CarRace_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\ui.cpp || cmake_object_order_depends_target_CarRace
-  CONFIG = Debug
+build CMakeFiles\CarRace.dir\ui.cpp.obj: CXX_COMPILER__CarRace_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\ui.cpp || cmake_object_order_depends_target_CarRace
+  CONFIG = Release
   DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG -std:c++17
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src
   OBJECT_DIR = CMakeFiles\CarRace.dir
   OBJECT_FILE_DIR = CMakeFiles\CarRace.dir
@@ -93,10 +93,10 @@ build CMakeFiles\CarRace.dir\ui.cpp.obj: CXX_COMPILER__CarRace_unscanned_Debug C
   TARGET_PDB = CarRace.pdb
   TARGET_SUPPORT_DIR = CMakeFiles\CarRace.dir
 
-build CMakeFiles\CarRace.dir\shop.cpp.obj: CXX_COMPILER__CarRace_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\shop.cpp || cmake_object_order_depends_target_CarRace
-  CONFIG = Debug
+build CMakeFiles\CarRace.dir\shop.cpp.obj: CXX_COMPILER__CarRace_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\shop.cpp || cmake_object_order_depends_target_CarRace
+  CONFIG = Release
   DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG -std:c++17
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src
   OBJECT_DIR = CMakeFiles\CarRace.dir
   OBJECT_FILE_DIR = CMakeFiles\CarRace.dir
@@ -104,10 +104,10 @@ build CMakeFiles\CarRace.dir\shop.cpp.obj: CXX_COMPILER__CarRace_unscanned_Debug
   TARGET_PDB = CarRace.pdb
   TARGET_SUPPORT_DIR = CMakeFiles\CarRace.dir
 
-build CMakeFiles\CarRace.dir\config.cpp.obj: CXX_COMPILER__CarRace_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\config.cpp || cmake_object_order_depends_target_CarRace
-  CONFIG = Debug
+build CMakeFiles\CarRace.dir\config.cpp.obj: CXX_COMPILER__CarRace_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\config.cpp || cmake_object_order_depends_target_CarRace
+  CONFIG = Release
   DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG -std:c++17
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src
   OBJECT_DIR = CMakeFiles\CarRace.dir
   OBJECT_FILE_DIR = CMakeFiles\CarRace.dir
@@ -123,10 +123,10 @@ build CMakeFiles\CarRace.dir\config.cpp.obj: CXX_COMPILER__CarRace_unscanned_Deb
 #############################################
 # Link the executable CarRace.exe
 
-build CarRace.exe: CXX_EXECUTABLE_LINKER__CarRace_Debug CMakeFiles\CarRace.dir\main.cpp.obj CMakeFiles\CarRace.dir\scoreboard.cpp.obj CMakeFiles\CarRace.dir\player.cpp.obj CMakeFiles\CarRace.dir\ui.cpp.obj CMakeFiles\CarRace.dir\shop.cpp.obj CMakeFiles\CarRace.dir\config.cpp.obj | raylib\raylib\raylib.lib || raylib\raylib\external\glfw\src\glfw raylib\raylib\raylib.lib
-  CONFIG = Debug
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
-  LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:windows /ENTRY:mainCRTStartup
+build CarRace.exe: CXX_EXECUTABLE_LINKER__CarRace_Release CMakeFiles\CarRace.dir\main.cpp.obj CMakeFiles\CarRace.dir\scoreboard.cpp.obj CMakeFiles\CarRace.dir\player.cpp.obj CMakeFiles\CarRace.dir\ui.cpp.obj CMakeFiles\CarRace.dir\shop.cpp.obj CMakeFiles\CarRace.dir\config.cpp.obj | raylib\raylib\raylib.lib || raylib\raylib\external\glfw\src\glfw raylib\raylib\raylib.lib
+  CONFIG = Release
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG
+  LINK_FLAGS = /machine:x64 /INCREMENTAL:NO /subsystem:windows /ENTRY:mainCRTStartup
   LINK_LIBRARIES = raylib\raylib\raylib.lib  opengl32.lib  gdi32.lib  winmm.lib  user32.lib  shell32.lib  glu32.lib  winmm.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
   OBJECT_DIR = CMakeFiles\CarRace.dir
   POST_BUILD = cd .
@@ -310,10 +310,10 @@ build raylib\install\local: phony raylib\CMakeFiles\install\local.util
 
 build cmake_object_order_depends_target_raylib: phony || cmake_object_order_depends_target_glfw
 
-build raylib\raylib\CMakeFiles\raylib.dir\raudio.c.obj: C_COMPILER__raylib_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\raudio.c || cmake_object_order_depends_target_raylib
-  CONFIG = Debug
+build raylib\raylib\CMakeFiles\raylib.dir\raudio.c.obj: C_COMPILER__raylib_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\raudio.c || cmake_object_order_depends_target_raylib
+  CONFIG = Release
   DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -D_CRT_SECURE_NO_WARNINGS
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src -external:IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -external:W0
   OBJECT_DIR = raylib\raylib\CMakeFiles\raylib.dir
   OBJECT_FILE_DIR = raylib\raylib\CMakeFiles\raylib.dir
@@ -321,10 +321,10 @@ build raylib\raylib\CMakeFiles\raylib.dir\raudio.c.obj: C_COMPILER__raylib_unsca
   TARGET_PDB = raylib\raylib\raylib.pdb
   TARGET_SUPPORT_DIR = raylib\raylib\CMakeFiles\raylib.dir
 
-build raylib\raylib\CMakeFiles\raylib.dir\rcore.c.obj: C_COMPILER__raylib_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\rcore.c || cmake_object_order_depends_target_raylib
-  CONFIG = Debug
+build raylib\raylib\CMakeFiles\raylib.dir\rcore.c.obj: C_COMPILER__raylib_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\rcore.c || cmake_object_order_depends_target_raylib
+  CONFIG = Release
   DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -D_CRT_SECURE_NO_WARNINGS
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src -external:IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -external:W0
   OBJECT_DIR = raylib\raylib\CMakeFiles\raylib.dir
   OBJECT_FILE_DIR = raylib\raylib\CMakeFiles\raylib.dir
@@ -332,10 +332,10 @@ build raylib\raylib\CMakeFiles\raylib.dir\rcore.c.obj: C_COMPILER__raylib_unscan
   TARGET_PDB = raylib\raylib\raylib.pdb
   TARGET_SUPPORT_DIR = raylib\raylib\CMakeFiles\raylib.dir
 
-build raylib\raylib\CMakeFiles\raylib.dir\rmodels.c.obj: C_COMPILER__raylib_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\rmodels.c || cmake_object_order_depends_target_raylib
-  CONFIG = Debug
+build raylib\raylib\CMakeFiles\raylib.dir\rmodels.c.obj: C_COMPILER__raylib_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\rmodels.c || cmake_object_order_depends_target_raylib
+  CONFIG = Release
   DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -D_CRT_SECURE_NO_WARNINGS
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src -external:IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -external:W0
   OBJECT_DIR = raylib\raylib\CMakeFiles\raylib.dir
   OBJECT_FILE_DIR = raylib\raylib\CMakeFiles\raylib.dir
@@ -343,10 +343,10 @@ build raylib\raylib\CMakeFiles\raylib.dir\rmodels.c.obj: C_COMPILER__raylib_unsc
   TARGET_PDB = raylib\raylib\raylib.pdb
   TARGET_SUPPORT_DIR = raylib\raylib\CMakeFiles\raylib.dir
 
-build raylib\raylib\CMakeFiles\raylib.dir\rshapes.c.obj: C_COMPILER__raylib_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\rshapes.c || cmake_object_order_depends_target_raylib
-  CONFIG = Debug
+build raylib\raylib\CMakeFiles\raylib.dir\rshapes.c.obj: C_COMPILER__raylib_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\rshapes.c || cmake_object_order_depends_target_raylib
+  CONFIG = Release
   DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -D_CRT_SECURE_NO_WARNINGS
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src -external:IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -external:W0
   OBJECT_DIR = raylib\raylib\CMakeFiles\raylib.dir
   OBJECT_FILE_DIR = raylib\raylib\CMakeFiles\raylib.dir
@@ -354,10 +354,10 @@ build raylib\raylib\CMakeFiles\raylib.dir\rshapes.c.obj: C_COMPILER__raylib_unsc
   TARGET_PDB = raylib\raylib\raylib.pdb
   TARGET_SUPPORT_DIR = raylib\raylib\CMakeFiles\raylib.dir
 
-build raylib\raylib\CMakeFiles\raylib.dir\rtext.c.obj: C_COMPILER__raylib_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\rtext.c || cmake_object_order_depends_target_raylib
-  CONFIG = Debug
+build raylib\raylib\CMakeFiles\raylib.dir\rtext.c.obj: C_COMPILER__raylib_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\rtext.c || cmake_object_order_depends_target_raylib
+  CONFIG = Release
   DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -D_CRT_SECURE_NO_WARNINGS
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src -external:IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -external:W0
   OBJECT_DIR = raylib\raylib\CMakeFiles\raylib.dir
   OBJECT_FILE_DIR = raylib\raylib\CMakeFiles\raylib.dir
@@ -365,10 +365,10 @@ build raylib\raylib\CMakeFiles\raylib.dir\rtext.c.obj: C_COMPILER__raylib_unscan
   TARGET_PDB = raylib\raylib\raylib.pdb
   TARGET_SUPPORT_DIR = raylib\raylib\CMakeFiles\raylib.dir
 
-build raylib\raylib\CMakeFiles\raylib.dir\rtextures.c.obj: C_COMPILER__raylib_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\rtextures.c || cmake_object_order_depends_target_raylib
-  CONFIG = Debug
+build raylib\raylib\CMakeFiles\raylib.dir\rtextures.c.obj: C_COMPILER__raylib_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\rtextures.c || cmake_object_order_depends_target_raylib
+  CONFIG = Release
   DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP -D_CRT_SECURE_NO_WARNINGS
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src -external:IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -external:W0
   OBJECT_DIR = raylib\raylib\CMakeFiles\raylib.dir
   OBJECT_FILE_DIR = raylib\raylib\CMakeFiles\raylib.dir
@@ -384,9 +384,9 @@ build raylib\raylib\CMakeFiles\raylib.dir\rtextures.c.obj: C_COMPILER__raylib_un
 #############################################
 # Link the static library raylib\raylib\raylib.lib
 
-build raylib\raylib\raylib.lib: C_STATIC_LIBRARY_LINKER__raylib_Debug raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\context.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\init.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\input.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\monitor.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\platform.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\vulkan.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\window.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\egl_context.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\osmesa_context.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_init.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_monitor.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_window.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_joystick.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_module.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_time.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_thread.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_init.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_joystick.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_monitor.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_window.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\wgl_context.c.obj raylib\raylib\CMakeFiles\raylib.dir\raudio.c.obj raylib\raylib\CMakeFiles\raylib.dir\rcore.c.obj raylib\raylib\CMakeFiles\raylib.dir\rmodels.c.obj raylib\raylib\CMakeFiles\raylib.dir\rshapes.c.obj raylib\raylib\CMakeFiles\raylib.dir\rtext.c.obj raylib\raylib\CMakeFiles\raylib.dir\rtextures.c.obj || raylib\raylib\external\glfw\src\glfw
-  CONFIG = Debug
-  LANGUAGE_COMPILE_FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1
+build raylib\raylib\raylib.lib: C_STATIC_LIBRARY_LINKER__raylib_Release raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\context.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\init.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\input.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\monitor.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\platform.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\vulkan.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\window.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\egl_context.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\osmesa_context.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_init.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_monitor.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_window.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_joystick.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_module.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_time.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_thread.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_init.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_joystick.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_monitor.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_window.c.obj raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\wgl_context.c.obj raylib\raylib\CMakeFiles\raylib.dir\raudio.c.obj raylib\raylib\CMakeFiles\raylib.dir\rcore.c.obj raylib\raylib\CMakeFiles\raylib.dir\rmodels.c.obj raylib\raylib\CMakeFiles\raylib.dir\rshapes.c.obj raylib\raylib\CMakeFiles\raylib.dir\rtext.c.obj raylib\raylib\CMakeFiles\raylib.dir\rtextures.c.obj || raylib\raylib\external\glfw\src\glfw
+  CONFIG = Release
+  LANGUAGE_COMPILE_FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG
   LINK_FLAGS = /machine:x64
   OBJECT_DIR = raylib\raylib\CMakeFiles\raylib.dir
   POST_BUILD = cd .
@@ -569,10 +569,10 @@ build raylib\raylib\external\glfw\install\local: phony raylib\raylib\external\gl
 
 build cmake_object_order_depends_target_glfw: phony || .
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\context.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\context.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\context.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\context.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -580,10 +580,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\context.c.obj: C_COMPI
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\init.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\init.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\init.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\init.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -591,10 +591,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\init.c.obj: C_COMPILER
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\input.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\input.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\input.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\input.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -602,10 +602,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\input.c.obj: C_COMPILE
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\monitor.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\monitor.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\monitor.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\monitor.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -613,10 +613,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\monitor.c.obj: C_COMPI
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\platform.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\platform.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\platform.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\platform.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -624,10 +624,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\platform.c.obj: C_COMP
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\vulkan.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\vulkan.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\vulkan.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\vulkan.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -635,10 +635,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\vulkan.c.obj: C_COMPIL
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\window.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\window.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\window.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\window.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -646,10 +646,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\window.c.obj: C_COMPIL
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\egl_context.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\egl_context.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\egl_context.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\egl_context.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -657,10 +657,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\egl_context.c.obj: C_C
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\osmesa_context.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\osmesa_context.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\osmesa_context.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\osmesa_context.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -668,10 +668,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\osmesa_context.c.obj: 
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_init.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\null_init.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_init.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\null_init.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -679,10 +679,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_init.c.obj: C_COM
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_monitor.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\null_monitor.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_monitor.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\null_monitor.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -690,10 +690,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_monitor.c.obj: C_
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_window.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\null_window.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_window.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\null_window.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -701,10 +701,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_window.c.obj: C_C
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_joystick.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\null_joystick.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_joystick.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\null_joystick.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -712,10 +712,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\null_joystick.c.obj: C
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_module.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\win32_module.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_module.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\win32_module.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -723,10 +723,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_module.c.obj: C_
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_time.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\win32_time.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_time.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\win32_time.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -734,10 +734,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_time.c.obj: C_CO
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_thread.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\win32_thread.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_thread.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\win32_thread.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -745,10 +745,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_thread.c.obj: C_
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_init.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\win32_init.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_init.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\win32_init.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -756,10 +756,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_init.c.obj: C_CO
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_joystick.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\win32_joystick.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_joystick.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\win32_joystick.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -767,10 +767,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_joystick.c.obj: 
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_monitor.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\win32_monitor.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_monitor.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\win32_monitor.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -778,10 +778,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_monitor.c.obj: C
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_window.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\win32_window.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_window.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\win32_window.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
@@ -789,10 +789,10 @@ build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\win32_window.c.obj: C_
   TARGET_PDB = ""
   TARGET_SUPPORT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
 
-build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\wgl_context.c.obj: C_COMPILER__glfw_unscanned_Debug C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\wgl_context.c || cmake_object_order_depends_target_glfw
-  CONFIG = Debug
+build raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir\wgl_context.c.obj: C_COMPILER__glfw_unscanned_Release C$:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src\wgl_context.c || cmake_object_order_depends_target_glfw
+  CONFIG = Release
   DEFINES = -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_WIN32 -D_UNICODE
-  FLAGS = /DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 /W3
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG /W3
   INCLUDES = -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\include -IC:\Users\kerem\Desktop\C++Projekt\CarRace\raylib\src\external\glfw\src -IC:\Users\kerem\Desktop\C++Projekt\CarRace\build\raylib\raylib\external\glfw\src
   OBJECT_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir
   OBJECT_FILE_DIR = raylib\raylib\external\glfw\src\CMakeFiles\glfw.dir

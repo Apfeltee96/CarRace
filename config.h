@@ -17,18 +17,15 @@ const int MILESTONE_3 = 5000;
 const int MILESTONE_LIGHT = 10000;
 
 // --- SHOP PREISE ---
-const int PRICE_RED_CAR = 15;
+const int PRICE_RED_CAR = 15; // Hier definiert
 
-// --- HORIZONTALE GESCHWINDIGKEIT (Links/Rechts) ---
+// --- HORIZONTALE GESCHWINDIGKEIT ---
 const float PLAYER_SPEED_NORMAL = 700.0f;
 const float PLAYER_SPEED_FAST   = 950.0f;
 const float PLAYER_SPEED_LIGHT  = 1300.0f;
 
-// Neue Funktion, um die passende Spieler-Geschwindigkeit zu holen
-float GetPlayerSpeed(int score);
-
-// Logik-Funktionen
-float GetCurrentSpeed(int score);
+float GetCurrentSpeed(int score, float currentFrameSpeed, float deltaTime);
 int CalculateStars(int score);
+float GetPlayerSpeed(int score);
 
 #endif
