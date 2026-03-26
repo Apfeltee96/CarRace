@@ -1,24 +1,24 @@
 cmake_minimum_required(VERSION 3.10)
-project(CarRace VERSION 1.0 LANGUAGES CXX)
+project(CarRace)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Raylib als Subprojekt einbinden (ohne die Beispiele zu kompilieren)
-set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+# Hier müssen ALLE deine .cpp Dateien aufgelistet sein!
+set(SOURCES 
+    main.cpp 
+    config.cpp 
+    player.cpp 
+    scoreboard.cpp 
+    shop.cpp 
+    ui.cpp
+)
+
+# Raylib Pfad (angepasst an deine Struktur)
 add_subdirectory(raylib)
 
-add_executable(${PROJECT_NAME} WIN32 main.cpp scoreboard.cpp player.cpp ui.cpp shop.cpp config.cpp)
+add_executable(CarRace ${SOURCES})
 
-# Raylib mit deinem Spiel verknüpfen
-target_link_libraries(${PROJECT_NAME} raylib)
+# Verknüpfung mit Raylib und System-Bibliotheken
+target_link_libraries(CarRace raylib opengl32 gdi32 winmm user32 shell32)
 
-# Betriebssystem-spezifische Bibliotheken verknüpfen (wichtig für Windows)
-if(WIN32)
-    target_link_libraries(${PROJECT_NAME} opengl32 gdi32 winmm user32 shell32)
-    
-    # NEU: Sagt dem Microsoft-Compiler, dass er bei "main" starten soll, auch wenn das Terminal aus ist!
-    if(MSVC)
-        target_link_options(${PROJECT_NAME} PRIVATE "/ENTRY:mainCRTStartup")
-    endif()
-endif()
+target_include_directories(CarRace PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} raylib/src)

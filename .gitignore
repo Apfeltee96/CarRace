@@ -1,0 +1,28 @@
+# --- Build-Ausgaben ---
+build/
+bin/
+obj/
+out/
+ARM/
+x64/
+x86/
+
+# --- Ausführbare Dateien & Debug-Symbole ---
+*.exe
+*.pdb
+*.ilk
+*.exp
+*.lib
+
+# --- Visual Studio & VS Code ---
+.vs/
+.vscode/
+*.user
+*.sln
+*.vcxproj
+*.filters
+CMakeSettings.json
+*.cache
+
+# --- Spiel-Daten (Lokal) ---
+savegame.dat
