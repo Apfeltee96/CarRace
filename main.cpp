@@ -43,10 +43,18 @@ void SpawnStar(CollectableStar &star, const std::vector<Obstacle>& obstacles) {
 }
 
 int main() {
+    // 1. Erst Daten laden, dann Fenster initialisieren
+    SaveGame saveData = LoadSaveGame();
+    
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Car Race");
+    
+    // Vollbild-Check beim Start
+    if (saveData.isFullscreen && !IsWindowFullscreen()) {
+        ToggleFullscreen();
+    }
+    
     SetTargetFPS(60);
 
-    SaveGame saveData = LoadSaveGame();
     Player player;
     InitPlayer(player, SCREEN_WIDTH, SCREEN_HEIGHT, GetCarColor(saveData.selectedColorId));
 
@@ -64,22 +72,28 @@ int main() {
     
     int letterCount = (int)std::strlen(playerName); 
 
-    // Buttons für Menüs
-    Rectangle startButton = { SCREEN_WIDTH/2.0f - 100, 380, 200, 50 };
-    Rectangle scoreBtn    = { SCREEN_WIDTH/2.0f - 100, 440, 200, 50 };
-    Rectangle shopBtn     = { SCREEN_WIDTH/2.0f - 100, 500, 200, 50 };
-    Rectangle settingsBtn = { SCREEN_WIDTH/2.0f - 100, 560, 200, 50 }; 
-    Rectangle descButton  = { SCREEN_WIDTH/2.0f - 100, 620, 200, 50 };
-    
-    // Buttons für Settings
-    Rectangle langBtn         = { SCREEN_WIDTH/2.0f - 125, 200, 250, 50 };
-    Rectangle nameChangeBtn   = { SCREEN_WIDTH/2.0f - 125, 300, 250, 50 }; 
-    Rectangle deleteDataBtn   = { SCREEN_WIDTH/2.0f - 125, 400, 250, 50 }; 
-    Rectangle backSettingsBtn = { SCREEN_WIDTH/2.0f - 125, 550, 250, 50 };
+    // --- BUTTON DEFINITIONEN ---
+    float centerX = SCREEN_WIDTH / 2.0f - 125;
+    float menuCenterX = SCREEN_WIDTH / 2.0f - 100;
 
-    Rectangle btnPrimary  = { SCREEN_WIDTH/2.0f - 125, 400, 250, 50 }; 
-    Rectangle btnMenu     = { SCREEN_WIDTH/2.0f - 125, 480, 250, 50 }; 
-    Rectangle backMenuBtn = { SCREEN_WIDTH/2.0f - 125, 680, 250, 50 };
+    // Hauptmenü
+    Rectangle startButton = { menuCenterX, 300, 200, 50 };
+    Rectangle scoreBtn    = { menuCenterX, 360, 200, 50 };
+    Rectangle shopBtn     = { menuCenterX, 420, 200, 50 };
+    Rectangle settingsBtn = { menuCenterX, 480, 200, 50 }; 
+    Rectangle descButton  = { menuCenterX, 540, 200, 50 };
+
+    // Einstellungen (Settings)
+    Rectangle langBtn         = { centerX, 180, 250, 50 };
+    Rectangle resBtn          = { centerX, 250, 250, 50 }; 
+    Rectangle nameChangeBtn   = { centerX, 320, 250, 50 }; 
+    Rectangle deleteDataBtn   = { centerX, 390, 250, 50 }; 
+    Rectangle backSettingsBtn = { centerX, 550, 250, 50 };
+
+    // Spiel-Over / Pause
+    Rectangle btnPrimary  = { centerX, 400, 250, 50 }; 
+    Rectangle btnMenu     = { centerX, 480, 250, 50 }; 
+    Rectangle backMenuBtn = { centerX, 680, 250, 50 };
 
     std::vector<Obstacle> obstacles(4); 
     CollectableStar bonusStar = {{0,0,30,30}, false};
@@ -117,9 +131,19 @@ int main() {
         else if (currentState == SETTINGS) {
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 if (CheckCollisionPointRec(mousePoint, backSettingsBtn)) currentState = MAIN_MENU;
-                if (CheckCollisionPointRec(mousePoint, langBtn)) { saveData.isEnglish = !saveData.isEnglish; SaveGameData(saveData); }
                 
-                // Name ändern: Name löschen und zurück zum Eingabefeld
+                if (CheckCollisionPointRec(mousePoint, langBtn)) { 
+                    saveData.isEnglish = !saveData.isEnglish; 
+                    SaveGameData(saveData); 
+                }
+
+                // AUFLÖSUNG UMSCHALTEN
+                if (CheckCollisionPointRec(mousePoint, resBtn)) {
+                    saveData.isFullscreen = !saveData.isFullscreen;
+                    ToggleFullscreen();
+                    SaveGameData(saveData);
+                }
+                
                 if (CheckCollisionPointRec(mousePoint, nameChangeBtn)) {
                     isNameSaved = false;
                     playerName[0] = '\0';
@@ -127,11 +151,11 @@ int main() {
                     currentState = MAIN_MENU;
                 }
 
-                // Komplett löschen: Alles auf Null
                 if (CheckCollisionPointRec(mousePoint, deleteDataBtn)) {
                     DeleteSaveData();
                     ClearScoreboard();
-                    saveData = { 0, false, false, 0, saveData.isEnglish, "" };
+                    if (IsWindowFullscreen()) ToggleFullscreen();
+                    saveData = { 0, false, false, 0, saveData.isEnglish, false, "" };
                     playerName[0] = '\0';
                     letterCount = 0;
                     isNameSaved = false;
@@ -142,7 +166,8 @@ int main() {
         else if (currentState == SHOP_MENU) {
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 if (CheckCollisionPointRec(mousePoint, backMenuBtn)) currentState = MAIN_MENU;
-                // Shop Logik (Blau, Rot, Lila) wie gehabt...
+                
+                // Shop Logik Buttons
                 if (CheckCollisionPointRec(mousePoint, {400, 200, 200, 50})) { saveData.selectedColorId = 0; SaveGameData(saveData); }
                 if (CheckCollisionPointRec(mousePoint, {400, 300, 200, 50})) {
                     if (saveData.ownsRedCar) { saveData.selectedColorId = 1; }
@@ -166,7 +191,6 @@ int main() {
             currentSpeed = GetCurrentSpeed(currentScore, currentSpeed, deltaTime);
             player.speed = GetDynamicPlayerSpeed(currentSpeed);
 
-            // Steuerung... (Hindernisse, Kollision wie gehabt)
             if (IsKeyDown(KEY_LEFT)) player.rect.x -= player.speed * deltaTime;
             if (IsKeyDown(KEY_RIGHT)) player.rect.x += player.speed * deltaTime;
             if (player.rect.x < ROAD_OFFSET) player.rect.x = (float)ROAD_OFFSET;
@@ -213,7 +237,7 @@ int main() {
         } else {
             DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.6f));
             if (currentState == MAIN_MENU) DrawMainMenu(playerName, letterCount, 0, mousePoint, startButton, scoreBtn, shopBtn, settingsBtn, descButton, saveData.totalStars, isNameSaved, saveData.isEnglish);
-            else if (currentState == SETTINGS) DrawSettingsMenu(mousePoint, langBtn, nameChangeBtn, deleteDataBtn, backSettingsBtn, saveData.isEnglish);
+            else if (currentState == SETTINGS) DrawSettingsMenu(mousePoint, langBtn, resBtn, nameChangeBtn, deleteDataBtn, backSettingsBtn, saveData.isEnglish, saveData.isFullscreen);
             else if (currentState == SHOP_MENU) DrawShopMenu(saveData, mousePoint, {400, 300, 200, 50}, {400, 400, 200, 50}, backMenuBtn, saveData.isEnglish);
             else if (currentState == SCOREBOARD_MENU) DrawScoreboardMenu(LoadScoreboard(), mousePoint, backMenuBtn, saveData.isEnglish);
             else if (currentState == DESCRIPTION) DrawDescriptionMenu(mousePoint, backMenuBtn, saveData.isEnglish);

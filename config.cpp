@@ -5,7 +5,9 @@
 const char* SAVE_FILE = "savegame.dat";
 
 SaveGame LoadSaveGame() {
-    SaveGame data = { 0, false, false, 0, false, "Gast" };
+    // Standardwerte: Sterne, ownsRed, ownsPurple, colorId, isEnglish, isFullscreen, name
+    SaveGame data = { 0, false, false, 0, false, false, "Gast" };
+    
     std::ifstream file(SAVE_FILE, std::ios::binary);
     if (file.is_open()) {
         file.read((char*)&data.totalStars, sizeof(int));
@@ -21,7 +23,9 @@ SaveGame LoadSaveGame() {
             data.lastPlayerName = std::string(buffer);
             delete[] buffer;
         }
+        
         file.read((char*)&data.isEnglish, sizeof(bool));
+        file.read((char*)&data.isFullscreen, sizeof(bool)); // NEU: Fullscreen laden
         file.close();
     }
     return data;
@@ -38,7 +42,9 @@ void SaveGameData(SaveGame data) {
         int nameLen = (int)data.lastPlayerName.length();
         file.write((char*)&nameLen, sizeof(int));
         file.write(data.lastPlayerName.c_str(), nameLen);
+        
         file.write((char*)&data.isEnglish, sizeof(bool));
+        file.write((char*)&data.isFullscreen, sizeof(bool)); // NEU: Fullscreen speichern
         file.close();
     }
 }

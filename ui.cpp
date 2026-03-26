@@ -17,19 +17,18 @@ void DrawHUD(const char* name, float time, int score, int stars, bool isEnglish)
 void DrawMainMenu(const char* name, int letterCount, int framesCounter, Vector2 mousePoint, Rectangle startBtn, Rectangle scoreBtn, Rectangle shopBtn, Rectangle settingsBtn, Rectangle descBtn, int totalStars, bool nameSaved, bool isEnglish) {
     ClearBackground(DARKGRAY);
     
-    DrawTextCentered("CAR RACE", 100, 60, GOLD);
+    DrawTextCentered("CAR RACE", 60, 60, GOLD);
     DrawText(TextFormat(isEnglish ? "Total Stars: %d" : "Gesamt Sterne: %d", totalStars), 20, 20, 20, GOLD);
 
     if (!nameSaved) {
-        DrawTextCentered(isEnglish ? "ENTER YOUR NAME:" : "NAME EINGEBEN:", 220, 25, LIGHTGRAY);
-        DrawRectangle(GetScreenWidth()/2 - 150, 260, 300, 40, RAYWHITE);
-        DrawText(name, GetScreenWidth()/2 - 140, 270, 20, BLACK);
-        
+        DrawTextCentered(isEnglish ? "ENTER YOUR NAME:" : "NAME EINGEBEN:", 180, 25, LIGHTGRAY);
+        DrawRectangle(GetScreenWidth()/2 - 150, 220, 300, 40, RAYWHITE);
+        DrawText(name, GetScreenWidth()/2 - 140, 230, 20, BLACK);
         if (letterCount < 15 && (framesCounter / 20) % 2 == 0) {
-            DrawText("_", GetScreenWidth()/2 - 140 + MeasureText(name, 20), 270, 20, DARKGRAY);
+            DrawText("_", GetScreenWidth()/2 - 140 + MeasureText(name, 20), 230, 20, DARKGRAY);
         }
     } else {
-        DrawTextCentered(TextFormat(isEnglish ? "Welcome, %s!" : "Willkommen, %s!", name), 260, 30, RAYWHITE);
+        DrawTextCentered(TextFormat(isEnglish ? "Welcome, %s!" : "Willkommen, %s!", name), 220, 30, RAYWHITE);
     }
 
     auto DrawBtn = [&](Rectangle rect, const char* label, Color col) {
@@ -39,14 +38,14 @@ void DrawMainMenu(const char* name, int letterCount, int framesCounter, Vector2 
         DrawText(label, (int)(rect.x + (rect.width - tw) / 2), (int)(rect.y + 15), 20, hover ? BLACK : WHITE);
     };
 
-    DrawBtn(startBtn, isEnglish ? "START GAME" : "SPIEL STARTEN", DARKGREEN);
-    DrawBtn(scoreBtn, isEnglish ? "SCOREBOARD" : "BESTENLISTE", DARKBLUE);
-    DrawBtn(shopBtn, isEnglish ? "SHOP" : "LADEN", PURPLE);
+    // Wir ordnen die Buttons sauber untereinander an
+    DrawBtn(startBtn,    isEnglish ? "START GAME" : "SPIEL STARTEN", DARKGREEN);
+    DrawBtn(scoreBtn,    isEnglish ? "SCOREBOARD" : "BESTENLISTE", DARKBLUE);
+    DrawBtn(shopBtn,     isEnglish ? "SHOP" : "LADEN / SHOP", PURPLE); // Hier ist er!
     DrawBtn(settingsBtn, isEnglish ? "SETTINGS" : "EINSTELLUNGEN", GRAY);
-    DrawBtn(descBtn, isEnglish ? "HOW TO PLAY" : "ANLEITUNG", DARKGRAY);
+    DrawBtn(descBtn,     isEnglish ? "HOW TO PLAY" : "ANLEITUNG", DARKGRAY);
 }
-
-void DrawSettingsMenu(Vector2 mousePoint, Rectangle langBtn, Rectangle nameChangeBtn, Rectangle deleteDataBtn, Rectangle backBtn, bool isEnglish) {
+void DrawSettingsMenu(Vector2 mousePoint, Rectangle langBtn, Rectangle resBtn, Rectangle nameChangeBtn, Rectangle deleteDataBtn, Rectangle backBtn, bool isEnglish, bool isFullscreen) {
     ClearBackground(BLACK);
     DrawTextCentered(isEnglish ? "SETTINGS" : "EINSTELLUNGEN", 80, 40, GOLD);
 
@@ -58,6 +57,12 @@ void DrawSettingsMenu(Vector2 mousePoint, Rectangle langBtn, Rectangle nameChang
     };
 
     DrawBtn(langBtn, isEnglish ? "Language: EN" : "Sprache: DE", DARKGRAY, WHITE);
+    
+    // NEU: Auflösungs-Button
+    const char* resText = isFullscreen ? (isEnglish ? "Mode: Fullscreen" : "Modus: Vollbild") 
+                                       : (isEnglish ? "Mode: Windowed (1000x800)" : "Modus: Fenster (1000x800)");
+    DrawBtn(resBtn, resText, DARKGRAY, WHITE);
+
     DrawBtn(nameChangeBtn, isEnglish ? "Change Name" : "Name aendern", DARKGRAY, WHITE);
     DrawBtn(deleteDataBtn, isEnglish ? "Delete All Data" : "Daten loeschen", MAROON, WHITE);
     DrawBtn(backBtn, isEnglish ? "BACK" : "ZURUECK", GRAY, BLACK);
