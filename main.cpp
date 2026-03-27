@@ -49,11 +49,10 @@ int main() {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Car Race");
     SetExitKey(KEY_NULL); 
 
-    // NEUE REIHENFOLGE DER TEXTUREN
     Texture2D carTextures[3];
-    carTextures[0] = LoadTexture("assets/car_white.png"); // Start Auto
-    carTextures[1] = LoadTexture("assets/car_red.png");   // Mittel
-    carTextures[2] = LoadTexture("assets/car_blue.png");  // Premium (200 Sterne)
+    carTextures[0] = LoadTexture("assets/car_white.png"); 
+    carTextures[1] = LoadTexture("assets/car_red.png");   
+    carTextures[2] = LoadTexture("assets/car_blue.png");  
     
     Texture2D obstacleTex = LoadTexture("assets/hindernis.png");
     Texture2D starTex     = LoadTexture("assets/star.png");
@@ -65,7 +64,6 @@ int main() {
     SetTargetFPS(60);
 
     Player player;
-    // Initialisierung: Größe passt sich der gewählten Textur an
     Texture2D currentTex = carTextures[saveData.selectedColorId];
     float cw = 45.0f; 
     float ch = cw * ((float)currentTex.height / (float)currentTex.width);
@@ -108,7 +106,6 @@ int main() {
 
     while (!WindowShouldClose()) {
         float deltaTime = GetFrameTime();
-
         Vector2 realMouse = GetMousePosition();
         float scale = std::min((float)GetScreenWidth()/SCREEN_WIDTH, (float)GetScreenHeight()/SCREEN_HEIGHT);
         Vector2 mousePoint = {
@@ -127,9 +124,8 @@ int main() {
                 if (CheckCollisionPointRec(mousePoint, { SCREEN_WIDTH/2.0f + 10, 400, 100, 40 })) currentState = previousState;
             }
         }
-   else if (currentState == MAIN_MENU) {
+        else if (currentState == MAIN_MENU) {
             if (!isNameSaved) {
-                // --- BUCHSTABEN EINGEBEN ---
                 int key = GetCharPressed();
                 while (key > 0) {
                     if ((key > 32) && (key <= 125) && (letterCount < MAX_NAME_LENGTH)) {
@@ -139,31 +135,23 @@ int main() {
                     }
                     key = GetCharPressed();
                 }
-
-                // --- LÖSCHEN MIT BACKSPACE ---
                 if (IsKeyPressed(KEY_BACKSPACE) && letterCount > 0) {
                     letterCount--;
                     playerName[letterCount] = '\0';
                 }
-
-                // --- BESTÄTIGEN MIT ENTER ---
                 if (IsKeyPressed(KEY_ENTER) && letterCount > 0) {
                     saveData.lastPlayerName = std::string(playerName);
                     SaveGameData(saveData); 
                     isNameSaved = true; 
                 }
-            } // Ende von if (!isNameSaved)
+            }
 
-            // --- MAUS KLICKS (Darf nicht in isNameSaved verschachtelt sein!) ---
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 if (CheckCollisionPointRec(mousePoint, startButton) && (letterCount > 0 || isNameSaved)) {
                     currentScore = 0; totalTimeSurvived = 0.0f; earnedStarsThisRound = 0; currentSpeed = SPEED_START;
                     saveData.lastPlayerName = std::string(playerName); SaveGameData(saveData); isNameSaved = true; 
-                    
                     Texture2D cur = carTextures[saveData.selectedColorId];
-                    float w = 45.0f; float h = w * ((float)cur.height / (float)cur.width);
-                    InitPlayer(player, SCREEN_WIDTH, SCREEN_HEIGHT, w, h, GetCarColor(saveData.selectedColorId));
-                    
+                    InitPlayer(player, SCREEN_WIDTH, SCREEN_HEIGHT, 45.0f, 45.0f * ((float)cur.height / (float)cur.width), GetCarColor(saveData.selectedColorId));
                     for (int i = 0; i < (int)obstacles.size(); i++) ResetObstacle(obstacles[i], -200.0f - (i * 400.0f));
                     currentState = PLAYING;
                 }
@@ -172,7 +160,7 @@ int main() {
                 else if (CheckCollisionPointRec(mousePoint, settingsBtn)) currentState = SETTINGS;
                 else if (CheckCollisionPointRec(mousePoint, descButton)) currentState = DESCRIPTION;
             }
-        } // Ende von currentState == MAIN_MENU
+        }
         else if (currentState == SETTINGS) {
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 if (CheckCollisionPointRec(mousePoint, backSetBtn)) currentState = MAIN_MENU;
@@ -193,23 +181,19 @@ int main() {
         else if (currentState == SHOP_MENU) {
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 if (CheckCollisionPointRec(mousePoint, backMenuBtn)) currentState = MAIN_MENU;
-                // Weiß (ID 0) - Jetzt das Startauto
                 if (CheckCollisionPointRec(mousePoint, {150, 500, 200, 50})) { saveData.selectedColorId = 0; SaveGameData(saveData); }
-                // Rot (ID 1) - Bleibt bei 100 Sternen
                 if (CheckCollisionPointRec(mousePoint, {400, 500, 200, 50})) {
                     if (saveData.ownsRedCar) saveData.selectedColorId = 1;
                     else if (saveData.totalStars >= 100) { saveData.totalStars -= 100; saveData.ownsRedCar = true; saveData.selectedColorId = 1; }
                     SaveGameData(saveData);
                 }
-                // Blau (ID 2) - Jetzt Premium für 200 Sterne
                 if (CheckCollisionPointRec(mousePoint, {650, 500, 200, 50})) {
                     if (saveData.ownsPurpleCar) saveData.selectedColorId = 2; 
                     else if (saveData.totalStars >= 200) { saveData.totalStars -= 200; saveData.ownsPurpleCar = true; saveData.selectedColorId = 2; }
                     SaveGameData(saveData);
                 }
                 Texture2D cur = carTextures[saveData.selectedColorId];
-                float w = 45.0f; float h = w * ((float)cur.height / (float)cur.width);
-                InitPlayer(player, SCREEN_WIDTH, SCREEN_HEIGHT, w, h, GetCarColor(saveData.selectedColorId));
+                InitPlayer(player, SCREEN_WIDTH, SCREEN_HEIGHT, 45.0f, 45.0f * ((float)cur.height / (float)cur.width), GetCarColor(saveData.selectedColorId));
             }
         }
         else if (currentState == PLAYING) {
@@ -230,14 +214,12 @@ int main() {
                     ResetObstacle(obstacles[i], highestY - 400.0f);
                 }
                 if (CheckCollisionRecs(player.rect, obstacles[i].rect)) {
-    // Sicherstellen, dass der Name nicht leer ist, bevor wir speichern
-    const char* saveName = (std::strlen(playerName) > 0) ? playerName : "Gast";
-    
-    AddOrUpdateScore(saveName, currentScore, totalTimeSurvived);
-    saveData.totalStars += earnedStarsThisRound; 
-    SaveGameData(saveData);
-    currentState = GAMEOVER; 
-}
+                    const char* saveName = (std::strlen(playerName) > 0) ? playerName : "Gast";
+                    AddOrUpdateScore(saveName, currentScore, totalTimeSurvived);
+                    saveData.totalStars += earnedStarsThisRound; 
+                    SaveGameData(saveData);
+                    currentState = GAMEOVER; 
+                }
             }
             if (!bonusStar.active && GetRandomValue(0, 500) < 3) SpawnStar(bonusStar, obstacles);
             if (bonusStar.active) {
@@ -253,50 +235,47 @@ int main() {
             }
         }
 
-        // --- ZEICHNEN ---
-BeginTextureMode(target); 
-    // 1. IMMER den Hintergrund (Wiese & Straße) zeichnen
-    ClearBackground(DARKGREEN); 
-    DrawRectangle(ROAD_OFFSET, 0, ROAD_WIDTH, SCREEN_HEIGHT, DARKGRAY);
+        BeginTextureMode(target); 
+            ClearBackground(DARKGREEN); 
+            DrawRectangle(ROAD_OFFSET, 0, ROAD_WIDTH, SCREEN_HEIGHT, DARKGRAY);
 
-    // 2. JE NACH ZUSTAND WEITERE DINGE ZEICHNEN
-    if (currentState == PLAYING || currentState == PAUSED || currentState == GAMEOVER || currentState == EXIT_PROMPT) {
-        // Hindernisse, Auto und Sterne (Spiel-Objekte)
-        for (int i = 0; i < (int)obstacles.size(); i++) {
-            DrawTexturePro(obstacleTex, {0,0,(float)obstacleTex.width,(float)obstacleTex.height}, obstacles[i].rect, {0,0}, 0.0f, WHITE);
-        }
-        Texture2D cur = carTextures[saveData.selectedColorId];
-        DrawTexturePro(cur, {0,0,(float)cur.width,(float)cur.height}, player.rect, {0,0}, 0.0f, WHITE);
-        if (bonusStar.active) DrawTexturePro(starTex, {0,0,(float)starTex.width,(float)starTex.height}, bonusStar.rect, {0,0}, 0.0f, WHITE);
-        
-        DrawHUD(playerName, totalTimeSurvived, currentScore, earnedStarsThisRound, saveData.isEnglish);
-        
-        if (currentState == PAUSED) DrawPauseMenu(mousePoint, btnPrimary, btnMenu, saveData.isEnglish);
-        else if (currentState == GAMEOVER) DrawGameOverMenu(playerName, currentScore, totalTimeSurvived, earnedStarsThisRound, mousePoint, btnMenu, saveData.isEnglish);
-    } 
-    
-    // 3. MENÜS ÜBER DEN HINTERGRUND LEGEN
-    // Wir zeichnen die Menüs hier, aber OHNE ClearBackground in der ui.cpp aufzurufen!
-    if (currentState == MAIN_MENU) {
-        DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.4f)); // Optional: Hintergrund leicht abdunkeln
-        DrawMainMenu(playerName, letterCount, 0, mousePoint, startButton, scoreBtn, shopBtn, settingsBtn, descButton, saveData.totalStars, isNameSaved, saveData.isEnglish);
-    }
-    else if (currentState == SETTINGS) {
-        DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.6f));
-        DrawSettingsMenu(mousePoint, langBtn, resBtn, nameChangeBtn, deleteDataBtn, backSetBtn, saveData.isEnglish, saveData.isFullscreen);
-    }
-    else if (currentState == SHOP_MENU) {
-        DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.6f));
-        DrawShopMenu(saveData, mousePoint, {400, 500, 200, 50}, {650, 500, 200, 50}, backMenuBtn, saveData.isEnglish, carTextures);
-    }
-    else if (currentState == SCOREBOARD_MENU) {
-        DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.6f));
-        DrawScoreboardMenu(LoadScoreboard(), mousePoint, backMenuBtn, saveData.isEnglish);
-    }
-    else if (currentState == DESCRIPTION) {
-        DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.6f));
-        DrawDescriptionMenu(mousePoint, backMenuBtn, saveData.isEnglish);
-    }
+            if (currentState == PLAYING || currentState == PAUSED || currentState == GAMEOVER || currentState == EXIT_PROMPT) {
+                for (int i = 0; i < (int)obstacles.size(); i++) {
+                    DrawTexturePro(obstacleTex, {0,0,(float)obstacleTex.width,(float)obstacleTex.height}, obstacles[i].rect, {0,0}, 0.0f, WHITE);
+                }
+                Texture2D cur = carTextures[saveData.selectedColorId];
+                DrawTexturePro(cur, {0,0,(float)cur.width,(float)cur.height}, player.rect, {0,0}, 0.0f, WHITE);
+                
+                if (bonusStar.active) {
+                    DrawTexturePro(starTex, {0,0,(float)starTex.width,(float)starTex.height}, bonusStar.rect, {0,0}, 0.0f, WHITE);
+                }
+                
+                DrawHUD(playerName, totalTimeSurvived, currentScore, earnedStarsThisRound, saveData.isEnglish, starTex);
+                
+                if (currentState == PAUSED) DrawPauseMenu(mousePoint, btnPrimary, btnMenu, saveData.isEnglish);
+                else if (currentState == GAMEOVER) DrawGameOverMenu(playerName, currentScore, totalTimeSurvived, earnedStarsThisRound, mousePoint, btnMenu, saveData.isEnglish);
+            } 
+            
+            if (currentState == MAIN_MENU) {
+                DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.4f)); 
+                DrawMainMenu(playerName, letterCount, 0, mousePoint, startButton, scoreBtn, shopBtn, settingsBtn, descButton, saveData.totalStars, isNameSaved, saveData.isEnglish);
+            }
+            else if (currentState == SETTINGS) {
+                DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.6f));
+                DrawSettingsMenu(mousePoint, langBtn, resBtn, nameChangeBtn, deleteDataBtn, backSetBtn, saveData.isEnglish, saveData.isFullscreen);
+            }
+            else if (currentState == SHOP_MENU) {
+                DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.6f));
+                DrawShopMenu(saveData, mousePoint, {400, 500, 200, 50}, {650, 500, 200, 50}, backMenuBtn, saveData.isEnglish, carTextures);
+            }
+            else if (currentState == SCOREBOARD_MENU) {
+                DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.6f));
+                DrawScoreboardMenu(LoadScoreboard(), mousePoint, backMenuBtn, saveData.isEnglish);
+            }
+            else if (currentState == DESCRIPTION) {
+                DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.6f));
+                DrawDescriptionMenu(mousePoint, backMenuBtn, saveData.isEnglish);
+            }
 
             if (currentState == EXIT_PROMPT) {
                 DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.7f));

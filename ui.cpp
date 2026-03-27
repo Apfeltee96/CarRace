@@ -13,11 +13,17 @@ void DrawButton(Rectangle rect, const char* label, Vector2 mousePoint, Color bas
     DrawText(label, (int)(rect.x + (rect.width - tw) / 2), (int)(rect.y + 15), 20, hover ? BLACK : textCol);
 }
 
-void DrawHUD(const char* name, float time, int score, int stars, bool isEnglish) {
+void DrawHUD(const char* name, float time, int score, int stars, bool isEnglish, Texture2D starTex) {
     DrawText(TextFormat(isEnglish ? "Driver: %s" : "Fahrer: %s", name), 20, 20, 20, RAYWHITE);
     DrawText(TextFormat(isEnglish ? "Score: %d" : "Punkte: %d", score), 20, 50, 20, RAYWHITE);
     DrawText(TextFormat(isEnglish ? "Time: %.2fs" : "Zeit: %.2fs", time), 20, 80, 20, RAYWHITE);
-    DrawText(TextFormat(isEnglish ? "Stars: %d" : "Sterne: %d", stars), 20, 110, 20, GOLD);
+    
+    // Kleiner Stern als Icon (skaliert auf z.B. 20x20 Pixel)
+    float scale = 20.0f / (float)starTex.width;
+    DrawTextureEx(starTex, { 20, 110 }, 0.0f, scale, WHITE);
+    
+    // Text daneben (um 30 Pixel nach rechts verschoben)
+    DrawText(TextFormat(": %d", stars), 50, 110, 20, GOLD);
 }
 
 void DrawMainMenu(const char* name, int letterCount, int framesCounter, Vector2 mousePoint, Rectangle startBtn, Rectangle scoreBtn, Rectangle shopBtn, Rectangle settingsBtn, Rectangle descBtn, int totalStars, bool nameSaved, bool isEnglish) {
