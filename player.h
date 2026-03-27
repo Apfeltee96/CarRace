@@ -8,7 +8,8 @@ struct Player {
     Color color;
 };
 
-// NEU: Wir übergeben jetzt die Farbe, die im Shop ausgewählt wurde!
-void InitPlayer(Player &player, int screenWidth, int screenHeight, Color carColor);
+// In player.h
+void InitPlayer(Player &player, int screenWidth, int screenHeight, float width, float height, Color color);
+void InitPlayerEx(Player &player, int screenWidth, int screenHeight, float width, float height, Color color); // Die neue
 
 #endif

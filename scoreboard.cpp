@@ -1,10 +1,9 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "scoreboard.h"
 #include <algorithm>
 #include <fstream>
-#include <vector>
-#include <cstdio> // Für remove()
+#include <cstring>
 
-// Wir nutzen nur noch die .dat Datei für alles!
 const char* SCORE_FILE = "scoreboard.dat";
 
 bool CompareScores(const ScoreEntry& a, const ScoreEntry& b) {
@@ -15,73 +14,43 @@ std::vector<ScoreEntry> LoadScoreboard() {
     std::vector<ScoreEntry> scores;
     std::ifstream file(SCORE_FILE, std::ios::binary);
     
-    if (file.is_open()) {
-        int count = 0;
-        if (file.read((char*)&count, sizeof(int))) {
-            for (int i = 0; i < count; i++) {
-                int nameLen = 0;
-                file.read((char*)&nameLen, sizeof(int));
-                
-                char* nameBuf = new char[nameLen + 1];
-                file.read(nameBuf, nameLen);
-                nameBuf[nameLen] = '\0';
-                
-                int score = 0;
-                float time = 0.0f;
-                file.read((char*)&score, sizeof(int));
-                file.read((char*)&time, sizeof(float));
-                
-                scores.push_back({std::string(nameBuf), score, time});
-                delete[] nameBuf;
-            }
-        }
-        file.close();
+    if (!file) return scores;
+
+    ScoreEntry entry;
+    // Wir lesen einfach blockweise, solange die Datei Daten hat
+    while (file.read((char*)&entry, sizeof(ScoreEntry))) {
+        scores.push_back(entry);
     }
+    
+    file.close();
     return scores;
 }
 
-// Hilfsfunktion zum Speichern (wird von AddOrUpdateScore genutzt)
-void SaveScoreboard(const std::vector<ScoreEntry>& scores) {
-    std::ofstream outFile(SCORE_FILE, std::ios::binary);
+void AddOrUpdateScore(const char* name, int score, float time) {
+    std::vector<ScoreEntry> scores = LoadScoreboard();
+
+    ScoreEntry newEntry;
+    newEntry.score = score;
+    newEntry.timeSurvived = time;
+    
+    // Namen sicher kopieren
+    std::strncpy(newEntry.name, (name && strlen(name) > 0) ? name : "Gast", 15);
+    newEntry.name[15] = '\0'; // Ende erzwingen
+
+    scores.push_back(newEntry);
+    std::sort(scores.begin(), scores.end(), CompareScores);
+
+    if (scores.size() > 10) scores.resize(10);
+
+    std::ofstream outFile(SCORE_FILE, std::ios::binary | std::ios::trunc);
     if (outFile.is_open()) {
-        int count = (int)scores.size();
-        outFile.write((char*)&count, sizeof(int));
-        for (const auto& entry : scores) {
-            int nameLen = (int)entry.name.length();
-            outFile.write((char*)&nameLen, sizeof(int));
-            outFile.write(entry.name.c_str(), nameLen);
-            outFile.write((char*)&entry.score, sizeof(int));
-            outFile.write((char*)&entry.timeSurvived, sizeof(float));
+        for (const auto& e : scores) {
+            outFile.write((char*)&e, sizeof(ScoreEntry));
         }
         outFile.close();
     }
 }
 
-
-
 void ClearScoreboard() {
-    remove("scoreboard.dat"); // Löscht die Binärdatei der Highscores
-}
-
-void AddOrUpdateScore(const std::string& name, int score, float time) {
-    // 1. Aktuelle Liste laden
-    std::vector<ScoreEntry> scores = LoadScoreboard();
-
-    // 2. Jedes Spiel wird ein neuer Eintrag (auch bei gleichem Namen)
-    ScoreEntry newEntry;
-    newEntry.name = name;
-    newEntry.score = score;
-    newEntry.timeSurvived = time;
-    scores.push_back(newEntry);
-
-    // 3. Sortieren: Höchste Punktzahl zuerst
-    std::sort(scores.begin(), scores.end(), CompareScores);
-
-    // 4. Nur die Top 10 behalten
-    if (scores.size() > 10) {
-        scores.resize(10);
-    }
-
-    // 5. In die Binärdatei schreiben
-    SaveScoreboard(scores);
+    std::remove(SCORE_FILE); 
 }
