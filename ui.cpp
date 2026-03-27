@@ -2,9 +2,10 @@
 #include <string>
 
 // Hilfsfunktion für zentrierten Text
+// WICHTIG: Wir nutzen 1000 statt GetScreenWidth(), damit die Mitte auf der virtuellen Leinwand immer stimmt
 void DrawTextCentered(const char* text, int y, int fontSize, Color color) {
     int textWidth = MeasureText(text, fontSize);
-    DrawText(text, (GetScreenWidth() - textWidth) / 2, y, fontSize, color);
+    DrawText(text, (1000 - textWidth) / 2, y, fontSize, color);
 }
 
 void DrawHUD(const char* name, float time, int score, int stars, bool isEnglish) {
@@ -22,10 +23,10 @@ void DrawMainMenu(const char* name, int letterCount, int framesCounter, Vector2 
 
     if (!nameSaved) {
         DrawTextCentered(isEnglish ? "ENTER YOUR NAME:" : "NAME EINGEBEN:", 180, 25, LIGHTGRAY);
-        DrawRectangle(GetScreenWidth()/2 - 150, 220, 300, 40, RAYWHITE);
-        DrawText(name, GetScreenWidth()/2 - 140, 230, 20, BLACK);
+        DrawRectangle(1000/2 - 150, 220, 300, 40, RAYWHITE); // 1000/2 statt GetScreenWidth()/2
+        DrawText(name, 1000/2 - 140, 230, 20, BLACK);
         if (letterCount < 15 && (framesCounter / 20) % 2 == 0) {
-            DrawText("_", GetScreenWidth()/2 - 140 + MeasureText(name, 20), 230, 20, DARKGRAY);
+            DrawText("_", 1000/2 - 140 + MeasureText(name, 20), 230, 20, DARKGRAY);
         }
     } else {
         DrawTextCentered(TextFormat(isEnglish ? "Welcome, %s!" : "Willkommen, %s!", name), 220, 30, RAYWHITE);
@@ -38,13 +39,13 @@ void DrawMainMenu(const char* name, int letterCount, int framesCounter, Vector2 
         DrawText(label, (int)(rect.x + (rect.width - tw) / 2), (int)(rect.y + 15), 20, hover ? BLACK : WHITE);
     };
 
-    // Wir ordnen die Buttons sauber untereinander an
     DrawBtn(startBtn,    isEnglish ? "START GAME" : "SPIEL STARTEN", DARKGREEN);
     DrawBtn(scoreBtn,    isEnglish ? "SCOREBOARD" : "BESTENLISTE", DARKBLUE);
-    DrawBtn(shopBtn,     isEnglish ? "SHOP" : "LADEN / SHOP", PURPLE); // Hier ist er!
+    DrawBtn(shopBtn,     isEnglish ? "SHOP" : "LADEN", PURPLE);
     DrawBtn(settingsBtn, isEnglish ? "SETTINGS" : "EINSTELLUNGEN", GRAY);
     DrawBtn(descBtn,     isEnglish ? "HOW TO PLAY" : "ANLEITUNG", DARKGRAY);
 }
+
 void DrawSettingsMenu(Vector2 mousePoint, Rectangle langBtn, Rectangle resBtn, Rectangle nameChangeBtn, Rectangle deleteDataBtn, Rectangle backBtn, bool isEnglish, bool isFullscreen) {
     ClearBackground(BLACK);
     DrawTextCentered(isEnglish ? "SETTINGS" : "EINSTELLUNGEN", 80, 40, GOLD);
@@ -58,9 +59,16 @@ void DrawSettingsMenu(Vector2 mousePoint, Rectangle langBtn, Rectangle resBtn, R
 
     DrawBtn(langBtn, isEnglish ? "Language: EN" : "Sprache: DE", DARKGRAY, WHITE);
     
-    // NEU: Auflösungs-Button
-    const char* resText = isFullscreen ? (isEnglish ? "Mode: Fullscreen" : "Modus: Vollbild") 
-                                       : (isEnglish ? "Mode: Windowed (1000x800)" : "Modus: Fenster (1000x800)");
+    // LOGIK-UMKEHR: Zeige das Ziel der Aktion an
+    const char* resText;
+    if (isFullscreen) {
+        // Wenn wir im Vollbild SIND, biete den Wechsel zum Fenster an
+        resText = isEnglish ? "Windowed" : "Fenstermodus";
+    } else {
+        // Wenn wir im Fenster SIND, biete den Wechsel zum Vollbild an
+        resText = isEnglish ? "Fullscreen" : "Vollbildmodus";
+    }
+    
     DrawBtn(resBtn, resText, DARKGRAY, WHITE);
 
     DrawBtn(nameChangeBtn, isEnglish ? "Change Name" : "Name aendern", DARKGRAY, WHITE);
@@ -103,7 +111,8 @@ void DrawDescriptionMenu(Vector2 mousePoint, Rectangle backBtn, bool isEnglish) 
 }
 
 void DrawPauseMenu(Vector2 mousePoint, Rectangle resumeBtn, Rectangle menuBtn, bool isEnglish) {
-    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.5f));
+    // Hier nutzen wir 1000 und 800 für das Abdunkeln, damit es die ganze Leinwand füllt
+    DrawRectangle(0, 0, 1000, 800, Fade(BLACK, 0.5f));
     DrawTextCentered(isEnglish ? "PAUSED" : "PAUSE", 250, 50, WHITE);
 
     bool h1 = CheckCollisionPointRec(mousePoint, resumeBtn);
@@ -116,8 +125,7 @@ void DrawPauseMenu(Vector2 mousePoint, Rectangle resumeBtn, Rectangle menuBtn, b
 }
 
 void DrawGameOverMenu(const char* name, int score, float time, int stars, Vector2 mousePoint, Rectangle menuBtn, bool isEnglish) {
-    // FIX: DARKBORDER durch Fade(BLACK, 0.8f) ersetzt
-    DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.8f));
+    DrawRectangle(0, 0, 1000, 800, Fade(BLACK, 0.8f));
     DrawTextCentered(isEnglish ? "GAME OVER" : "SPIEL VORBEI", 150, 60, RED);
     
     DrawTextCentered(TextFormat(isEnglish ? "Driver: %s" : "Fahrer: %s", name), 250, 25, WHITE);
