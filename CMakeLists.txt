@@ -16,7 +16,7 @@ set(SOURCES
 # Raylib Pfad (angepasst an deine Struktur)
 add_subdirectory(raylib)
 
-add_executable(CarRace ${SOURCES})
+add_executable(CarRace WIN32 ${SOURCES})
 
 # Verknüpfung mit Raylib und System-Bibliotheken
 target_link_libraries(CarRace raylib opengl32 gdi32 winmm user32 shell32)

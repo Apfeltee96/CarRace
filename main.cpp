@@ -1,7 +1,3 @@
-#if defined(_WIN32) && !defined(_DEBUG)
-    #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
-#endif
-
 #define _CRT_SECURE_NO_WARNINGS
 #include "raylib.h"
 #include "scoreboard.h"
