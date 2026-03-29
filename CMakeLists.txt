@@ -3,7 +3,7 @@ project(CarRace)
 
 set(CMAKE_CXX_STANDARD 17)
 
-# Hier müssen ALLE deine .cpp Dateien aufgelistet sein!
+# Liste deiner Quelldateien
 set(SOURCES 
     main.cpp 
     config.cpp 
@@ -13,10 +13,18 @@ set(SOURCES
     ui.cpp
 )
 
-# Raylib Pfad (angepasst an deine Struktur)
+# Raylib Pfad
 add_subdirectory(raylib)
 
+# WIN32 sorgt dafür, dass kein Terminal erscheint
 add_executable(CarRace WIN32 ${SOURCES})
+
+# --- REFACTORING FIX: Terminal ausblenden ohne WinMain-Fehler ---
+if(MSVC)
+    # Dieser Befehl sagt dem Linker: "Nimm das Windows-Subsystem, 
+    # aber starte trotzdem bei der normalen main() Funktion."
+    set_target_properties(CarRace PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup")
+endif()
 
 # Verknüpfung mit Raylib und System-Bibliotheken
 target_link_libraries(CarRace raylib opengl32 gdi32 winmm user32 shell32)
