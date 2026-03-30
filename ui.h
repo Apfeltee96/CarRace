@@ -27,11 +27,12 @@ void DrawScoreboardMenu(std::vector<ScoreEntry> scores, Vector2 mousePoint,
 void DrawDescriptionMenu(Vector2 mousePoint, Rectangle backBtn, bool isEnglish);
 
 void DrawPauseMenu(Vector2 mousePoint, Rectangle resumeBtn, Rectangle menuBtn, bool isEnglish);
-
+void DrawButton(Rectangle rect, const char* text, Vector2 mouse, Color baseColor, Color textColor);
 void DrawGameOverMenu(const char* name, int score, float time, int stars, 
                       Vector2 mousePoint, Rectangle menuBtn, bool isEnglish);
 
 void DrawShopMenu(SaveGame data, Vector2 mousePoint, Rectangle redBtn, Rectangle whiteBtn, 
                   Rectangle backBtn, bool isEnglish, Texture2D carTexs[]);
+void DrawWorkshopBackground();
 
 #endif

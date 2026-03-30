@@ -11,6 +11,7 @@ set(SOURCES
     scoreboard.cpp 
     shop.cpp 
     ui.cpp
+    game.cpp
 )
 
 # Raylib Pfad
