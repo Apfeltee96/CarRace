@@ -55,7 +55,6 @@ void Game::Update() {
     float deltaTime = GetFrameTime();
     Vector2 realMouse = GetMousePosition();
     
-    // --- FIX: MAUS-SKALIERUNG FÜR FULLSCREEN ---
     float scale = std::min((float)GetScreenWidth()/1000.0f, (float)GetScreenHeight()/800.0f);
     Vector2 mousePoint = {
         (realMouse.x - (GetScreenWidth() - (1000.0f * scale)) * 0.5f) / scale,
@@ -68,12 +67,11 @@ void Game::Update() {
     }
 
     if (state == EXIT_PROMPT) {
-    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-        // Diese Rects müssen exakt mit denen in Draw() übereinstimmen!
-        if (CheckCollisionPointRec(mousePoint, { 380, 420, 100, 40 })) Cleanup(); // JA
-        if (CheckCollisionPointRec(mousePoint, { 520, 420, 100, 40 })) state = previousState; // NEIN
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+            if (CheckCollisionPointRec(mousePoint, { 380, 420, 100, 40 })) Cleanup(); 
+            if (CheckCollisionPointRec(mousePoint, { 520, 420, 100, 40 })) state = previousState; 
+        }
     }
-}
     else if (state == MAIN_MENU) HandleMenuInput(mousePoint);
     else if (state == SHOP_MENU) HandleShopInput(mousePoint);
     else if (state == SETTINGS) HandleSettingsInput(mousePoint);
@@ -100,7 +98,6 @@ void Game::UpdateGameLogic(float deltaTime) {
     for (int i = 0; i < (int)obstacles.size(); i++) {
         obstacles[i].rect.y += currentSpeed * deltaTime;
         
-        // --- FIX: ABSTÄNDE DER HINDERNISSE ---
         if (obstacles[i].rect.y > 800) {
             float highestY = 0;
             for (const auto& obs : obstacles) if (obs.rect.y < highestY) highestY = obs.rect.y;
@@ -155,14 +152,25 @@ void Game::HandleMenuInput(Vector2 mousePoint) {
 void Game::HandleShopInput(Vector2 mousePoint) {
     if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
         if (CheckCollisionPointRec(mousePoint, backMenuBtn)) state = MAIN_MENU;
+        
         if (CheckCollisionPointRec(mousePoint, {150, 500, 200, 50})) { saveData.selectedColorId = 0; }
+        
         if (CheckCollisionPointRec(mousePoint, {400, 500, 200, 50})) {
             if (saveData.ownsRedCar) saveData.selectedColorId = 1;
-            else if (saveData.totalStars >= 100) { saveData.totalStars -= 100; saveData.ownsRedCar = true; saveData.selectedColorId = 1; }
+            else if (saveData.totalStars >= 50) { 
+                saveData.totalStars -= 50; 
+                saveData.ownsRedCar = true; 
+                saveData.selectedColorId = 1; 
+            }
         }
+        
         if (CheckCollisionPointRec(mousePoint, {650, 500, 200, 50})) {
             if (saveData.ownsPurpleCar) saveData.selectedColorId = 2;
-            else if (saveData.totalStars >= 200) { saveData.totalStars -= 200; saveData.ownsPurpleCar = true; saveData.selectedColorId = 2; }
+            else if (saveData.totalStars >= 150) { 
+                saveData.totalStars -= 150; 
+                saveData.ownsPurpleCar = true; 
+                saveData.selectedColorId = 2; 
+            }
         }
         SaveGameData(saveData);
     }
@@ -192,28 +200,33 @@ void Game::SpawnStar() {
 }
 
 void Game::Draw() {
+    float s = std::min((float)GetScreenWidth()/1000.0f, (float)GetScreenHeight()/800.0f);
+    Vector2 m = GetMousePosition();
+    Vector2 mp = { (m.x - (GetScreenWidth() - (1000.0f * s)) * 0.5f) / s, (m.y - (GetScreenHeight() - (800.0f * s)) * 0.5f) / s };
+
     BeginTextureMode(target);
     ClearBackground(DARKGREEN);
     DrawRectangle(300, 0, 400, 800, DARKGRAY);
 
-    Vector2 scaledMouse = {0,0}; // Nicht benötigt für UI-Zeichnung innerhalb Target
-    
     if (state == PLAYING || state == PAUSED || state == GAMEOVER || state == EXIT_PROMPT) {
         for (auto &obs : obstacles) DrawTexturePro(obstacleTex, {0,0,(float)obstacleTex.width,(float)obstacleTex.height}, obs.rect, {0,0}, 0, WHITE);
         Texture2D cur = carTextures[saveData.selectedColorId];
         DrawTexturePro(cur, {0,0,(float)cur.width,(float)cur.height}, player.rect, {0,0}, 0, WHITE);
         if (bonusStar.active) DrawTexturePro(starTex, {0,0,(float)starTex.width,(float)starTex.height}, bonusStar.rect, {0,0}, 0, WHITE);
-        DrawHUD(playerName, totalTimeSurvived, currentScore, earnedStarsThisRound, saveData.isEnglish, starTex);
         
-        if (state == PAUSED) DrawPauseMenu(GetMousePosition(), btnPrimary, btnMenu, saveData.isEnglish);
-        if (state == GAMEOVER) DrawGameOverMenu(playerName, currentScore, totalTimeSurvived, earnedStarsThisRound, GetMousePosition(), btnMenu, saveData.isEnglish);
-    }
+        // FIX: Highscore (GetTopScore) am Ende hinzugefügt
+       // Ersetze in game.cpp den Aufruf:
+// DrawHUD(..., GetTopScore());
 
-    // --- FIX: Wir nutzen hier GetMousePosition() indirekt über UI, aber die UI Funktionen brauchen die korrekte mousePoint für das Highlighting ---
-    // Da Draw() im Target-Mode zeichnet, müssen wir mousePoint (skaliert) übergeben
-    float s = std::min((float)GetScreenWidth()/1000.0f, (float)GetScreenHeight()/800.0f);
-    Vector2 m = GetMousePosition();
-    Vector2 mp = { (m.x - (GetScreenWidth() - (1000.0f * s)) * 0.5f) / s, (m.y - (GetScreenHeight() - (800.0f * s)) * 0.5f) / s };
+// Durch diesen Block:
+std::vector<ScoreEntry> tempScores = LoadScoreboard();
+int topScore = tempScores.empty() ? 0 : tempScores[0].score; // Nimmt den ersten (besten) Eintrag
+// In Game::Draw()
+DrawHUD(playerName, totalTimeSurvived, currentScore, earnedStarsThisRound, saveData.isEnglish, starTex, GetTopScore());
+        
+        if (state == PAUSED) DrawPauseMenu(mp, btnPrimary, btnMenu, saveData.isEnglish);
+        if (state == GAMEOVER) DrawGameOverMenu(playerName, currentScore, totalTimeSurvived, earnedStarsThisRound, mp, btnMenu, saveData.isEnglish);
+    }
 
     if (state == MAIN_MENU) DrawMainMenu(playerName, letterCount, 0, mp, startBtn, scoreBtn, shopBtn, settingsBtn, descBtn, saveData.totalStars, isNameSaved, saveData.isEnglish);
     else if (state == SHOP_MENU) DrawShopMenu(saveData, mp, {400, 500, 200, 50}, {650, 500, 200, 50}, backMenuBtn, saveData.isEnglish, carTextures);
@@ -222,44 +235,34 @@ void Game::Draw() {
     else if (state == DESCRIPTION) DrawDescriptionMenu(mp, backMenuBtn, saveData.isEnglish);
 
     if (state == EXIT_PROMPT) {
-    // Hintergrund abdunkeln
-    DrawRectangle(0, 0, 1000, 800, Fade(BLACK, 0.7f));
-    
-    // Das Fenster (Box)
-    Rectangle box = { 350, 300, 300, 200 };
-    DrawRectangleRec(box, RAYWHITE);
-    DrawRectangleLinesEx(box, 3, GOLD);
-    
-    DrawTextCentered(saveData.isEnglish ? "EXIT GAME?" : "SPIEL BEENDEN?", 340, 25, DARKGRAY);
-    
-    // Buttons (Wir nutzen hier mp, also die skalierte Mausposition)
-    Rectangle yBtn = { 380, 420, 100, 40 };
-    Rectangle nBtn = { 520, 420, 100, 40 };
-    
-    // Button JA / YES
-    bool hoverY = CheckCollisionPointRec(mp, yBtn);
-    DrawRectangleRec(yBtn, hoverY ? RED : MAROON);
-    DrawText(saveData.isEnglish ? "YES" : "JA", (int)yBtn.x + 35, (int)yBtn.y + 10, 20, WHITE);
-    
-    // Button NEIN / NO
-    bool hoverN = CheckCollisionPointRec(mp, nBtn);
-    DrawRectangleRec(nBtn, hoverN ? LIGHTGRAY : GRAY);
-    DrawText(saveData.isEnglish ? "NO" : "NEIN", (int)nBtn.x + 35, (int)nBtn.y + 10, 20, BLACK);
-}
+        DrawRectangle(0, 0, 1000, 800, Fade(BLACK, 0.7f));
+        Rectangle box = { 350, 300, 300, 200 };
+        DrawRectangleRec(box, RAYWHITE);
+        DrawRectangleLinesEx(box, 3, GOLD);
+        DrawTextCentered(saveData.isEnglish ? "EXIT GAME?" : "SPIEL BEENDEN?", 340, 25, DARKGRAY);
+        
+        Rectangle yBtn = { 380, 420, 100, 40 };
+        Rectangle nBtn = { 520, 420, 100, 40 };
+        
+        bool hoverY = CheckCollisionPointRec(mp, yBtn);
+        DrawRectangleRec(yBtn, hoverY ? RED : MAROON);
+        DrawText(saveData.isEnglish ? "YES" : "JA", (int)yBtn.x + 35, (int)yBtn.y + 10, 20, WHITE);
+        
+        bool hoverN = CheckCollisionPointRec(mp, nBtn);
+        DrawRectangleRec(nBtn, hoverN ? LIGHTGRAY : GRAY);
+        DrawText(saveData.isEnglish ? "NO" : "NEIN", (int)nBtn.x + 35, (int)nBtn.y + 10, 20, BLACK);
+    }
     EndTextureMode();
 
- BeginDrawing();
-        ClearBackground(BLACK);
-        
-        // --- FIX: scale muss hier definiert werden ---
-        float scale = std::min((float)GetScreenWidth() / 1000.0f, (float)GetScreenHeight() / 800.0f);
-        
-        DrawTexturePro(target.texture, 
-            {0, 0, (float)target.texture.width, (float)-target.texture.height},
-            {(GetScreenWidth() - 1000.0f * scale) * 0.5f, 
-             (GetScreenHeight() - 800.0f * scale) * 0.5f, 
-             1000.0f * scale, 800.0f * scale}, 
-            {0, 0}, 0.0f, WHITE);
+    BeginDrawing();
+    ClearBackground(BLACK);
+    float finalScale = std::min((float)GetScreenWidth() / 1000.0f, (float)GetScreenHeight() / 800.0f);
+    DrawTexturePro(target.texture, 
+        {0, 0, (float)target.texture.width, (float)-target.texture.height},
+        {(GetScreenWidth() - 1000.0f * finalScale) * 0.5f, 
+         (GetScreenHeight() - 800.0f * finalScale) * 0.5f, 
+         1000.0f * finalScale, 800.0f * finalScale}, 
+        {0, 0}, 0.0f, WHITE);
     EndDrawing();
 }
 

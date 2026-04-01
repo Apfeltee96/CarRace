@@ -13,6 +13,9 @@ set(SOURCES
     ui.cpp
     game.cpp
 )
+if(WIN32)
+    set(SOURCES ${SOURCES} resource.rc)
+endif()
 
 # Raylib Pfad
 add_subdirectory(raylib)

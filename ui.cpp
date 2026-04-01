@@ -21,33 +21,33 @@ void DrawButton(Rectangle rect, const char* text, Vector2 mouse, Color baseColor
 
 // --- MENÜS & HUD ---
 
-void DrawHUD(const char* name, float time, int score, int stars, bool isEnglish, Texture2D starTex) {
-    // Linke Seite: Nur der Name des Fahrers bleibt hier
-    DrawText(TextFormat(isEnglish ? "Driver: %s" : "Fahrer: %s", name), 20, 20, 22, RAYWHITE);
+void DrawHUD(const char* name, float time, int score, int stars, bool isEnglish, Texture2D starTex, int highScore) {
+    int fontSize = 22;
+    int margin = 20; 
+    int rightAlignX = 800; // Wir setzen einen festen Startpunkt für die rechte Seite
 
-    // Rechte Seite: Punkte und Zeit
-    // Wir berechnen die Position: 1000 (Breite) - Textbreite - 20 (Abstand zum Rand)
-    const char* scoreText = TextFormat(isEnglish ? "Score: %d" : "Punkte: %d", score);
-    const char* timeText = TextFormat(isEnglish ? "Time: %.2fs" : "Zeit: %.2fs", time);
-    
-    int scoreWidth = MeasureText(scoreText, 22);
-    int timeWidth = MeasureText(timeText, 22);
+    // --- LINKS OBEN (Bleibt wie es ist) ---
+    DrawText(TextFormat(isEnglish ? "Driver: %s" : "Fahrer: %s", name), margin, 20, fontSize, RAYWHITE);
+    DrawText(TextFormat(isEnglish ? "Time: %.2fs" : "Zeit: %.2fs", time), margin, 50, fontSize, RAYWHITE);
 
-    // Zeichnen am rechten Rand
-    DrawText(scoreText, 1000 - scoreWidth - 20, 20, 22, RAYWHITE);
-    DrawText(timeText, 1000 - timeWidth - 20, 50, 22, RAYWHITE);
+    // --- RECHTS OBEN (JETZT ABSOLUT FEST) ---
     
-    // Sterne (Ebenfalls rechts, unter der Zeit)
-    const char* starCountText = TextFormat(": %d", stars);
-    int starTextWidth = MeasureText(starCountText, 22);
+    // 1. Das Label "Punkte:" an eine feste X-Position setzen (z.B. 800)
+    const char* label = isEnglish ? "Score:" : "Punkte:";
+    DrawText(label, rightAlignX, 20, fontSize, RAYWHITE);
+    
+    // 2. Den Wert direkt dahinter setzen (fester Versatz, z.B. +100 Pixel)
+    Color scoreColor = (score > highScore) ? GOLD : RAYWHITE;
+    DrawText(TextFormat("%d", score), rightAlignX + 80, 20, fontSize, scoreColor);
+
+    // 3. Sterne (ebenfalls fest unter den Punkten)
     float iconHeight = 25.0f;
     float iconScale = iconHeight / (float)starTex.height;
-    float iconWidth = starTex.width * iconScale;
-
-    // Position für Stern-Icon und Text rechts bündig
-    float starsX = 1000 - starTextWidth - iconWidth - 20;
-    DrawTextureEx(starTex, { starsX, 80 }, 0.0f, iconScale, WHITE);
-    DrawText(starCountText, (int)(starsX + iconWidth + 5), 80, 22, GOLD);
+    
+    // Icon an feste Position
+    DrawTextureEx(starTex, { (float)rightAlignX, 50.0f }, 0.0f, iconScale, WHITE);
+    // Zahl an feste Position (+35 Pixel neben das Icon)
+    DrawText(TextFormat(": %d", stars), rightAlignX + 35, 50, fontSize, GOLD);
 }
 
 void DrawMainMenu(const char* name, int letterCount, int framesCounter, Vector2 mousePoint, 
@@ -94,46 +94,45 @@ void DrawSettingsMenu(Vector2 mousePoint, Rectangle langBtn, Rectangle resBtn,
 void DrawShopMenu(SaveGame data, Vector2 mousePoint, Rectangle redBtn, Rectangle blueBtn, 
                   Rectangle backBtn, bool isEnglish, Texture2D carTexs[]) {
     
-    // 1. Werkstatt-Hintergrund statt einfachem Schwarz
+    // 1. Werkstatt-Hintergrund
     DrawWorkshopBackground();
-    DrawRectangle(0, 0, 1000, 800, Fade(BLACK, 0.3f)); // Leicht abdunkeln für UI-Lesbarkeit
+    DrawRectangle(0, 0, 1000, 800, Fade(BLACK, 0.3f)); // Leicht abdunkeln
 
     DrawTextCentered(isEnglish ? "Carshop" : "Autoladen", 50, 50, GOLD);
     DrawText(TextFormat(isEnglish ? "Stars: %d" : "Sterne: %d", data.totalStars), 820, 20, 25, GOLD);
 
-    // Definition der Button-X-Positionen für die Ausrichtung
     float btnXPositions[3] = { 150.0f, 400.0f, 650.0f };
     float btnWidth = 200.0f;
 
+    // Autos zeichnen (Mittig über den Button-Positionen)
     for (int i = 0; i < 3; i++) {
-        // Skalierung wie im Spiel
         float gameScale = 45.0f / (float)carTexs[i].width;
-        float shopDisplayScale = gameScale * 2.0f; // Etwas größer im Shop (Faktor 2.0)
+        float shopDisplayScale = gameScale * 2.0f; 
 
-        // Mittige Position berechnen:
-        // (Button-Start + halbe Button-Breite) - (halbe Auto-Breite skaliert)
         float carWidthScaled = carTexs[i].width * shopDisplayScale;
         float carHeightScaled = carTexs[i].height * shopDisplayScale;
         
         float carX = (btnXPositions[i] + btnWidth / 2.0f) - (carWidthScaled / 2.0f);
-        float carY = 350.0f - carHeightScaled; // Auto steht "auf" der Linie bei Y=350
+        float carY = 350.0f - carHeightScaled; 
 
-        // Schatten unter dem Auto
         DrawEllipse((int)(carX + carWidthScaled/2), (int)(carY + carHeightScaled), 30, 10, Fade(BLACK, 0.5f));
-        
-        // Auto zeichnen
         DrawTextureEx(carTexs[i], { carX, carY }, 0, shopDisplayScale, WHITE);
     }
 
-    // Die Buttons (X-Werte müssen zu btnXPositions passen)
+    // --- BUTTONS (Außerhalb der Schleife für korrekte Funktion) ---
+
+    // Weißes Auto (Index 0)
     DrawButton({150, 500, 200, 50}, isEnglish ? "SELECT" : "WAEHLEN", mousePoint, data.selectedColorId == 0 ? GREEN : GRAY, BLACK);
-    
-    const char* redLabel = data.ownsRedCar ? (isEnglish ? "SELECT" : "WAEHLEN") : "100 Stars";
+
+    // Rotes Auto (Index 1) - Reduziert auf 50 Sterne
+    const char* redLabel = data.ownsRedCar ? (isEnglish ? "SELECT" : "WAEHLEN") : "50 Stars";
     DrawButton(redBtn, redLabel, mousePoint, data.selectedColorId == 1 ? GREEN : GRAY, BLACK);
 
-    const char* blueLabel = data.ownsPurpleCar ? (isEnglish ? "SELECT" : "WAEHLEN") : "200 Stars";
+    // Blaues Auto (Index 2) - Reduziert auf 150 Sterne
+    const char* blueLabel = data.ownsPurpleCar ? (isEnglish ? "SELECT" : "WAEHLEN") : "150 Stars";
     DrawButton(blueBtn, blueLabel, mousePoint, data.selectedColorId == 2 ? GREEN : GRAY, BLACK);
 
+    // Zurück Button
     DrawButton(backBtn, isEnglish ? "BACK" : "ZURUECK", mousePoint, GRAY, BLACK);
 }
 void DrawWorkshopBackground() {

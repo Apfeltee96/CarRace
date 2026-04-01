@@ -2,16 +2,17 @@
 #define SCOREBOARD_H
 
 #include <vector>
-#include <string>
 
 struct ScoreEntry {
-    char name[16];     // Festgelegt auf 15 Zeichen + Null-Terminator
+    char name[16];
     int score;
-    float timeSurvived;
+    float time; // Wichtig: Muss exakt so heißen wie in der .cpp
 };
 
+// Diese Prototypen sagen allen anderen Dateien, dass es diese Funktionen gibt:
+void AddOrUpdateScore(const char* name, int score, float time);
 std::vector<ScoreEntry> LoadScoreboard();
-void AddOrUpdateScore(const char* name, int score, float time); 
-void ClearScoreboard();
+void ClearScoreboard(); 
+int GetTopScore();      
 
 #endif

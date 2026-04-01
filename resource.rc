@@ -1,0 +1,22 @@
+1 VERSIONINFO
+FILEVERSION     1,0,0,0
+PRODUCTVERSION  1,0,0,0
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040704b0" // Deutsch
+        BEGIN
+            VALUE "FileDescription",  "Car Race - Ein rasanten 2D Rennspiel"
+            VALUE "FileVersion",      "1.0"
+            VALUE "InternalName",     "CarRace"
+            VALUE "LegalCopyright",   "2026 Kerem"
+            VALUE "OriginalFilename", "CarRace.exe"
+            VALUE "ProductName",      "Car Race"
+            VALUE "ProductVersion",   "1.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x407, 1200
+    END
+END

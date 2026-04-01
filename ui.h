@@ -10,7 +10,8 @@
 void DrawTextCentered(const char* text, int y, int fontSize, Color color);
 
 // Menü- und HUD-Funktionen
-void DrawHUD(const char* name, float time, int score, int stars, bool isEnglish, Texture2D starTex);
+// Stelle sicher, dass am Ende "int highScore" steht
+void DrawHUD(const char* name, float time, int score, int stars, bool isEnglish, Texture2D starTex, int highScore);
 
 void DrawMainMenu(const char* name, int letterCount, int framesCounter, Vector2 mousePoint, 
                   Rectangle startBtn, Rectangle scoreBtn, Rectangle shopBtn, 
