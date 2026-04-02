@@ -28,7 +28,7 @@ Ein rasantes 2D-Autorennen, entwickelt mit **C++** und der **raylib** Library. W
 
 ### Build-Anleitung
 
-**Via Terminal (empfohlen):**
+**Via Terminal:**
 ```bash
 git clone https://github.com/apfeltee96/carrace.git
 cd carrace
