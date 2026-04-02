@@ -20,7 +20,7 @@ SaveGame LoadSaveGame() {
     // Reihenfolge muss exakt mit SaveGameData übereinstimmen
     file.read(reinterpret_cast<char*>(&data.totalStars),      sizeof(int));
     file.read(reinterpret_cast<char*>(&data.ownsRedCar),      sizeof(bool));
-    file.read(reinterpret_cast<char*>(&data.ownsPurpleCar),   sizeof(bool));
+    file.read(reinterpret_cast<char*>(&data.ownsBlueCar),   sizeof(bool));
     file.read(reinterpret_cast<char*>(&data.selectedColorId), sizeof(int));
 
     // String wird als Länge + Inhalt gespeichert
@@ -78,7 +78,7 @@ float GetDynamicPlayerSpeed(float currentWorldSpeed) {
 Color GetCarColor(int colorId) {
     switch (colorId) {
         case 1:  return RED;
-        case 2:  return PURPLE;
+        case 2:  return BLUE;
         default: return WHITE;  // colorId 0 = weißes Auto
     }
 }

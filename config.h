@@ -12,8 +12,8 @@ constexpr float SPEED_START        = 400.0f;   // Startgeschwindigkeit der Hinde
 constexpr float SPEED_MAX          = 1600.0f;  // Maximale Hindernisgeschwindigkeit
 constexpr float SPEED_ACCELERATION = 2.5f;     // Beschleunigung pro Sekunde
 
-constexpr int   PRICE_RED_CAR      = 50;       // Sternepreis für das rote Auto
-constexpr int   PRICE_PURPLE_CAR   = 150;      // Sternepreis für das lila Auto
+constexpr int   PRICE_RED_CAR      = 30;       // Sternepreis für das rote Auto
+constexpr int   PRICE_BLUE_CAR   = 75;      // Sternepreis für das lila Auto
 
 // ============================================================
 //  Speicherstand
@@ -23,7 +23,7 @@ constexpr int   PRICE_PURPLE_CAR   = 150;      // Sternepreis für das lila Auto
 struct SaveGame {
     int         totalStars;       // Gesammelte Sterne insgesamt
     bool        ownsRedCar;       // Rotes Auto freigeschaltet?
-    bool        ownsPurpleCar;    // Lila Auto freigeschaltet?
+    bool        ownsBlueCar;    // Lila Auto freigeschaltet?
     int         selectedColorId;  // Aktiv ausgewähltes Auto (0=weiß, 1=rot, 2=lila)
     bool        isEnglish;        // Sprache: true=Englisch, false=Deutsch
     bool        isFullscreen;     // Vollbildmodus aktiv?

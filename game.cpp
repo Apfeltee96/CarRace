@@ -250,11 +250,11 @@ void Game::HandleShopInput(Vector2 mousePoint) {
 
     // Lila Auto (Bug fix: PRICE_PURPLE_CAR aus config.h statt Hardcode)
     if (CheckCollisionPointRec(mousePoint, blueCarBtn)) {
-        if (saveData.ownsPurpleCar) {
+        if (saveData.ownsBlueCar) {
             saveData.selectedColorId = 2;
         } else if (saveData.totalStars >= PRICE_PURPLE_CAR) {
             saveData.totalStars  -= PRICE_PURPLE_CAR;
-            saveData.ownsPurpleCar = true;
+            saveData.ownsBlueCar = true;
             saveData.selectedColorId = 2;
         }
     }
