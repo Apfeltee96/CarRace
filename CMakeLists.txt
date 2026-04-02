@@ -3,50 +3,65 @@ project(CarRace)
 
 set(CMAKE_CXX_STANDARD 17)
 
-# Liste deiner Quelldateien
-set(SOURCES 
-    main.cpp 
-    config.cpp 
-    player.cpp 
-    scoreboard.cpp 
+# ---------------------------------------------------------------------------
+# Quelldateien
+# ---------------------------------------------------------------------------
+set(GAME_SOURCES
+    main.cpp
+    config.cpp
+    player.cpp
+    scoreboard.cpp
     ui.cpp
     game.cpp
-    tests.cpp
 )
+
+set(TEST_SOURCES
+    tests.cpp
+    config.cpp
+)
+
 if(WIN32)
-    set(SOURCES ${SOURCES} resource.rc)
+    list(APPEND GAME_SOURCES resource.rc)
 endif()
 
-# Raylib Pfad
+# ---------------------------------------------------------------------------
+# Raylib
+# ---------------------------------------------------------------------------
 add_subdirectory(raylib)
 
-# WIN32 sorgt dafür, dass kein Terminal erscheint
-add_executable(CarRace WIN32 ${SOURCES})
+# ---------------------------------------------------------------------------
+# Haupt-Executable
+# ---------------------------------------------------------------------------
+add_executable(CarRace ${GAME_SOURCES})
 
-# --- REFACTORING FIX: Terminal ausblenden ohne WinMain-Fehler ---
+# Kein Konsolenfenster unter Windows
+if(WIN32)
+    set_target_properties(CarRace PROPERTIES WIN32_EXECUTABLE TRUE)
+endif()
+
+# MSVC: normales main() statt WinMain verwenden
 if(MSVC)
-    # Dieser Befehl sagt dem Linker: "Nimm das Windows-Subsystem, 
-    # aber starte trotzdem bei der normalen main() Funktion."
     set_target_properties(CarRace PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup")
 endif()
 
-# Verknüpfung mit Raylib und System-Bibliotheken
-target_link_libraries(CarRace raylib)
+target_include_directories(CarRace PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} raylib/src)
+target_link_libraries(CarRace PRIVATE raylib)
+
 if(WIN32)
-    target_link_libraries(CarRace opengl32 gdi32 winmm user32 shell32)
+    target_link_libraries(CarRace PRIVATE opengl32 gdi32 winmm user32 shell32)
 endif()
 
-
-target_include_directories(CarRace PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} raylib/src)
-
+# ---------------------------------------------------------------------------
 # Tests (CTest)
+# ---------------------------------------------------------------------------
 enable_testing()
 
-add_executable(CarRaceTests tests.cpp config.cpp)
+add_executable(CarRaceTests ${TEST_SOURCES})
 target_include_directories(CarRaceTests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} raylib/src)
-target_link_libraries(CarRaceTests raylib)
+target_link_libraries(CarRaceTests PRIVATE raylib)
+
 if(WIN32)
-    target_link_libraries(CarRaceTests opengl32 gdi32 winmm user32 shell32)
+    target_link_libraries(CarRaceTests PRIVATE opengl32 gdi32 winmm user32 shell32)
 endif()
 
 add_test(NAME SpeedTests COMMAND CarRaceTests)
