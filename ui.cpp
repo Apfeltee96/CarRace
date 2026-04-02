@@ -40,9 +40,9 @@ void DrawHUD(const char* name, float time, int score, int stars,
              margin, 50, fontSize, RAYWHITE);
 
     // Rechts oben: Punkte
-    DrawText(isEnglish ? "Score:" : "Punkte:", rightAlignX, 20, fontSize, RAYWHITE);
-    Color scoreColor = (score > highScore) ? GOLD : RAYWHITE;
-    DrawText(TextFormat("%d", score), rightAlignX + 80, 20, fontSize, scoreColor);
+DrawText(isEnglish ? "Score:" : "Punkte:", rightAlignX, 20, fontSize, RAYWHITE);
+DrawText(TextFormat("%d", score), rightAlignX + 100, 20, fontSize, RAYWHITE);
+
 
     // Rechts: Sterne
     constexpr float iconHeight = 25.0f;
