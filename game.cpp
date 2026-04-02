@@ -252,8 +252,8 @@ void Game::HandleShopInput(Vector2 mousePoint) {
     if (CheckCollisionPointRec(mousePoint, blueCarBtn)) {
         if (saveData.ownsBlueCar) {
             saveData.selectedColorId = 2;
-        } else if (saveData.totalStars >= PRICE_PURPLE_CAR) {
-            saveData.totalStars  -= PRICE_PURPLE_CAR;
+        } else if (saveData.totalStars >= PRICE_BLUE_CAR) {
+            saveData.totalStars  -= PRICE_BLUE_CAR;
             saveData.ownsBlueCar = true;
             saveData.selectedColorId = 2;
         }

@@ -174,7 +174,7 @@ void DrawShopMenu(const SaveGame& data, Vector2 mousePoint,
     // Lila Auto
     const char* blueLabel = data.ownsBlueCar
         ? (isEnglish ? "SELECT" : "WAEHLEN")
-        : TextFormat("%d Stars", PRICE_PURPLE_CAR);
+        : TextFormat("%d Stars", PRICE_BLUE_CAR);
     DrawButton(blueBtn, blueLabel, mousePoint,
                data.selectedColorId == 2 ? GREEN : GRAY, BLACK);
 

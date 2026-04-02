@@ -43,7 +43,7 @@ void SaveGameData(const SaveGame& data) {
 
     file.write(reinterpret_cast<const char*>(&data.totalStars),      sizeof(int));
     file.write(reinterpret_cast<const char*>(&data.ownsRedCar),      sizeof(bool));
-    file.write(reinterpret_cast<const char*>(&data.ownsPurpleCar),   sizeof(bool));
+    file.write(reinterpret_cast<const char*>(&data.ownsBlueCar),   sizeof(bool));
     file.write(reinterpret_cast<const char*>(&data.selectedColorId), sizeof(int));
 
     int nameLen = static_cast<int>(data.lastPlayerName.length());
