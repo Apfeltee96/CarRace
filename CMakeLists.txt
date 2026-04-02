@@ -11,6 +11,7 @@ set(SOURCES
     scoreboard.cpp 
     ui.cpp
     game.cpp
+    tests.cpp
 )
 if(WIN32)
     set(SOURCES ${SOURCES} resource.rc)
