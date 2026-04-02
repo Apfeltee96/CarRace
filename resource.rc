@@ -6,7 +6,7 @@ BEGIN
     BEGIN
         BLOCK "040704b0" // Deutsch
         BEGIN
-            VALUE "FileDescription",  "Car Race - Ein rasanten 2D Rennspiel"
+            VALUE "FileDescription",  "Car Race - Ein rasantes 2D Rennspiel"
             VALUE "FileVersion",      "1.0"
             VALUE "InternalName",     "CarRace"
             VALUE "LegalCopyright",   "2026 Kerem"
