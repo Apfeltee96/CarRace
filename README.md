@@ -1,4 +1,8 @@
-# 🏎️ Car Race
+[🇩🇪 Deutsch](#deutsch) | [🇬🇧 English](#english)
+
+---
+
+# 🏎️ Car Race <a name="deutsch"></a>
 
 Ein rasantes 2D-Autorennen, entwickelt mit **C++** und der **raylib** Library. Weiche Hindernissen aus, sammle Sterne und schalte neue Fahrzeuge im Shop frei!
 
@@ -59,3 +63,67 @@ cmake --build .
 * `scoreboard.cpp/h` - Highscore-Verwaltung (lokal gespeichert als `scoreboard.dat`).
 * `assets/` - Alle Grafiken (Autos, Sterne, Hindernisse) – **nicht im Repo enthalten**.
 * `raylib/` - Mitgelieferte raylib-Bibliothek (kein separater Download nötig).
+
+---
+
+# 🏎️ Car Race <a name="english"></a>
+
+A fast-paced 2D car racing game built with **C++** and the **raylib** library. Dodge obstacles, collect stars, and unlock new cars in the shop!
+
+## ✨ Features
+
+- **Dynamic Gameplay:** Speed increases the longer you survive.
+- **Car Shop:** Spend collected stars to unlock new car skins.
+- **Scoreboard:** Your best times and scores are saved locally.
+- **Smart UI:** A HUD displaying score, time, and stars in real time.
+- **Multi-Language:** Supports German and English.
+
+## 🛠️ Technical Highlights
+
+- **Custom Rendering:** Uses `RenderTexture2D` for perfect scaling in any window size (fullscreen/windowed) without distortion.
+- **Save System:** Automatically loads and saves game progress and settings.
+- **Performance:** Resource-efficient rendering targeting 60 FPS.
+
+## 🚀 Installation & Getting Started
+
+### Prerequisites
+* A C++ compiler (e.g. GCC, MSVC, Clang)
+* [CMake](https://cmake.org/) (version 3.10 or higher)
+
+### Build Instructions
+
+**Via Terminal (recommended):**
+```bash
+git clone https://github.com/apfeltee96/carrace.git
+cd carrace
+mkdir build && cd build
+cmake ..
+cmake --build .
+```
+
+**Via VS Code:**
+1. Open the folder in VS Code.
+2. Install the CMake extension.
+3. Run `CMake: Configure` followed by `CMake: Build`.
+
+> **Note:** The assets (`assets/` folder with graphics) are **not included** in the repository and must be provided separately. Place the `assets/` folder with the following files in the project directory before launching the game:
+> - `car_white.png`, `car_red.png`, `car_blue.png`
+> - `hindernis.png`, `star.png`
+
+## 🎮 Controls
+
+- **Arrow Keys Left/Right:** Steer the car
+- **Key P:** Pause the game
+- **Key ESC:** Back to menu / quit game
+- **Enter:** Confirm name
+
+## 📂 Project Structure
+
+* `main.cpp` - The entry point of the game.
+* `game.cpp/h` - Core game logic (game loop).
+* `ui.cpp/h` - All menus, buttons, and the workshop design.
+* `player.cpp/h` - Vehicle controls and physics.
+* `config.cpp/h` - Settings, save game persistence, and speed calculation.
+* `scoreboard.cpp/h` - Highscore management (saved locally as `scoreboard.dat`).
+* `assets/` - All graphics (cars, stars, obstacles) – **not included in the repo**.
+* `raylib/` - Bundled raylib library (no separate download needed).
