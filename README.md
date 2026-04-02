@@ -143,13 +143,13 @@ cmake --build .
 
 ## Third-Party Services:
 
-Developed in VS Code
-GitHub as software development platform (repository)
-Claude Code as AI assistant for writing and debugging the C++ code
-raylib as C library for 2D/3D game development (zlib license)
+- Developed in VS Code
+- GitHub as software development platform (repository)
+- Claude Code as AI assistant for writing and debugging the C++ code
+- Raylib as C library for 2D/3D game development (zlib license)
 
 ## Source Assets (PNGs):
 
-Cars: https://looneybits.itch.io/2d-urban-cars
-Obstacle: https://gamedeveloperstudio.itch.io/animated-spikes
-Star: https://pix3lcat.itch.io/star-collectibles
+- Cars: https://looneybits.itch.io/2d-urban-cars
+- Obstacle: https://gamedeveloperstudio.itch.io/animated-spikes
+- Star: https://pix3lcat.itch.io/star-collectibles
