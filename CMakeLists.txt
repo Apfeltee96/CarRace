@@ -37,3 +37,15 @@ endif()
 
 
 target_include_directories(CarRace PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} raylib/src)
+
+# Tests (CTest)
+enable_testing()
+
+add_executable(CarRaceTests tests.cpp config.cpp)
+target_include_directories(CarRaceTests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} raylib/src)
+target_link_libraries(CarRaceTests raylib)
+if(WIN32)
+    target_link_libraries(CarRaceTests opengl32 gdi32 winmm user32 shell32)
+endif()
+
+add_test(NAME SpeedTests COMMAND CarRaceTests)
