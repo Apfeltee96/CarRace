@@ -19,14 +19,28 @@ Ein rasantes 2D-Autorennen, entwickelt mit **C++** und der **raylib** Library. W
 ## 🚀 Installation & Start
 
 ### Voraussetzungen
-* Ein C++ Compiler
+* Ein C++ Compiler (z.B. GCC, MSVC, Clang)
 * [CMake](https://cmake.org/) (Version 3.10 oder höher)
 
 ### Build-Anleitung
-1. Klone das Repository oder lade den Code herunter.
-2. Öffne den Ordner in deinem bevorzugten Editor (z.B. VS Code).
-3. Nutze das CMake-Plugin, um das Projekt zu konfigurieren und zu bauen.
-4. Die Assets werden beim Build automatisch in den `build`-Ordner kopiert.
+
+**Via Terminal (empfohlen):**
+```bash
+git clone https://github.com/apfeltee96/carrace.git
+cd carrace
+mkdir build && cd build
+cmake ..
+cmake --build .
+```
+
+**Via VS Code:**
+1. Öffne den Ordner in VS Code.
+2. Installiere die CMake-Extension.
+3. Führe `CMake: Configure` und anschließend `CMake: Build` aus.
+
+> **Hinweis:** Die Assets (`assets/`-Ordner mit den Grafiken) sind **nicht** im Repository enthalten und müssen separat bereitgestellt werden. Lege den `assets/`-Ordner mit den folgenden Dateien im Projektverzeichnis ab, bevor du das Spiel startest:
+> - `car_white.png`, `car_red.png`, `car_blue.png`
+> - `hindernis.png`, `star.png`
 
 ## 🎮 Steuerung
 
@@ -41,4 +55,7 @@ Ein rasantes 2D-Autorennen, entwickelt mit **C++** und der **raylib** Library. W
 * `game.cpp/h` - Die zentrale Spiellogik (Game Loop).
 * `ui.cpp/h` - Alles rund um Menüs, Buttons und das Werkstatt-Design.
 * `player.cpp/h` - Steuerung und Physik des Fahrzeugs.
-* `assets/` - Alle Grafiken (Autos, Sterne, Hindernisse).
+* `config.cpp/h` - Einstellungen, Spielstand-Persistenz und Speed-Berechnung.
+* `scoreboard.cpp/h` - Highscore-Verwaltung (lokal gespeichert als `scoreboard.dat`).
+* `assets/` - Alle Grafiken (Autos, Sterne, Hindernisse) – **nicht im Repo enthalten**.
+* `raylib/` - Mitgelieferte raylib-Bibliothek (kein separater Download nötig).
