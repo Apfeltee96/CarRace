@@ -56,5 +56,5 @@ void AddOrUpdateScore(const char* name, int score, float time) {
 }
 
 void ClearScoreboard() {
-    std::filesystem::remove(SAVE_FILE);
+    std::filesystem::remove(SCORE_FILE);
 }
