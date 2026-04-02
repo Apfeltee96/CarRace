@@ -57,12 +57,24 @@ cmake --build .
 
 * `main.cpp` - Der Zündschlüssel des Spiels.
 * `game.cpp/h` - Die zentrale Spiellogik (Game Loop).
-* `ui.cpp/h` - Alles rund um Menüs, Buttons und das Werkstatt-Design.
+* `ui.cpp/h` - Alles rund um Menüs, Buttons und das Laden-Design.
 * `player.cpp/h` - Steuerung und Physik des Fahrzeugs.
 * `config.cpp/h` - Einstellungen, Spielstand-Persistenz und Speed-Berechnung.
 * `scoreboard.cpp/h` - Highscore-Verwaltung (lokal gespeichert als `scoreboard.dat`).
 * `assets/` - Alle Grafiken (Autos, Sterne, Hindernisse) – **nicht im Repo enthalten**.
 * `raylib/` - Mitgelieferte raylib-Bibliothek (kein separater Download nötig).
+
+
+## Drittleistungen:
+- Programmiert in VS Code
+- GitHub als Softwareentwicklungsplattform (Repository)
+- Claude code als KI-Assistent für das Schreiben und Debuggen des C++-Codes
+- Raylib als C-Bibliothek für 2D/3D-Spieleentwicklung (zlib-Lizenz)
+
+## Quellen-Assets-PNG's:
+- Autos: https://looneybits.itch.io/2d-urban-cars
+- Hindernis: https://gamedeveloperstudio.itch.io/animated-spikes
+- Stern: https://pix3lcat.itch.io/star-collectibles
 
 ---
 
@@ -121,9 +133,23 @@ cmake --build .
 
 * `main.cpp` - The entry point of the game.
 * `game.cpp/h` - Core game logic (game loop).
-* `ui.cpp/h` - All menus, buttons, and the workshop design.
+* `ui.cpp/h` - All menus, buttons, and the shop-design.
 * `player.cpp/h` - Vehicle controls and physics.
 * `config.cpp/h` - Settings, save game persistence, and speed calculation.
 * `scoreboard.cpp/h` - Highscore management (saved locally as `scoreboard.dat`).
 * `assets/` - All graphics (cars, stars, obstacles) – **not included in the repo**.
 * `raylib/` - Bundled raylib library (no separate download needed).
+
+
+## Third-Party Services:
+
+Developed in VS Code
+GitHub as software development platform (repository)
+Claude Code as AI assistant for writing and debugging the C++ code
+raylib as C library for 2D/3D game development (zlib license)
+
+## Source Assets (PNGs):
+
+Cars: https://looneybits.itch.io/2d-urban-cars
+Obstacle: https://gamedeveloperstudio.itch.io/animated-spikes
+Star: https://pix3lcat.itch.io/star-collectibles
