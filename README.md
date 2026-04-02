@@ -61,6 +61,7 @@ cmake --build .
 * `player.cpp/h` - Steuerung und Physik des Fahrzeugs.
 * `config.cpp/h` - Einstellungen, Spielstand-Persistenz und Speed-Berechnung.
 * `scoreboard.cpp/h` - Highscore-Verwaltung (lokal gespeichert als `scoreboard.dat`).
+* `tests.cpp` - Unit-Tests für die Spielmechanik (Geschwindigkeitslogik).
 * `assets/` - Alle Grafiken (Autos, Sterne, Hindernisse) – **nicht im Repo enthalten**.
 * `raylib/` - Mitgelieferte raylib-Bibliothek (kein separater Download nötig).
 
@@ -137,8 +138,10 @@ cmake --build .
 * `player.cpp/h` - Vehicle controls and physics.
 * `config.cpp/h` - Settings, save game persistence, and speed calculation.
 * `scoreboard.cpp/h` - Highscore management (saved locally as `scoreboard.dat`).
+* `tests.cpp` - Unit tests for game mechanics (speed logic).
 * `assets/` - All graphics (cars, stars, obstacles) – **not included in the repo**.
 * `raylib/` - Bundled raylib library (no separate download needed).
+
 
 
 ## Third-Party Services:
