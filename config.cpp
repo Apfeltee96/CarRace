@@ -1,7 +1,7 @@
-#define _CRT_SECURE_NO_WARNINGS
+
 #include "config.h"
 #include <fstream>
-#include <cstdio>
+#include <filesystem>
 #include <algorithm>
 
 static const char* SAVE_FILE = "savegame.dat";
@@ -55,7 +55,7 @@ void SaveGameData(const SaveGame& data) {
 }
 
 void DeleteSaveData() {
-    std::remove(SAVE_FILE);
+    std::filesystem::remove(SAVE_FILE);
 }
 
 // ============================================================

@@ -30,6 +30,10 @@ if(MSVC)
 endif()
 
 # Verknüpfung mit Raylib und System-Bibliotheken
-target_link_libraries(CarRace raylib opengl32 gdi32 winmm user32 shell32)
+target_link_libraries(CarRace raylib)
+if(WIN32)
+    target_link_libraries(CarRace opengl32 gdi32 winmm user32 shell32)
+endif()
+
 
 target_include_directories(CarRace PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} raylib/src)

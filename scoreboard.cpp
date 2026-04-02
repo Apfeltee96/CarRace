@@ -1,9 +1,9 @@
-#define _CRT_SECURE_NO_WARNINGS
+
 #include "scoreboard.h"
 #include <algorithm>
 #include <fstream>
 #include <cstring>
-#include <cstdio>
+#include <filesystem>
 
 static const char* SCORE_FILE = "scoreboard.dat";
 
@@ -56,5 +56,5 @@ void AddOrUpdateScore(const char* name, int score, float time) {
 }
 
 void ClearScoreboard() {
-    std::remove(SCORE_FILE);
+    std::filesystem::remove(SAVE_FILE);
 }
