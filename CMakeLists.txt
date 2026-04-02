@@ -9,7 +9,6 @@ set(SOURCES
     config.cpp 
     player.cpp 
     scoreboard.cpp 
-    shop.cpp 
     ui.cpp
     game.cpp
 )

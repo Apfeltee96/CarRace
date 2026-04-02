@@ -1,80 +1,84 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "config.h"
 #include <fstream>
 #include <cstdio>
+#include <algorithm>
 
-const char* SAVE_FILE = "savegame.dat";
+static const char* SAVE_FILE = "savegame.dat";
+
+// ============================================================
+//  Speicherstand laden / speichern
+// ============================================================
 
 SaveGame LoadSaveGame() {
-    // Standardwerte: Sterne, ownsRed, ownsPurple, colorId, isEnglish, isFullscreen, name
+    // Standardwerte falls keine Datei existiert
     SaveGame data = { 0, false, false, 0, false, false, "Gast" };
-    
+
     std::ifstream file(SAVE_FILE, std::ios::binary);
-    if (file.is_open()) {
-        file.read((char*)&data.totalStars, sizeof(int));
-        file.read((char*)&data.ownsRedCar, sizeof(bool));
-        file.read((char*)&data.ownsPurpleCar, sizeof(bool));
-        file.read((char*)&data.selectedColorId, sizeof(int));
-        
-        int nameLen = 0;
-        if (file.read((char*)&nameLen, sizeof(int))) {
-            char* buffer = new char[nameLen + 1];
-            file.read(buffer, nameLen);
-            buffer[nameLen] = '\0';
-            data.lastPlayerName = std::string(buffer);
-            delete[] buffer;
-        }
-        
-        file.read((char*)&data.isEnglish, sizeof(bool));
-        file.read((char*)&data.isFullscreen, sizeof(bool)); // NEU: Fullscreen laden
-        file.close();
+    if (!file.is_open()) return data;
+
+    // Reihenfolge muss exakt mit SaveGameData übereinstimmen
+    file.read(reinterpret_cast<char*>(&data.totalStars),      sizeof(int));
+    file.read(reinterpret_cast<char*>(&data.ownsRedCar),      sizeof(bool));
+    file.read(reinterpret_cast<char*>(&data.ownsPurpleCar),   sizeof(bool));
+    file.read(reinterpret_cast<char*>(&data.selectedColorId), sizeof(int));
+
+    // String wird als Länge + Inhalt gespeichert
+    int nameLen = 0;
+    if (file.read(reinterpret_cast<char*>(&nameLen), sizeof(int)) && nameLen > 0) {
+        std::string name(nameLen, '\0');
+        file.read(name.data(), nameLen);
+        data.lastPlayerName = std::move(name);
     }
+
+    file.read(reinterpret_cast<char*>(&data.isEnglish),    sizeof(bool));
+    file.read(reinterpret_cast<char*>(&data.isFullscreen), sizeof(bool));
+
     return data;
 }
 
-void SaveGameData(SaveGame data) {
+void SaveGameData(const SaveGame& data) {
     std::ofstream file(SAVE_FILE, std::ios::binary);
-    if (file.is_open()) {
-        file.write((char*)&data.totalStars, sizeof(int));
-        file.write((char*)&data.ownsRedCar, sizeof(bool));
-        file.write((char*)&data.ownsPurpleCar, sizeof(bool));
-        file.write((char*)&data.selectedColorId, sizeof(int));
-        
-        int nameLen = (int)data.lastPlayerName.length();
-        file.write((char*)&nameLen, sizeof(int));
-        file.write(data.lastPlayerName.c_str(), nameLen);
-        
-        file.write((char*)&data.isEnglish, sizeof(bool));
-        file.write((char*)&data.isFullscreen, sizeof(bool)); // NEU: Fullscreen speichern
-        file.close();
-    }
+    if (!file.is_open()) return;
+
+    file.write(reinterpret_cast<const char*>(&data.totalStars),      sizeof(int));
+    file.write(reinterpret_cast<const char*>(&data.ownsRedCar),      sizeof(bool));
+    file.write(reinterpret_cast<const char*>(&data.ownsPurpleCar),   sizeof(bool));
+    file.write(reinterpret_cast<const char*>(&data.selectedColorId), sizeof(int));
+
+    int nameLen = static_cast<int>(data.lastPlayerName.length());
+    file.write(reinterpret_cast<const char*>(&nameLen), sizeof(int));
+    file.write(data.lastPlayerName.c_str(), nameLen);
+
+    file.write(reinterpret_cast<const char*>(&data.isEnglish),    sizeof(bool));
+    file.write(reinterpret_cast<const char*>(&data.isFullscreen), sizeof(bool));
 }
 
 void DeleteSaveData() {
     std::remove(SAVE_FILE);
 }
 
-float GetCurrentSpeed(int score, float currentFrameSpeed, float deltaTime) {
-    const float MAX_SPEED = 1600.0f; 
-    const float ACCELERATION_RATE = 2.5f; 
-    if (currentFrameSpeed < MAX_SPEED) {
-        currentFrameSpeed += ACCELERATION_RATE * deltaTime;
-    }
-    return currentFrameSpeed;
+// ============================================================
+//  Spielmechanik-Hilfsfunktionen
+// ============================================================
+
+float GetCurrentSpeed(float currentSpeed, float deltaTime) {
+    // Geschwindigkeit steigt linear bis SPEED_MAX
+    return std::min(currentSpeed + SPEED_ACCELERATION * deltaTime, SPEED_MAX);
 }
 
 float GetDynamicPlayerSpeed(float currentWorldSpeed) {
-    float baseSteerSpeed = 500.0f;
-    float dynamicSteer = baseSteerSpeed + (currentWorldSpeed * 0.5f);
-    if (dynamicSteer > 1400.0f) dynamicSteer = 1400.0f;
-    return dynamicSteer;
-}
-
-int CalculateStars(int score) {
-    return score / 1000;
+    // Lenkgeschwindigkeit wächst mit der Weltgeschwindigkeit, aber maximal 1400
+    constexpr float BASE_STEER   = 500.0f;
+    constexpr float STEER_FACTOR = 0.5f;
+    constexpr float STEER_MAX    = 1400.0f;
+    return std::min(BASE_STEER + currentWorldSpeed * STEER_FACTOR, STEER_MAX);
 }
 
 Color GetCarColor(int colorId) {
-    if (colorId == 1) return RED;
-    if (colorId == 2) return PURPLE;
-    return BLUE;
+    switch (colorId) {
+        case 1:  return RED;
+        case 2:  return PURPLE;
+        default: return WHITE;  // colorId 0 = weißes Auto
+    }
 }
