@@ -13,6 +13,7 @@ Ein rasantes 2D-Autorennen, entwickelt mit **C++** und der **raylib** Library. W
 - **Scoreboard:** Deine Bestzeiten und Punkte werden lokal gespeichert.
 - **Smart UI:** Ein HUD, das Punkte, Zeit, sowie Sterne in Echtzeit wiedergibt.
 - **Multi-Language:** Unterstützung für Deutsch und Englisch.
+- **Uhr-Buff:** Sammle eine Uhr ein, um die Spielgeschwindigkeit für 3 Sekunden zu verlangsamen – mehr Zeit, um Hindernissen auszuweichen und Punkte zu sammeln!
 
 ## 🛠️ Technische Highlights
 
@@ -44,7 +45,7 @@ cmake --build .
 
 > **Hinweis:** Die Assets (`assets/`-Ordner mit den Grafiken) sind **nicht** im Repository enthalten und müssen separat bereitgestellt werden. Lege den `assets/`-Ordner mit den folgenden Dateien im Projektverzeichnis ab, bevor du das Spiel startest:
 > - `car_white.png`, `car_red.png`, `car_blue.png`
-> - `hindernis.png`, `star.png`
+> - `hindernis.png`, `star.png`, `clock.png`
 
 ## 🎮 Steuerung
 
@@ -62,7 +63,7 @@ cmake --build .
 * `config.cpp/h` - Einstellungen, Spielstand-Persistenz und Speed-Berechnung.
 * `scoreboard.cpp/h` - Highscore-Verwaltung (lokal gespeichert als `scoreboard.dat`).
 * `tests.cpp` - Unit-Tests für die Spielmechanik (Geschwindigkeitslogik).
-* `assets/` - Alle Grafiken (Autos, Sterne, Hindernisse) – **nicht im Repo enthalten**.
+* `assets/` - Alle Grafiken (Autos, Sterne, Hindernisse, Uhr) – **nicht im Repo enthalten**.
 * `raylib/` - Mitgelieferte raylib-Bibliothek (kein separater Download nötig).
 
 
@@ -93,6 +94,7 @@ A fast-paced 2D car racing game built with **C++** and the **raylib** library. D
 - **Scoreboard:** Your best times and scores are saved locally.
 - **Smart UI:** A HUD displaying score, time, and stars in real time.
 - **Multi-Language:** Supports German and English.
+- **Clock Buff:** Pick up a clock to slow down the game speed for 3 seconds – more time to dodge obstacles and rack up points!
 
 ## 🛠️ Technical Highlights
 
@@ -124,7 +126,7 @@ cmake --build .
 
 > **Note:** The assets (`assets/` folder with graphics) are **not included** in the repository and must be provided separately. Place the `assets/` folder with the following files in the project directory before launching the game:
 > - `car_white.png`, `car_red.png`, `car_blue.png`
-> - `hindernis.png`, `star.png`
+> - `hindernis.png`, `star.png`, clock.png
 
 ## 🎮 Controls
 
@@ -142,7 +144,7 @@ cmake --build .
 * `config.cpp/h` - Settings, save game persistence, and speed calculation.
 * `scoreboard.cpp/h` - Highscore management (saved locally as `scoreboard.dat`).
 * `tests.cpp` - Unit tests for game mechanics (speed logic).
-* `assets/` - All graphics (cars, stars, obstacles) – **not included in the repo**.
+* `assets/` - All graphics (cars, stars, obstacles, clock) – **not included in the repo**.
 * `raylib/` - Bundled raylib library (no separate download needed).
 
 
