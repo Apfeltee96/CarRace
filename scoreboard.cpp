@@ -5,21 +5,25 @@
 #include <cstring>
 #include <filesystem>
 
-static const char* SCORE_FILE = "scoreboard.dat";
+static const char *SCORE_FILE = "scoreboard.dat";
 
 // Absteigend nach Score sortieren
-static bool CompareScores(const ScoreEntry& a, const ScoreEntry& b) {
+static bool CompareScores(const ScoreEntry &a, const ScoreEntry &b)
+{
     return a.score > b.score;
 }
 
-std::vector<ScoreEntry> LoadScoreboard() {
+std::vector<ScoreEntry> LoadScoreboard()
+{
     std::vector<ScoreEntry> scores;
 
     std::ifstream file(SCORE_FILE, std::ios::binary);
-    if (!file.is_open()) return scores;
+    if (!file.is_open())
+        return scores;
 
     ScoreEntry entry;
-    while (file.read(reinterpret_cast<char*>(&entry), sizeof(ScoreEntry))) {
+    while (file.read(reinterpret_cast<char *>(&entry), sizeof(ScoreEntry)))
+    {
         scores.push_back(entry);
     }
 
@@ -27,35 +31,41 @@ std::vector<ScoreEntry> LoadScoreboard() {
     return scores;
 }
 
-int GetTopScore() {
+int GetTopScore()
+{
     std::vector<ScoreEntry> scores = LoadScoreboard();
     return scores.empty() ? 0 : scores[0].score;
 }
 
-void AddOrUpdateScore(const char* name, int score, float time) {
+void AddOrUpdateScore(const char *name, int score, float time)
+{
     std::vector<ScoreEntry> scores = LoadScoreboard();
 
     ScoreEntry entry;
     entry.score = score;
-    entry.time  = time;
+    entry.time = time;
 
-    const char* validName = (name && std::strlen(name) > 0) ? name : "Gast";
-strncpy_s(entry.name, sizeof(entry.name), validName, 15);
+    const char *validName = (name && std::strlen(name) > 0) ? name : "Gast";
+    strncpy_s(entry.name, sizeof(entry.name), validName, 15);
 
     entry.name[15] = '\0';
 
     scores.push_back(entry);
     std::sort(scores.begin(), scores.end(), CompareScores);
-    if (scores.size() > 10) scores.resize(10);
+    if (scores.size() > 10)
+        scores.resize(10);
 
     std::ofstream outFile(SCORE_FILE, std::ios::binary | std::ios::trunc);
-    if (!outFile.is_open()) return;
+    if (!outFile.is_open())
+        return;
 
-    for (const auto& e : scores) {
-        outFile.write(reinterpret_cast<const char*>(&e), sizeof(ScoreEntry));
+    for (const auto &e : scores)
+    {
+        outFile.write(reinterpret_cast<const char *>(&e), sizeof(ScoreEntry));
     }
 }
 
-void ClearScoreboard() {
+void ClearScoreboard()
+{
     std::filesystem::remove(SCORE_FILE);
 }

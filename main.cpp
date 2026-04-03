@@ -1,10 +1,12 @@
 #include "game.h"
 
-int main() {
+int main()
+{
     Game game;
     game.Init();
 
-    while (!WindowShouldClose()) {
+    while (!WindowShouldClose())
+    {
         game.Update();
         game.Draw();
     }

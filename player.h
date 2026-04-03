@@ -8,10 +8,11 @@
 // ============================================================
 
 /// Repräsentiert das Spielerauto mit Position, Größe und Geschwindigkeit.
-struct Player {
-    Rectangle rect;   // Position und Größe (x, y, width, height)
-    float     speed;  // Aktuelle Lenkgeschwindigkeit (Pixel/Sekunde)
-    Color     color;  // Farbe (wird für Tinting der Textur verwendet)
+struct Player
+{
+    Rectangle rect; // Position und Größe (x, y, width, height)
+    float speed;    // Aktuelle Lenkgeschwindigkeit (Pixel/Sekunde)
+    Color color;    // Farbe (wird für Tinting der Textur verwendet)
 };
 
 // ============================================================
@@ -25,7 +26,7 @@ struct Player {
 /// @param width        Breite des Autos in Pixeln
 /// @param height       Höhe des Autos in Pixeln
 /// @param color        Farbe / Tint des Autos
-void InitPlayer(Player& player, int screenWidth, int screenHeight,
+void InitPlayer(Player &player, int screenWidth, int screenHeight,
                 float width, float height, Color color);
 
 #endif // PLAYER_H

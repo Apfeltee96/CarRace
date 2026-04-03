@@ -13,7 +13,8 @@
 //  Spielzustände
 // ============================================================
 
-enum GameState {
+enum GameState
+{
     MAIN_MENU,
     SHOP_MENU,
     DESCRIPTION,
@@ -30,22 +31,25 @@ enum GameState {
 // ============================================================
 
 /// Ein Hindernis auf der Fahrbahn.
-struct Obstacle {
+struct Obstacle
+{
     Rectangle rect;
-    Color     color;
+    Color color;
 };
 
 /// Ein einsammelbarer Stern auf der Fahrbahn.
-struct CollectableStar {
+struct CollectableStar
+{
     Rectangle rect;
-    bool      active;
+    bool active;
 };
 
 // ============================================================
 //  Hauptspielklasse
 // ============================================================
 
-class Game {
+class Game
+{
 public:
     /// Fenster öffnen, Assets laden, Startzustand setzen.
     void Init();
@@ -63,7 +67,7 @@ private:
     // --- Interne Hilfsmethoden ---
 
     /// Setzt ein Hindernis auf eine neue zufällige Position (startY = Startwert für Y).
-    void ResetObstacle(Obstacle& obs, float startY);
+    void ResetObstacle(Obstacle &obs, float startY);
 
     /// Spawnt einen Bonusstern an zufälliger X-Position.
     void SpawnStar();
@@ -80,36 +84,36 @@ private:
     void UpdateGameLogic(float deltaTime);
 
     // --- Assets ---
-    Texture2D      carTextures[3];  // [0]=weiß, [1]=rot, [2]=lila
-    Texture2D      obstacleTex;
-    Texture2D      starTex;
-    RenderTexture2D target;         // Offscreen-Buffer für Skalierung
+    Texture2D carTextures[3]; // [0]=weiß, [1]=rot, [2]=lila
+    Texture2D obstacleTex;
+    Texture2D starTex;
+    RenderTexture2D target; // Offscreen-Buffer für Skalierung
 
     // --- Spielzustand ---
     GameState state;
-    GameState previousState;        // Für ESC-Toggle (EXIT_PROMPT)
-    SaveGame  saveData;
-    Player    player;
+    GameState previousState; // Für ESC-Toggle (EXIT_PROMPT)
+    SaveGame saveData;
+    Player player;
 
     std::vector<Obstacle> obstacles;
-    CollectableStar       bonusStar;
+    CollectableStar bonusStar;
 
-    int   currentScore;
+    int currentScore;
     float currentSpeed;
     float totalTimeSurvived;
-    int   earnedStarsThisRound;
-    int   framesCounter;            // Für blinkenden Cursor im Hauptmenü
-    int   cachedTopScore;           // Gecachter Highscore (kein File-I/O pro Frame)
+    int earnedStarsThisRound;
+    int framesCounter;  // Für blinkenden Cursor im Hauptmenü
+    int cachedTopScore; // Gecachter Highscore (kein File-I/O pro Frame)
 
-    char  playerName[16];
-    int   letterCount;
-    bool  isNameSaved;
+    char playerName[16];
+    int letterCount;
+    bool isNameSaved;
 
     // --- UI-Button-Rechtecke ---
     Rectangle startBtn, scoreBtn, shopBtn, settingsBtn, descBtn, backMenuBtn;
     Rectangle langBtn, resBtn, nameChangeBtn, deleteDataBtn, backSetBtn;
     Rectangle btnPrimary, btnMenu;
-    Rectangle redCarBtn, blueCarBtn;  // Shop-Buttons
+    Rectangle redCarBtn, blueCarBtn; // Shop-Buttons
 };
 
 #endif // GAME_H

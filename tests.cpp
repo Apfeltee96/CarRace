@@ -2,7 +2,8 @@
 #include <cassert>
 #include <cstdio>
 
-static void test_GetCurrentSpeed() {
+static void test_GetCurrentSpeed()
+{
     float increased = GetCurrentSpeed(SPEED_START, 1.0f);
     assert(increased > SPEED_START && "Speed sollte nach 1s gestiegen sein");
 
@@ -15,7 +16,8 @@ static void test_GetCurrentSpeed() {
     printf("[OK] test_GetCurrentSpeed\n");
 }
 
-static void test_GetDynamicPlayerSpeed() {
+static void test_GetDynamicPlayerSpeed()
+{
     constexpr float STEER_MAX = 1400.0f;
 
     float atStart = GetDynamicPlayerSpeed(SPEED_START);
@@ -32,7 +34,8 @@ static void test_GetDynamicPlayerSpeed() {
     printf("[OK] test_GetDynamicPlayerSpeed\n");
 }
 
-int main() {
+int main()
+{
     test_GetCurrentSpeed();
     test_GetDynamicPlayerSpeed();
     printf("Alle Tests bestanden.\n");

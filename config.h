@@ -8,26 +8,27 @@
 //  Spielkonstanten
 // ============================================================
 
-constexpr float SPEED_START        = 400.0f;   // Startgeschwindigkeit der Hindernisse
-constexpr float SPEED_MAX          = 1600.0f;  // Maximale Hindernisgeschwindigkeit
-constexpr float SPEED_ACCELERATION = 2.5f;     // Beschleunigung pro Sekunde
+constexpr float SPEED_START = 400.0f;      // Startgeschwindigkeit der Hindernisse
+constexpr float SPEED_MAX = 1600.0f;       // Maximale Hindernisgeschwindigkeit
+constexpr float SPEED_ACCELERATION = 2.5f; // Beschleunigung pro Sekunde
 
-constexpr int   PRICE_RED_CAR      = 30;       // Sternepreis für das rote Auto
-constexpr int   PRICE_BLUE_CAR   = 75;      // Sternepreis für das lila Auto
+constexpr int PRICE_RED_CAR = 30;  // Sternepreis für das rote Auto
+constexpr int PRICE_BLUE_CAR = 75; // Sternepreis für das lila Auto
 
 // ============================================================
 //  Speicherstand
 // ============================================================
 
 /// Enthält alle persistenten Spielerdaten, die in savegame.dat gespeichert werden.
-struct SaveGame {
-    int         totalStars;       // Gesammelte Sterne insgesamt
-    bool        ownsRedCar;       // Rotes Auto freigeschaltet?
-    bool        ownsBlueCar;    // Lila Auto freigeschaltet?
-    int         selectedColorId;  // Aktiv ausgewähltes Auto (0=weiß, 1=rot, 2=lila)
-    bool        isEnglish;        // Sprache: true=Englisch, false=Deutsch
-    bool        isFullscreen;     // Vollbildmodus aktiv?
-    std::string lastPlayerName;   // Zuletzt verwendeter Spielername
+struct SaveGame
+{
+    int totalStars;             // Gesammelte Sterne insgesamt
+    bool ownsRedCar;            // Rotes Auto freigeschaltet?
+    bool ownsBlueCar;           // Lila Auto freigeschaltet?
+    int selectedColorId;        // Aktiv ausgewähltes Auto (0=weiß, 1=rot, 2=lila)
+    bool isEnglish;             // Sprache: true=Englisch, false=Deutsch
+    bool isFullscreen;          // Vollbildmodus aktiv?
+    std::string lastPlayerName; // Zuletzt verwendeter Spielername
 };
 
 // ============================================================
@@ -39,7 +40,7 @@ struct SaveGame {
 SaveGame LoadSaveGame();
 
 /// Speichert den Spielstand in savegame.dat.
-void SaveGameData(const SaveGame& data);
+void SaveGameData(const SaveGame &data);
 
 /// Löscht savegame.dat vollständig.
 void DeleteSaveData();

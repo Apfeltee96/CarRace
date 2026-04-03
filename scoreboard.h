@@ -8,10 +8,11 @@
 // ============================================================
 
 /// Ein einzelner Eintrag in der Bestenliste.
-struct ScoreEntry {
-    char  name[16];  // Spielername (max. 15 Zeichen + Nullterminator)
-    int   score;     // Erreichte Punktzahl
-    float time;      // Überlebte Zeit in Sekunden
+struct ScoreEntry
+{
+    char name[16]; // Spielername (max. 15 Zeichen + Nullterminator)
+    int score;     // Erreichte Punktzahl
+    float time;    // Überlebte Zeit in Sekunden
 };
 
 // ============================================================
@@ -23,7 +24,7 @@ std::vector<ScoreEntry> LoadScoreboard();
 
 /// Fügt einen neuen Eintrag hinzu und speichert die Top 10.
 /// Ist der Name leer, wird "Gast" verwendet.
-void AddOrUpdateScore(const char* name, int score, float time);
+void AddOrUpdateScore(const char *name, int score, float time);
 
 /// Löscht scoreboard.dat vollständig.
 void ClearScoreboard();
