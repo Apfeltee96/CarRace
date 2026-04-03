@@ -40,7 +40,8 @@ void AddOrUpdateScore(const char* name, int score, float time) {
     entry.time  = time;
 
     const char* validName = (name && std::strlen(name) > 0) ? name : "Gast";
-    std::strncpy(entry.name, validName, 15);
+strncpy_s(entry.name, sizeof(entry.name), validName, 15);
+
     entry.name[15] = '\0';
 
     scores.push_back(entry);
