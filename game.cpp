@@ -250,7 +250,7 @@ void Game::UpdateGameLogic(float deltaTime)
     }
 
     // Uhr-Buff spawnen
-    if (!clockBuff.active && !buffActive && GetRandomValue(0, 1500) < 2)
+    if (!clockBuff.active && !buffActive && GetRandomValue(0, 3000) < 2)
         SpawnClock();
 
     if (clockBuff.active)
@@ -268,8 +268,8 @@ void Game::UpdateGameLogic(float deltaTime)
             clockBuff.active = false;
     }
 
-    // Schild-Buff spawnen (seltener als Uhr)
-    if (!shieldBuff.active && !shieldActive && GetRandomValue(0, 2000) < 2)
+    // Schild-Buff spawnen
+    if (!shieldBuff.active && !shieldActive && GetRandomValue(0, 6000) < 2)
         SpawnShield();
 
     if (shieldBuff.active)
@@ -513,7 +513,7 @@ void Game::Draw()
                        {0, 0, static_cast<float>(cur.width), static_cast<float>(cur.height)},
                        player.rect, {0, 0}, 0.0f, WHITE);
 
-        // Schild-Aura um das Auto (goldener Ring, pulsiert leicht)
+        // Schild-Aura um das Auto
         if (shieldActive)
             // Schild-Rahmen um das Auto
             if (shieldActive)
