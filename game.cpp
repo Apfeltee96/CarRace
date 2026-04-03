@@ -26,6 +26,7 @@ void Game::Init()
     carTextures[2] = LoadTexture("assets/car_blue.png");
     obstacleTex = LoadTexture("assets/hindernis.png");
     starTex = LoadTexture("assets/star.png");
+    clockTex = LoadTexture("assets/clock.png");
 
     // Offscreen-RenderTexture für Auflösungsskalierung
     target = LoadRenderTexture(1000, 800);
@@ -79,6 +80,10 @@ void Game::Init()
         ResetObstacle(obstacles[i], -200.0f - (i * 400.0f));
 
     bonusStar = {{0, 0, 30, 30}, false};
+    clockBuff = {{0, 0, 36, 36}, false};
+    buffActive = false;
+    buffTimer = 0.0f;
+    speedBeforeBuff = 0.0f;
 }
 
 // ============================================================
@@ -162,8 +167,21 @@ void Game::UpdateGameLogic(float deltaTime)
     totalTimeSurvived += deltaTime;
     currentScore = static_cast<int>(totalTimeSurvived * 50.0f);
 
-    // Geschwindigkeit und Spieler-Lenkspeed aktualisieren (Bug fix: score-Parameter entfernt)
-    currentSpeed = GetCurrentSpeed(currentSpeed, deltaTime);
+    // Buff-Timer herunterzählen und Geschwindigkeit nach Ablauf wiederherstellen
+    if (buffActive)
+    {
+        buffTimer -= deltaTime;
+        if (buffTimer <= 0.0f)
+        {
+            buffActive = false;
+            buffTimer = 0.0f;
+            currentSpeed = speedBeforeBuff;
+        }
+    }
+
+    // Geschwindigkeit nur erhöhen wenn kein Buff aktiv
+    if (!buffActive)
+        currentSpeed = GetCurrentSpeed(currentSpeed, deltaTime);
     player.speed = GetDynamicPlayerSpeed(currentSpeed);
 
     // Spieler bewegen und auf Fahrbahn begrenzen
@@ -200,8 +218,8 @@ void Game::UpdateGameLogic(float deltaTime)
         }
     }
 
-    // Bonusstern spawnen (ca. alle 167 Frames bei 60 FPS)
-    if (!bonusStar.active && GetRandomValue(0, 500) < 3)
+    // Bonusstern spawnen
+    if (!bonusStar.active && GetRandomValue(0, 600) < 3)
         SpawnStar();
 
     if (bonusStar.active)
@@ -214,6 +232,25 @@ void Game::UpdateGameLogic(float deltaTime)
         }
         if (bonusStar.rect.y > 800.0f)
             bonusStar.active = false;
+    }
+
+    // Uhr-Buff spawnen
+    if (!clockBuff.active && !buffActive && GetRandomValue(0, 1500) < 2)
+        SpawnClock();
+
+    if (clockBuff.active)
+    {
+        clockBuff.rect.y += currentSpeed * deltaTime;
+        if (CheckCollisionRecs(player.rect, clockBuff.rect))
+        {
+            speedBeforeBuff = currentSpeed;
+            currentSpeed *= 0.4f; // Geschwindigkeit auf 40 % reduzieren
+            buffActive = true;
+            buffTimer = 3.0f;
+            clockBuff.active = false;
+        }
+        if (clockBuff.rect.y > 800.0f)
+            clockBuff.active = false;
     }
 }
 
@@ -271,6 +308,10 @@ void Game::HandleMenuInput(Vector2 mousePoint)
             ResetObstacle(obstacles[i], -200.0f - (i * 400.0f));
 
         bonusStar.active = false;
+        clockBuff.active = false;
+        buffActive = false;
+        buffTimer = 0.0f;
+        speedBeforeBuff = 0.0f;
         state = PLAYING;
     }
     else if (CheckCollisionPointRec(mousePoint, scoreBtn))
@@ -404,6 +445,12 @@ void Game::SpawnStar()
     bonusStar.active = true;
 }
 
+void Game::SpawnClock()
+{
+    clockBuff.rect = {static_cast<float>(GetRandomValue(320, 640)), -100.0f, 36.0f, 36.0f};
+    clockBuff.active = true;
+}
+
 // ============================================================
 //  Draw
 // ============================================================
@@ -444,9 +491,36 @@ void Game::Draw()
                            bonusStar.rect, {0, 0}, 0.0f, WHITE);
         }
 
+        // Uhr-Buff Icon
+        if (clockBuff.active)
+        {
+            DrawTexturePro(clockTex,
+                           {0, 0, static_cast<float>(clockTex.width), static_cast<float>(clockTex.height)},
+                           clockBuff.rect, {0, 0}, 0.0f, WHITE);
+        }
+
         // HUD (Bug fix: cachedTopScore statt LoadScoreboard() pro Frame)
         DrawHUD(playerName, totalTimeSurvived, currentScore,
                 earnedStarsThisRound, saveData.isEnglish, starTex, cachedTopScore);
+
+        // Buff-Anzeige: Timer-Balken und Text wenn Verlangsamung aktiv
+        if (buffActive)
+        {
+            // Leicht blauer Rand um die Fahrbahn als visuelles Signal
+            DrawRectangleLinesEx({300, 0, 400, 800}, 4, Fade(SKYBLUE, 0.7f));
+
+            // Timer-Balken (oben auf der Fahrbahn)
+            float barMaxW = 380.0f;
+            float barFill = barMaxW * (buffTimer / 3.0f);
+            DrawRectangle(310, 50, (int)barMaxW, 12, Fade(DARKBLUE, 0.5f));
+            DrawRectangle(310, 50, (int)barFill, 12, SKYBLUE);
+
+            // Text mit verbleibender Zeit
+            const char *buffLabel = saveData.isEnglish
+                                        ? TextFormat("SLOW  %.1fs", buffTimer)
+                                        : TextFormat("LANGSAM  %.1fs", buffTimer);
+            DrawText(buffLabel, 355, 65, 18, SKYBLUE);
+        }
 
         if (state == PAUSED)
             DrawPauseMenu(mousePoint, btnPrimary, btnMenu, saveData.isEnglish);
@@ -530,6 +604,7 @@ void Game::Cleanup()
         UnloadTexture(carTextures[i]);
     UnloadTexture(obstacleTex);
     UnloadTexture(starTex);
+    UnloadTexture(clockTex);
     UnloadRenderTexture(target);
     CloseWindow();
     exit(0);

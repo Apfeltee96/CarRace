@@ -44,6 +44,13 @@ struct CollectableStar
     bool active;
 };
 
+/// Eine einsammelbare Uhr auf der Fahrbahn (verlangsamt das Spiel kurz).
+struct CollectableClock
+{
+    Rectangle rect;
+    bool active;
+};
+
 // ============================================================
 //  Hauptspielklasse
 // ============================================================
@@ -72,6 +79,9 @@ private:
     /// Spawnt einen Bonusstern an zufälliger X-Position.
     void SpawnStar();
 
+    /// Spawnt eine Uhr an zufälliger X-Position.
+    void SpawnClock();
+
     /// Skalierte Mausposition für 1000×800-Logikraum berechnen.
     Vector2 GetScaledMouse() const;
 
@@ -87,6 +97,7 @@ private:
     Texture2D carTextures[3]; // [0]=weiß, [1]=rot, [2]=lila
     Texture2D obstacleTex;
     Texture2D starTex;
+    Texture2D clockTex;
     RenderTexture2D target; // Offscreen-Buffer für Skalierung
 
     // --- Spielzustand ---
@@ -97,6 +108,7 @@ private:
 
     std::vector<Obstacle> obstacles;
     CollectableStar bonusStar;
+    CollectableClock clockBuff;
 
     int currentScore;
     float currentSpeed;
@@ -104,6 +116,10 @@ private:
     int earnedStarsThisRound;
     int framesCounter;  // Für blinkenden Cursor im Hauptmenü
     int cachedTopScore; // Gecachter Highscore (kein File-I/O pro Frame)
+
+    bool buffActive;       // Ist der Verlangsamungs-Buff gerade aktiv?
+    float buffTimer;       // Verbleibende Buff-Zeit in Sekunden
+    float speedBeforeBuff; // Geschwindigkeit vor dem Buff (für Wiederherstellung)
 
     char playerName[16];
     int letterCount;
