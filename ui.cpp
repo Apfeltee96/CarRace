@@ -73,11 +73,15 @@ void DrawMainMenu(const char *name, int letterCount, int framesCounter,
 
     if (!nameSaved)
     {
-        // Namenseingabefeld
+        //label
+        const char *label = isEnglish ? "Please enter name here:" : "Hier bitte Namen eingeben:";
+
+        DrawText(label, 350, 190, 18, RAYWHITE);
         DrawRectangle(350, 220, 300, 40, LIGHTGRAY);
         DrawRectangleLines(350, 220, 300, 40, BLACK);
         DrawText(name, 360, 230, 20, BLACK);
-        // Blinkender Cursor (wechselt alle 30 Frames)
+
+        // Blinkender Cursor
         if (((framesCounter / 30) % 2) == 0)
             DrawRectangle(360 + MeasureText(name, 20), 225, 2, 30, DARKGRAY);
     }
