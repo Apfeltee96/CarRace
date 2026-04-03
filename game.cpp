@@ -14,6 +14,11 @@ void Game::Init() {
     SetExitKey(KEY_NULL);
     SetTargetFPS(60);
 
+    // Icon setzen
+Image icon = LoadImage("icon.png");
+SetWindowIcon(icon);
+UnloadImage(icon);
+
     // Assets laden
     carTextures[0] = LoadTexture("assets/car_white.png");
     carTextures[1] = LoadTexture("assets/car_red.png");
