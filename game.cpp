@@ -27,6 +27,7 @@ void Game::Init()
     obstacleTex = LoadTexture("assets/hindernis.png");
     starTex = LoadTexture("assets/star.png");
     clockTex = LoadTexture("assets/clock.png");
+    shieldTex = LoadTexture("assets/shield.png");
 
     // Offscreen-RenderTexture für Auflösungsskalierung
     target = LoadRenderTexture(1000, 800);
@@ -52,7 +53,7 @@ void Game::Init()
     cachedTopScore = GetTopScore();
 
     // Button-Layouts (1000×800 Logikraum)
-    float centerX = 1000 / 2.0f - 125.0f; // 375 → alle Buttons zentriert
+    float centerX = 1000 / 2.0f - 125.0f;
 
     startBtn = {centerX, 300, 250, 50};
     scoreBtn = {centerX, 360, 250, 50};
@@ -70,7 +71,7 @@ void Game::Init()
     btnPrimary = {centerX, 400, 250, 50};
     btnMenu = {centerX, 480, 250, 50};
 
-    // Shop-Buttons (feste Positionen passend zur DrawShopMenu-Darstellung)
+    // Shop-Buttons
     redCarBtn = {400, 500, 200, 50};
     blueCarBtn = {650, 500, 200, 50};
 
@@ -81,9 +82,14 @@ void Game::Init()
 
     bonusStar = {{0, 0, 30, 30}, false};
     clockBuff = {{0, 0, 36, 36}, false};
+    shieldBuff = {{0, 0, 48, 48}, false};
+
     buffActive = false;
     buffTimer = 0.0f;
     speedBeforeBuff = 0.0f;
+
+    shieldActive = false;
+    shieldTimer = 0.0f;
 }
 
 // ============================================================
@@ -96,7 +102,6 @@ void Game::Update()
 
     Vector2 mousePoint = GetScaledMouse();
 
-    // ESC: zwischen aktuellem Zustand und EXIT_PROMPT wechseln
     if (IsKeyPressed(KEY_ESCAPE))
     {
         if (state == EXIT_PROMPT)
@@ -167,7 +172,7 @@ void Game::UpdateGameLogic(float deltaTime)
     totalTimeSurvived += deltaTime;
     currentScore = static_cast<int>(totalTimeSurvived * 50.0f);
 
-    // Buff-Timer herunterzählen und Geschwindigkeit nach Ablauf wiederherstellen
+    // Uhr-Buff Timer
     if (buffActive)
     {
         buffTimer -= deltaTime;
@@ -179,7 +184,18 @@ void Game::UpdateGameLogic(float deltaTime)
         }
     }
 
-    // Geschwindigkeit nur erhöhen wenn kein Buff aktiv
+    // Schild-Buff Timer
+    if (shieldActive)
+    {
+        shieldTimer -= deltaTime;
+        if (shieldTimer <= 0.0f)
+        {
+            shieldActive = false;
+            shieldTimer = 0.0f;
+        }
+    }
+
+    // Geschwindigkeit nur erhöhen wenn kein Uhr-Buff aktiv
     if (!buffActive)
         currentSpeed = GetCurrentSpeed(currentSpeed, deltaTime);
     player.speed = GetDynamicPlayerSpeed(currentSpeed);
@@ -198,7 +214,6 @@ void Game::UpdateGameLogic(float deltaTime)
 
         if (obs.rect.y > 800.0f)
         {
-            // Y-Position: hinter das am weitesten oben liegende Hindernis setzen
             float highestY = 0.0f;
             for (const auto &o : obstacles)
                 if (o.rect.y < highestY)
@@ -206,13 +221,13 @@ void Game::UpdateGameLogic(float deltaTime)
             ResetObstacle(obs, highestY - 400.0f);
         }
 
-        // Kollision → Spielende
-        if (CheckCollisionRecs(player.rect, obs.rect))
+        // Kollision → nur Game Over wenn kein Schild aktiv
+        if (CheckCollisionRecs(player.rect, obs.rect) && !shieldActive)
         {
             AddOrUpdateScore(playerName, currentScore, totalTimeSurvived);
             saveData.totalStars += earnedStarsThisRound;
             SaveGameData(saveData);
-            cachedTopScore = GetTopScore(); // Highscore nach Spielende aktualisieren
+            cachedTopScore = GetTopScore();
             state = GAMEOVER;
             return;
         }
@@ -244,13 +259,30 @@ void Game::UpdateGameLogic(float deltaTime)
         if (CheckCollisionRecs(player.rect, clockBuff.rect))
         {
             speedBeforeBuff = currentSpeed;
-            currentSpeed *= 0.4f; // Geschwindigkeit auf 40 % reduzieren
+            currentSpeed *= 0.4f;
             buffActive = true;
             buffTimer = 3.0f;
             clockBuff.active = false;
         }
         if (clockBuff.rect.y > 800.0f)
             clockBuff.active = false;
+    }
+
+    // Schild-Buff spawnen (seltener als Uhr)
+    if (!shieldBuff.active && !shieldActive && GetRandomValue(0, 2000) < 2)
+        SpawnShield();
+
+    if (shieldBuff.active)
+    {
+        shieldBuff.rect.y += currentSpeed * deltaTime;
+        if (CheckCollisionRecs(player.rect, shieldBuff.rect))
+        {
+            shieldActive = true;
+            shieldTimer = 5.0f;
+            shieldBuff.active = false;
+        }
+        if (shieldBuff.rect.y > 800.0f)
+            shieldBuff.active = false;
     }
 }
 
@@ -260,7 +292,6 @@ void Game::UpdateGameLogic(float deltaTime)
 
 void Game::HandleMenuInput(Vector2 mousePoint)
 {
-    // Zeichenweise Namenseingabe
     if (!isNameSaved)
     {
         int key = GetCharPressed();
@@ -290,7 +321,6 @@ void Game::HandleMenuInput(Vector2 mousePoint)
 
     if (CheckCollisionPointRec(mousePoint, startBtn) && (letterCount > 0 || isNameSaved))
     {
-        // Spiel starten: alles zurücksetzen
         currentScore = 0;
         totalTimeSurvived = 0.0f;
         earnedStarsThisRound = 0;
@@ -309,9 +339,12 @@ void Game::HandleMenuInput(Vector2 mousePoint)
 
         bonusStar.active = false;
         clockBuff.active = false;
+        shieldBuff.active = false;
         buffActive = false;
         buffTimer = 0.0f;
         speedBeforeBuff = 0.0f;
+        shieldActive = false;
+        shieldTimer = 0.0f;
         state = PLAYING;
     }
     else if (CheckCollisionPointRec(mousePoint, scoreBtn))
@@ -335,17 +368,13 @@ void Game::HandleShopInput(Vector2 mousePoint)
         return;
     }
 
-    // Weißes Auto (Index 0, immer kostenlos)
     if (CheckCollisionPointRec(mousePoint, {150, 500, 200, 50}))
         saveData.selectedColorId = 0;
 
-    // Rotes Auto (Bug fix: PRICE_RED_CAR aus config.h statt Hardcode)
     if (CheckCollisionPointRec(mousePoint, redCarBtn))
     {
         if (saveData.ownsRedCar)
-        {
             saveData.selectedColorId = 1;
-        }
         else if (saveData.totalStars >= PRICE_RED_CAR)
         {
             saveData.totalStars -= PRICE_RED_CAR;
@@ -354,13 +383,10 @@ void Game::HandleShopInput(Vector2 mousePoint)
         }
     }
 
-    // Lila Auto (Bug fix: PRICE_PURPLE_CAR aus config.h statt Hardcode)
     if (CheckCollisionPointRec(mousePoint, blueCarBtn))
     {
         if (saveData.ownsBlueCar)
-        {
             saveData.selectedColorId = 2;
-        }
         else if (saveData.totalStars >= PRICE_BLUE_CAR)
         {
             saveData.totalStars -= PRICE_BLUE_CAR;
@@ -406,7 +432,6 @@ void Game::HandleSettingsInput(Vector2 mousePoint)
         if (IsWindowFullscreen())
             ToggleFullscreen();
 
-        // Alles auf Standardwerte zurücksetzen (Sprache beibehalten)
         saveData = {0, false, false, 0, saveData.isEnglish, false, ""};
         playerName[0] = '\0';
         letterCount = 0;
@@ -451,6 +476,12 @@ void Game::SpawnClock()
     clockBuff.active = true;
 }
 
+void Game::SpawnShield()
+{
+    shieldBuff.rect = {static_cast<float>(GetRandomValue(320, 640)), -100.0f, 48.0f, 48.0f};
+    shieldBuff.active = true;
+}
+
 // ============================================================
 //  Draw
 // ============================================================
@@ -463,7 +494,6 @@ void Game::Draw()
     ClearBackground(DARKGREEN);
     DrawRectangle(300, 0, 400, 800, DARKGRAY); // Fahrbahn
 
-    // Spielobjekte nur zeichnen wenn im Spielzustand
     bool inGame = (state == PLAYING || state == PAUSED ||
                    state == GAMEOVER || state == EXIT_PROMPT);
 
@@ -483,6 +513,17 @@ void Game::Draw()
                        {0, 0, static_cast<float>(cur.width), static_cast<float>(cur.height)},
                        player.rect, {0, 0}, 0.0f, WHITE);
 
+        // Schild-Aura um das Auto (goldener Ring, pulsiert leicht)
+        if (shieldActive)
+            // Schild-Rahmen um das Auto
+            if (shieldActive)
+            {
+                DrawRectangleLinesEx(
+                    {player.rect.x - 4, player.rect.y - 4,
+                     player.rect.width + 8, player.rect.height + 8},
+                    4.0f, GOLD);
+            }
+
         // Bonusstern
         if (bonusStar.active)
         {
@@ -499,27 +540,48 @@ void Game::Draw()
                            clockBuff.rect, {0, 0}, 0.0f, WHITE);
         }
 
-        // HUD (Bug fix: cachedTopScore statt LoadScoreboard() pro Frame)
+        // Schild-Buff Icon
+        if (shieldBuff.active)
+        {
+            DrawTexturePro(shieldTex,
+                           {0, 0, static_cast<float>(shieldTex.width), static_cast<float>(shieldTex.height)},
+                           shieldBuff.rect, {0, 0}, 0.0f, WHITE);
+        }
+
+        // HUD
         DrawHUD(playerName, totalTimeSurvived, currentScore,
                 earnedStarsThisRound, saveData.isEnglish, starTex, cachedTopScore);
 
-        // Buff-Anzeige: Timer-Balken und Text wenn Verlangsamung aktiv
+        // Uhr-Buff Anzeige
         if (buffActive)
         {
-            // Leicht blauer Rand um die Fahrbahn als visuelles Signal
             DrawRectangleLinesEx({300, 0, 400, 800}, 4, Fade(SKYBLUE, 0.7f));
 
-            // Timer-Balken (oben auf der Fahrbahn)
             float barMaxW = 380.0f;
             float barFill = barMaxW * (buffTimer / 3.0f);
             DrawRectangle(310, 50, (int)barMaxW, 12, Fade(DARKBLUE, 0.5f));
             DrawRectangle(310, 50, (int)barFill, 12, SKYBLUE);
 
-            // Text mit verbleibender Zeit
             const char *buffLabel = saveData.isEnglish
                                         ? TextFormat("SLOW  %.1fs", buffTimer)
                                         : TextFormat("LANGSAM  %.1fs", buffTimer);
             DrawText(buffLabel, 355, 65, 18, SKYBLUE);
+        }
+
+        // Schild-Buff Anzeige
+        if (shieldActive)
+        {
+            DrawRectangleLinesEx({300, 0, 400, 800}, 4, Fade(GOLD, 0.7f));
+
+            float barMaxW = 380.0f;
+            float barFill = barMaxW * (shieldTimer / 5.0f);
+            DrawRectangle(310, 85, (int)barMaxW, 12, Fade(DARKBROWN, 0.5f));
+            DrawRectangle(310, 85, (int)barFill, 12, GOLD);
+
+            const char *shieldLabel = saveData.isEnglish
+                                          ? TextFormat("SHIELD  %.1fs", shieldTimer)
+                                          : TextFormat("SCHILD  %.1fs", shieldTimer);
+            DrawText(shieldLabel, 350, 100, 18, GOLD);
         }
 
         if (state == PAUSED)
@@ -546,7 +608,6 @@ void Game::Draw()
                          deleteDataBtn, backSetBtn, saveData.isEnglish, saveData.isFullscreen);
         break;
     case SCOREBOARD_MENU:
-        // Bug fix: Scoreboard einmal laden, nicht per Frame
         DrawScoreboardMenu(LoadScoreboard(), mousePoint, backMenuBtn, saveData.isEnglish);
         break;
     case DESCRIPTION:
@@ -556,7 +617,7 @@ void Game::Draw()
         break;
     }
 
-    // Exit-Dialog (über allem anderen)
+    // Exit-Dialog
     if (state == EXIT_PROMPT)
     {
         DrawRectangle(0, 0, 1000, 800, Fade(BLACK, 0.7f));
@@ -605,6 +666,7 @@ void Game::Cleanup()
     UnloadTexture(obstacleTex);
     UnloadTexture(starTex);
     UnloadTexture(clockTex);
+    UnloadTexture(shieldTex);
     UnloadRenderTexture(target);
     CloseWindow();
     exit(0);

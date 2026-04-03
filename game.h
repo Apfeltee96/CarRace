@@ -51,6 +51,13 @@ struct CollectableClock
     bool active;
 };
 
+/// Ein einsammelbares Schild auf der Fahrbahn (schützt vor Hindernissen kurz).
+struct CollectableShield
+{
+    Rectangle rect;
+    bool active;
+};
+
 // ============================================================
 //  Hauptspielklasse
 // ============================================================
@@ -82,6 +89,9 @@ private:
     /// Spawnt eine Uhr an zufälliger X-Position.
     void SpawnClock();
 
+    /// Spawnt ein Schild an zufälliger X-Position.
+    void SpawnShield();
+
     /// Skalierte Mausposition für 1000×800-Logikraum berechnen.
     Vector2 GetScaledMouse() const;
 
@@ -98,6 +108,7 @@ private:
     Texture2D obstacleTex;
     Texture2D starTex;
     Texture2D clockTex;
+    Texture2D shieldTex;
     RenderTexture2D target; // Offscreen-Buffer für Skalierung
 
     // --- Spielzustand ---
@@ -109,6 +120,7 @@ private:
     std::vector<Obstacle> obstacles;
     CollectableStar bonusStar;
     CollectableClock clockBuff;
+    CollectableShield shieldBuff;
 
     int currentScore;
     float currentSpeed;
@@ -120,6 +132,9 @@ private:
     bool buffActive;       // Ist der Verlangsamungs-Buff gerade aktiv?
     float buffTimer;       // Verbleibende Buff-Zeit in Sekunden
     float speedBeforeBuff; // Geschwindigkeit vor dem Buff (für Wiederherstellung)
+
+    bool shieldActive; // Ist der Schild-Buff gerade aktiv?
+    float shieldTimer; // Verbleibende Schild-Zeit in Sekunden
 
     char playerName[16];
     int letterCount;
