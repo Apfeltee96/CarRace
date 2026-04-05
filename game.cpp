@@ -4,70 +4,77 @@
 #include <cstring>
 #include <cmath>
 
-// ============================================================
-//  Interne Hilfsfunktionen für Straßenrandobjekte
-// ============================================================
+// Zeichnet eine Textur gestreckt auf dst (kein Rotation, kein Tint-Offset).
+static void DrawTexFull(Texture2D tex, Rectangle dst)
+{
+    DrawTexturePro(tex,
+                   {0, 0, (float)tex.width, (float)tex.height},
+                   dst, {0, 0}, 0.0f, WHITE);
+}
+
 static void DrawTree(float x, float y, float s)
 {
     DrawRectangle((int)(x - 5 * s), (int)(y - 22 * s), (int)(10 * s), (int)(22 * s),
                   {101, 67, 33, 255});
-    DrawCircle((int)x, (int)(y - 30 * s), (int)(22 * s), {20, 100, 20, 255});
+    DrawCircle((int)x,            (int)(y - 30 * s), (int)(22 * s), {20, 100, 20, 255});
     DrawCircle((int)(x - 10 * s), (int)(y - 42 * s), (int)(16 * s), {30, 130, 30, 255});
     DrawCircle((int)(x + 10 * s), (int)(y - 42 * s), (int)(16 * s), {30, 130, 30, 255});
-    DrawCircle((int)x, (int)(y - 52 * s), (int)(18 * s), {50, 160, 50, 255});
+    DrawCircle((int)x,            (int)(y - 52 * s), (int)(18 * s), {50, 160, 50, 255});
 }
 
 static void DrawCactus(float x, float y, float s)
 {
     Color cGreen = {34, 115, 34, 255};
-    int bw = (int)(12 * s);
-    int bh = (int)(50 * s);
+    int bw = (int)(12 * s), bh = (int)(50 * s);
     DrawRectangle((int)(x - bw / 2), (int)(y - bh), bw, bh, cGreen);
     DrawRectangle((int)(x - bw / 2 - (int)(16 * s)), (int)(y - (int)(32 * s)),
                   (int)(16 * s), (int)(8 * s), cGreen);
-    DrawRectangle((int)(x - bw / 2 - (int)(9 * s)), (int)(y - (int)(44 * s)),
-                  (int)(9 * s), (int)(14 * s), cGreen);
-    DrawRectangle((int)(x + bw / 2), (int)(y - (int)(26 * s)),
+    DrawRectangle((int)(x - bw / 2 - (int)(9 * s)),  (int)(y - (int)(44 * s)),
+                  (int)(9 * s),  (int)(14 * s), cGreen);
+    DrawRectangle((int)(x + bw / 2),                 (int)(y - (int)(26 * s)),
                   (int)(16 * s), (int)(8 * s), cGreen);
-    DrawRectangle((int)(x + bw / 2 + (int)(7 * s)), (int)(y - (int)(38 * s)),
-                  (int)(9 * s), (int)(14 * s), cGreen);
+    DrawRectangle((int)(x + bw / 2 + (int)(7 * s)),  (int)(y - (int)(38 * s)),
+                  (int)(9 * s),  (int)(14 * s), cGreen);
 }
 
-// ============================================================
-//  Init
-// ============================================================
+// --- Init ---
+
 void Game::Init()
 {
     saveData = LoadSaveGame();
     InitWindow(1000, 800, "Car Race");
     SetExitKey(KEY_NULL);
     SetTargetFPS(60);
+
     Image icon = LoadImage("icon.png");
     SetWindowIcon(icon);
     UnloadImage(icon);
+
     carTextures[0] = LoadTexture("assets/car_white.png");
     carTextures[1] = LoadTexture("assets/car_red.png");
     carTextures[2] = LoadTexture("assets/car_blue.png");
-    obstacleTex = LoadTexture("assets/hindernis.png");
-    starTex = LoadTexture("assets/star.png");
-    clockTex = LoadTexture("assets/clock.png");
-    shieldTex = LoadTexture("assets/shield.png");
+    obstacleTex    = LoadTexture("assets/hindernis.png");
+    starTex        = LoadTexture("assets/star.png");
+    clockTex       = LoadTexture("assets/clock.png");
+    shieldTex      = LoadTexture("assets/shield.png");
+
     target = LoadRenderTexture(1000, 800);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
+
     if (saveData.isFullscreen && !IsWindowFullscreen())
         ToggleFullscreen();
-    // --- Audio ---
+
+    // Audio
     InitAudioDevice();
-    musicVolume = 0.7f;
-    musicLoaded = false;
+    musicVolume      = 0.7f;
+    musicLoaded      = false;
     crashSoundLoaded = false;
-    volumeDragging = false;
+    volumeDragging   = false;
     if (FileExists("sounds/soundtrack.mp3"))
     {
-        backgroundMusic = LoadMusicStream("sounds/soundtrack.mp3");
+        backgroundMusic         = LoadMusicStream("sounds/soundtrack.mp3");
         backgroundMusic.looping = true;
         SetMusicVolume(backgroundMusic, musicVolume);
-        // Musik startet erst beim Spielstart, nicht im Menü
         musicLoaded = true;
     }
     if (FileExists("sounds/crash.mp3"))
@@ -76,106 +83,98 @@ void Game::Init()
         SetSoundVolume(crashSound, musicVolume);
         crashSoundLoaded = true;
     }
-    // --- Straßenvisuals ---
+
     roadScrollOffset = 0.0f;
     InitSideObjects();
+
     // Startzustand
-    state = MAIN_MENU;
-    showQuitConfirm = false;
-    showPauseBackConfirm = false;
+    state                 = MAIN_MENU;
+    showQuitConfirm       = false;
+    showPauseBackConfirm  = false;
     showNameChangeConfirm = false;
     showDeleteDataConfirm = false;
-    isNameSaved = false;
-    framesCounter = 0;
-    playerName[0] = '\0';
+    isNameSaved           = false;
+    framesCounter         = 0;
+    playerName[0]         = '\0';
+
     if (!saveData.lastPlayerName.empty() && saveData.lastPlayerName != "Gast")
     {
         std::strncpy(playerName, saveData.lastPlayerName.c_str(), 15);
         isNameSaved = true;
     }
     playerName[15] = '\0';
-    letterCount = static_cast<int>(std::strlen(playerName));
+    letterCount    = static_cast<int>(std::strlen(playerName));
     cachedTopScore = GetTopScore();
-    // Button-Layouts
-    float centerX = 1000 / 2.0f - 125.0f;
-    startBtn = {centerX, 300, 250, 50};
-    scoreBtn = {centerX, 360, 250, 50};
-    shopBtn = {centerX, 420, 250, 50};
-    settingsBtn = {centerX, 480, 250, 50};
-    descBtn = {centerX, 540, 250, 50};
-    backMenuBtn = {centerX, 680, 250, 50};
-    langBtn = {centerX, 180, 250, 50};
-    resBtn = {centerX, 250, 250, 50};
-    nameChangeBtn = {centerX, 320, 250, 50};
-    deleteDataBtn = {centerX, 390, 250, 50};
-    backSetBtn = {centerX, 550, 250, 50};
-    btnPrimary = {centerX, 400, 250, 50};
-    btnMenu = {centerX, 480, 250, 50};
-    // Pause-Menü Buttons
-    pauseResumeBtn = {centerX, 280, 250, 50};
-    pauseMenuBtn = {centerX, 350, 250, 50};
-    pauseQuitBtn = {centerX, 420, 250, 50};
-    // Shop-Buttons
-    redCarBtn = {400, 500, 200, 50};
-    blueCarBtn = {650, 500, 200, 50};
-    // Hindernisse
+
+    // Button-Layouts (alle zentriert, 250px breit)
+    float cx = 1000 / 2.0f - 125.0f;
+    startBtn      = {cx, 300, 250, 50};
+    scoreBtn      = {cx, 360, 250, 50};
+    shopBtn       = {cx, 420, 250, 50};
+    settingsBtn   = {cx, 480, 250, 50};
+    descBtn       = {cx, 540, 250, 50};
+    backMenuBtn   = {cx, 680, 250, 50};
+    langBtn       = {cx, 180, 250, 50};
+    resBtn        = {cx, 250, 250, 50};
+    nameChangeBtn = {cx, 320, 250, 50};
+    deleteDataBtn = {cx, 390, 250, 50};
+    backSetBtn    = {cx, 550, 250, 50};
+    btnPrimary    = {cx, 400, 250, 50};
+    btnMenu       = {cx, 480, 250, 50};
+    pauseResumeBtn = {cx, 280, 250, 50};
+    pauseMenuBtn   = {cx, 350, 250, 50};
+    pauseQuitBtn   = {cx, 420, 250, 50};
+    redCarBtn      = {400, 500, 200, 50};
+    blueCarBtn     = {650, 500, 200, 50};
+
     obstacles.resize(4);
     for (int i = 0; i < 4; i++)
         ResetObstacle(obstacles[i], -200.0f - (i * 400.0f));
-    bonusStar = {{0, 0, 30, 30}, false};
-    clockBuff = {{0, 0, 36, 36}, false};
+
+    bonusStar  = {{0, 0, 30, 30}, false};
+    clockBuff  = {{0, 0, 36, 36}, false};
     shieldBuff = {{0, 0, 48, 48}, false};
-    buffActive = false;
-    buffTimer = 0.0f;
+
+    buffActive      = false;
+    buffTimer       = 0.0f;
     speedBeforeBuff = 0.0f;
-    shieldActive = false;
-    shieldTimer = 0.0f;
+    shieldActive    = false;
+    shieldTimer     = 0.0f;
 }
 
-// ============================================================
-//  Update
-// ============================================================
+// --- Update ---
+
 void Game::Update()
 {
     framesCounter++;
     if (musicLoaded)
         UpdateMusicStream(backgroundMusic);
+
     Vector2 mousePoint = GetScaledMouse();
 
     if (IsKeyPressed(KEY_ESCAPE))
     {
         if (state == PLAYING)
         {
-            if (musicLoaded)
-                PauseMusicStream(backgroundMusic);
+            if (musicLoaded) PauseMusicStream(backgroundMusic);
             state = PAUSED;
-            showQuitConfirm = false;
-            showPauseBackConfirm = false;
+            showQuitConfirm = showPauseBackConfirm = false;
         }
         else if (state == PAUSED)
         {
-            if (showQuitConfirm)
-                showQuitConfirm = false;
-            else if (showPauseBackConfirm)
-                showPauseBackConfirm = false;
+            if      (showQuitConfirm)      showQuitConfirm = false;
+            else if (showPauseBackConfirm) showPauseBackConfirm = false;
             else
             {
-                if (musicLoaded)
-                    ResumeMusicStream(backgroundMusic);
+                if (musicLoaded) ResumeMusicStream(backgroundMusic);
                 state = PLAYING;
             }
         }
         else if (state == SETTINGS)
         {
-            if (showNameChangeConfirm)
-                showNameChangeConfirm = false;
-            else if (showDeleteDataConfirm)
-                showDeleteDataConfirm = false;
-            else
-            {
-                previousState = state;
-                state = EXIT_PROMPT;
-            }
+            if      (showNameChangeConfirm) showNameChangeConfirm = false;
+            else if (showDeleteDataConfirm) showDeleteDataConfirm = false;
+            else { previousState = state; state = EXIT_PROMPT; }
         }
         else if (state == EXIT_PROMPT)
             state = previousState;
@@ -191,28 +190,21 @@ void Game::Update()
     case EXIT_PROMPT:
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
         {
-            if (CheckCollisionPointRec(mousePoint, {380, 420, 100, 40}))
-                Cleanup();
-            if (CheckCollisionPointRec(mousePoint, {520, 420, 100, 40}))
-                state = previousState;
+            if (CheckCollisionPointRec(mousePoint, {380, 420, 100, 40})) Cleanup();
+            if (CheckCollisionPointRec(mousePoint, {520, 420, 100, 40})) state = previousState;
         }
         break;
-    case MAIN_MENU:
-        HandleMenuInput(mousePoint);
-        break;
-    case SHOP_MENU:
-        HandleShopInput(mousePoint);
-        break;
-    case SETTINGS:
-        HandleSettingsInput(mousePoint);
-        break;
-    case PLAYING:
-        UpdateGameLogic(GetFrameTime());
-        break;
+
+    case MAIN_MENU:  HandleMenuInput(mousePoint);     break;
+    case SHOP_MENU:  HandleShopInput(mousePoint);     break;
+    case SETTINGS:   HandleSettingsInput(mousePoint); break;
+    case PLAYING:    UpdateGameLogic(GetFrameTime()); break;
+
     case PAUSED:
     {
         const Rectangle sliderTrack = {350, 520, 300, 16};
         bool anyConfirm = showQuitConfirm || showPauseBackConfirm;
+
         if (!anyConfirm)
         {
             if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
@@ -220,129 +212,121 @@ void Game::Update()
                 if (volumeDragging || CheckCollisionPointRec(mousePoint, sliderTrack))
                 {
                     volumeDragging = true;
-                    musicVolume = std::clamp(
-                        (mousePoint.x - sliderTrack.x) / sliderTrack.width, 0.0f, 1.0f);
-                    if (musicLoaded)
-                        SetMusicVolume(backgroundMusic, musicVolume);
-                    if (crashSoundLoaded)
-                        SetSoundVolume(crashSound, musicVolume);
+                    musicVolume = std::clamp((mousePoint.x - sliderTrack.x) / sliderTrack.width, 0.0f, 1.0f);
+                    if (musicLoaded)      SetMusicVolume(backgroundMusic, musicVolume);
+                    if (crashSoundLoaded) SetSoundVolume(crashSound, musicVolume);
                 }
             }
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
             {
                 volumeDragging = false;
-                if (CheckCollisionPointRec(mousePoint, pauseResumeBtn))
+                if      (CheckCollisionPointRec(mousePoint, pauseResumeBtn))
                 {
-                    if (musicLoaded)
-                        ResumeMusicStream(backgroundMusic);
+                    if (musicLoaded) ResumeMusicStream(backgroundMusic);
                     state = PLAYING;
                 }
-                else if (CheckCollisionPointRec(mousePoint, pauseMenuBtn))
-                    showPauseBackConfirm = true;
-                else if (CheckCollisionPointRec(mousePoint, pauseQuitBtn))
-                    showQuitConfirm = true;
+                else if (CheckCollisionPointRec(mousePoint, pauseMenuBtn)) showPauseBackConfirm = true;
+                else if (CheckCollisionPointRec(mousePoint, pauseQuitBtn)) showQuitConfirm = true;
             }
         }
         else if (showPauseBackConfirm)
         {
-            const Rectangle bYesBtn = {330, 420, 150, 50};
-            const Rectangle bNoBtn = {520, 420, 150, 50};
+            const Rectangle yBtn = {330, 420, 150, 50};
+            const Rectangle nBtn = {520, 420, 150, 50};
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
             {
-                if (CheckCollisionPointRec(mousePoint, bYesBtn))
+                if (CheckCollisionPointRec(mousePoint, yBtn))
                 {
                     showPauseBackConfirm = false;
-                    if (musicLoaded)
-                        StopMusicStream(backgroundMusic);
+                    if (musicLoaded) StopMusicStream(backgroundMusic);
                     state = MAIN_MENU;
                 }
-                if (CheckCollisionPointRec(mousePoint, bNoBtn))
+                if (CheckCollisionPointRec(mousePoint, nBtn))
                     showPauseBackConfirm = false;
             }
         }
         else if (showQuitConfirm)
         {
-            const Rectangle qYesBtn = {330, 420, 150, 50};
-            const Rectangle qNoBtn = {520, 420, 150, 50};
+            const Rectangle yBtn = {330, 420, 150, 50};
+            const Rectangle nBtn = {520, 420, 150, 50};
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
             {
-                if (CheckCollisionPointRec(mousePoint, qYesBtn))
-                    Cleanup();
-                if (CheckCollisionPointRec(mousePoint, qNoBtn))
-                    showQuitConfirm = false;
+                if (CheckCollisionPointRec(mousePoint, yBtn)) Cleanup();
+                if (CheckCollisionPointRec(mousePoint, nBtn)) showQuitConfirm = false;
             }
         }
         break;
     }
+
     case SCOREBOARD_MENU:
     case DESCRIPTION:
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
-        {
-            if (CheckCollisionPointRec(mousePoint, backMenuBtn))
-                state = MAIN_MENU;
-        }
+            if (CheckCollisionPointRec(mousePoint, backMenuBtn)) state = MAIN_MENU;
         break;
+
     case GAMEOVER:
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
-        {
             if (CheckCollisionPointRec(mousePoint, btnMenu))
             {
-                if (musicLoaded)
-                    StopMusicStream(backgroundMusic);
+                if (musicLoaded) StopMusicStream(backgroundMusic);
                 state = MAIN_MENU;
             }
-        }
         break;
-    default:
-        break;
+
+    default: break;
     }
 }
 
-// ============================================================
-//  Spiellogik
-// ============================================================
+// --- Spiellogik ---
+
 void Game::UpdateGameLogic(float deltaTime)
 {
     totalTimeSurvived += deltaTime;
-    currentScore = static_cast<int>(totalTimeSurvived * 50.0f);
-    roadScrollOffset += currentSpeed * deltaTime;
+    currentScore       = static_cast<int>(totalTimeSurvived * 50.0f);
+    roadScrollOffset  += currentSpeed * deltaTime;
+
     for (auto &obj : sideObjects)
     {
         obj.y += currentSpeed * deltaTime;
         if (obj.y > 860.0f)
         {
-            obj.y = (float)GetRandomValue(-600, -80);
-            obj.size = 0.8f + GetRandomValue(0, 5) * 0.08f;
+            obj.y       = (float)GetRandomValue(-600, -80);
+            obj.size    = 0.8f + GetRandomValue(0, 5) * 0.08f;
             obj.variant = GetRandomValue(0, 2);
         }
     }
+
+    // Uhr-Buff: Verlangsamt das Spiel kurzzeitig
     if (buffActive)
     {
         buffTimer -= deltaTime;
         if (buffTimer <= 0.0f)
         {
-            buffActive = false;
-            buffTimer = 0.0f;
+            buffActive   = false;
+            buffTimer    = 0.0f;
             currentSpeed = speedBeforeBuff;
         }
     }
+
+    // Schild-Buff: Schützt vor einem Treffer
     if (shieldActive)
     {
         shieldTimer -= deltaTime;
         if (shieldTimer <= 0.0f)
         {
             shieldActive = false;
-            shieldTimer = 0.0f;
+            shieldTimer  = 0.0f;
         }
     }
+
     if (!buffActive)
         currentSpeed = GetCurrentSpeed(currentSpeed, deltaTime);
     player.speed = GetDynamicPlayerSpeed(currentSpeed);
-    if (IsKeyDown(KEY_LEFT))
-        player.rect.x -= player.speed * deltaTime;
-    if (IsKeyDown(KEY_RIGHT))
-        player.rect.x += player.speed * deltaTime;
+
+    if (IsKeyDown(KEY_LEFT))  player.rect.x -= player.speed * deltaTime;
+    if (IsKeyDown(KEY_RIGHT)) player.rect.x += player.speed * deltaTime;
     player.rect.x = std::clamp(player.rect.x, 300.0f, 700.0f - player.rect.width);
+
     for (auto &obs : obstacles)
     {
         obs.rect.y += currentSpeed * deltaTime;
@@ -350,14 +334,12 @@ void Game::UpdateGameLogic(float deltaTime)
         {
             float highestY = 0.0f;
             for (const auto &o : obstacles)
-                if (o.rect.y < highestY)
-                    highestY = o.rect.y;
+                if (o.rect.y < highestY) highestY = o.rect.y;
             ResetObstacle(obs, highestY - 400.0f);
         }
         if (CheckCollisionRecs(player.rect, obs.rect) && !shieldActive)
         {
-            if (crashSoundLoaded)
-                PlaySound(crashSound);
+            if (crashSoundLoaded) PlaySound(crashSound);
             AddOrUpdateScore(playerName, currentScore, totalTimeSurvived);
             saveData.totalStars += earnedStarsThisRound;
             SaveGameData(saveData);
@@ -366,54 +348,49 @@ void Game::UpdateGameLogic(float deltaTime)
             return;
         }
     }
-    if (!bonusStar.active && GetRandomValue(0, 600) < 3)
-        SpawnStar();
+
+    // Stern einsammeln
+    if (!bonusStar.active && GetRandomValue(0, 600) < 3) SpawnStar();
     if (bonusStar.active)
     {
         bonusStar.rect.y += currentSpeed * deltaTime;
-        if (CheckCollisionRecs(player.rect, bonusStar.rect))
-        {
-            earnedStarsThisRound++;
-            bonusStar.active = false;
-        }
-        if (bonusStar.rect.y > 800.0f)
-            bonusStar.active = false;
+        if (CheckCollisionRecs(player.rect, bonusStar.rect)) { earnedStarsThisRound++; bonusStar.active = false; }
+        if (bonusStar.rect.y > 800.0f) bonusStar.active = false;
     }
-    if (!clockBuff.active && !buffActive && GetRandomValue(0, 3000) < 2)
-        SpawnClock();
+
+    // Uhr einsammeln
+    if (!clockBuff.active && !buffActive && GetRandomValue(0, 3000) < 2) SpawnClock();
     if (clockBuff.active)
     {
         clockBuff.rect.y += currentSpeed * deltaTime;
         if (CheckCollisionRecs(player.rect, clockBuff.rect))
         {
-            speedBeforeBuff = currentSpeed;
-            currentSpeed *= 0.4f;
-            buffActive = true;
-            buffTimer = 3.0f;
+            speedBeforeBuff  = currentSpeed;
+            currentSpeed    *= 0.4f;
+            buffActive       = true;
+            buffTimer        = 3.0f;
             clockBuff.active = false;
         }
-        if (clockBuff.rect.y > 800.0f)
-            clockBuff.active = false;
+        if (clockBuff.rect.y > 800.0f) clockBuff.active = false;
     }
-    if (!shieldBuff.active && !shieldActive && GetRandomValue(0, 6000) < 2)
-        SpawnShield();
+
+    // Schild einsammeln
+    if (!shieldBuff.active && !shieldActive && GetRandomValue(0, 6000) < 2) SpawnShield();
     if (shieldBuff.active)
     {
         shieldBuff.rect.y += currentSpeed * deltaTime;
         if (CheckCollisionRecs(player.rect, shieldBuff.rect))
         {
-            shieldActive = true;
-            shieldTimer = 5.0f;
+            shieldActive      = true;
+            shieldTimer       = 5.0f;
             shieldBuff.active = false;
         }
-        if (shieldBuff.rect.y > 800.0f)
-            shieldBuff.active = false;
+        if (shieldBuff.rect.y > 800.0f) shieldBuff.active = false;
     }
 }
 
-// ============================================================
-//  Eingabe-Handler
-// ============================================================
+// --- Eingabe-Handler ---
+
 void Game::HandleMenuInput(Vector2 mousePoint)
 {
     if (!isNameSaved)
@@ -423,7 +400,7 @@ void Game::HandleMenuInput(Vector2 mousePoint)
         {
             if (key > 32 && key <= 125 && letterCount < 15)
             {
-                playerName[letterCount] = static_cast<char>(key);
+                playerName[letterCount]     = static_cast<char>(key);
                 playerName[letterCount + 1] = '\0';
                 letterCount++;
             }
@@ -438,58 +415,57 @@ void Game::HandleMenuInput(Vector2 mousePoint)
             isNameSaved = true;
         }
     }
-    if (!IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
-        return;
+
+    if (!IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) return;
+
     if (CheckCollisionPointRec(mousePoint, startBtn) && (letterCount > 0 || isNameSaved))
     {
-        currentScore = 0;
-        totalTimeSurvived = 0.0f;
+        currentScore         = 0;
+        totalTimeSurvived    = 0.0f;
         earnedStarsThisRound = 0;
-        currentSpeed = SPEED_START;
-        isNameSaved = true;
+        currentSpeed         = SPEED_START;
+        isNameSaved          = true;
         saveData.lastPlayerName = playerName;
         SaveGameData(saveData);
         roadScrollOffset = 0.0f;
         InitSideObjects();
+
         Texture2D &cur = carTextures[saveData.selectedColorId];
         InitPlayer(player, 1000, 800, 45.0f,
-                   45.0f * (static_cast<float>(cur.height) / cur.width),
+                   45.0f * ((float)cur.height / cur.width),
                    GetCarColor(saveData.selectedColorId));
+
         for (int i = 0; i < (int)obstacles.size(); i++)
             ResetObstacle(obstacles[i], -200.0f - (i * 400.0f));
-        bonusStar.active = false;
-        clockBuff.active = false;
+
+        bonusStar.active  = false;
+        clockBuff.active  = false;
         shieldBuff.active = false;
-        buffActive = false;
-        buffTimer = 0.0f;
-        speedBeforeBuff = 0.0f;
-        shieldActive = false;
-        shieldTimer = 0.0f;
-        // Musik erst beim Spielstart starten
+        buffActive        = false;
+        buffTimer         = 0.0f;
+        speedBeforeBuff   = 0.0f;
+        shieldActive      = false;
+        shieldTimer       = 0.0f;
+
         if (musicLoaded)
         {
             StopMusicStream(backgroundMusic);
             SeekMusicStream(backgroundMusic, 0.0f);
             PlayMusicStream(backgroundMusic);
         }
-        showQuitConfirm = false;
-        showPauseBackConfirm = false;
+        showQuitConfirm = showPauseBackConfirm = false;
         state = PLAYING;
     }
-    else if (CheckCollisionPointRec(mousePoint, scoreBtn))
-        state = SCOREBOARD_MENU;
-    else if (CheckCollisionPointRec(mousePoint, shopBtn))
-        state = SHOP_MENU;
-    else if (CheckCollisionPointRec(mousePoint, settingsBtn))
-        state = SETTINGS;
-    else if (CheckCollisionPointRec(mousePoint, descBtn))
-        state = DESCRIPTION;
+    else if (CheckCollisionPointRec(mousePoint, scoreBtn))    state = SCOREBOARD_MENU;
+    else if (CheckCollisionPointRec(mousePoint, shopBtn))     state = SHOP_MENU;
+    else if (CheckCollisionPointRec(mousePoint, settingsBtn)) state = SETTINGS;
+    else if (CheckCollisionPointRec(mousePoint, descBtn))     state = DESCRIPTION;
 }
 
 void Game::HandleShopInput(Vector2 mousePoint)
 {
-    if (!IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
-        return;
+    if (!IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) return;
+
     if (CheckCollisionPointRec(mousePoint, backMenuBtn))
     {
         state = MAIN_MENU;
@@ -497,21 +473,20 @@ void Game::HandleShopInput(Vector2 mousePoint)
     }
     if (CheckCollisionPointRec(mousePoint, {150, 500, 200, 50}))
         saveData.selectedColorId = 0;
+
     if (CheckCollisionPointRec(mousePoint, redCarBtn))
     {
-        if (saveData.ownsRedCar)
-            saveData.selectedColorId = 1;
+        if (saveData.ownsRedCar) saveData.selectedColorId = 1;
         else if (saveData.totalStars >= PRICE_RED_CAR)
         {
             saveData.totalStars -= PRICE_RED_CAR;
-            saveData.ownsRedCar = true;
+            saveData.ownsRedCar  = true;
             saveData.selectedColorId = 1;
         }
     }
     if (CheckCollisionPointRec(mousePoint, blueCarBtn))
     {
-        if (saveData.ownsBlueCar)
-            saveData.selectedColorId = 2;
+        if (saveData.ownsBlueCar) saveData.selectedColorId = 2;
         else if (saveData.totalStars >= PRICE_BLUE_CAR)
         {
             saveData.totalStars -= PRICE_BLUE_CAR;
@@ -524,10 +499,8 @@ void Game::HandleShopInput(Vector2 mousePoint)
 
 void Game::HandleSettingsInput(Vector2 mousePoint)
 {
-    if (!IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
-        return;
+    if (!IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) return;
 
-    // Bestätigungsdialoge zuerst auswerten
     if (showNameChangeConfirm)
     {
         const Rectangle yBtn = {330, 420, 150, 50};
@@ -535,9 +508,9 @@ void Game::HandleSettingsInput(Vector2 mousePoint)
         if (CheckCollisionPointRec(mousePoint, yBtn))
         {
             showNameChangeConfirm = false;
-            isNameSaved = false;
+            isNameSaved   = false;
             playerName[0] = '\0';
-            letterCount = 0;
+            letterCount   = 0;
             state = MAIN_MENU;
         }
         else if (CheckCollisionPointRec(mousePoint, nBtn))
@@ -553,12 +526,11 @@ void Game::HandleSettingsInput(Vector2 mousePoint)
             showDeleteDataConfirm = false;
             DeleteSaveData();
             ClearScoreboard();
-            if (IsWindowFullscreen())
-                ToggleFullscreen();
-            saveData = {0, false, false, 0, saveData.isEnglish, false, ""};
+            if (IsWindowFullscreen()) ToggleFullscreen();
+            saveData      = {0, false, false, 0, saveData.isEnglish, false, ""};
             playerName[0] = '\0';
-            letterCount = 0;
-            isNameSaved = false;
+            letterCount   = 0;
+            isNameSaved   = false;
             cachedTopScore = 0;
             state = MAIN_MENU;
         }
@@ -567,9 +539,7 @@ void Game::HandleSettingsInput(Vector2 mousePoint)
         return;
     }
 
-    // Normale Button-Aktionen
-    if (CheckCollisionPointRec(mousePoint, backSetBtn))
-        state = MAIN_MENU;
+    if      (CheckCollisionPointRec(mousePoint, backSetBtn))     state = MAIN_MENU;
     else if (CheckCollisionPointRec(mousePoint, langBtn))
     {
         saveData.isEnglish = !saveData.isEnglish;
@@ -581,125 +551,90 @@ void Game::HandleSettingsInput(Vector2 mousePoint)
         ToggleFullscreen();
         SaveGameData(saveData);
     }
-    else if (CheckCollisionPointRec(mousePoint, nameChangeBtn))
-        showNameChangeConfirm = true;
-    else if (CheckCollisionPointRec(mousePoint, deleteDataBtn))
-        showDeleteDataConfirm = true;
+    else if (CheckCollisionPointRec(mousePoint, nameChangeBtn)) showNameChangeConfirm = true;
+    else if (CheckCollisionPointRec(mousePoint, deleteDataBtn)) showDeleteDataConfirm = true;
 }
 
-// ============================================================
-//  Hilfsmethoden
-// ============================================================
+// --- Hilfsmethoden ---
+
 Vector2 Game::GetScaledMouse() const
 {
-    float s = std::min(static_cast<float>(GetScreenWidth()) / 1000.0f,
-                       static_cast<float>(GetScreenHeight()) / 800.0f);
+    float s = std::min((float)GetScreenWidth() / 1000.0f, (float)GetScreenHeight() / 800.0f);
     Vector2 m = GetMousePosition();
     return {
-        (m.x - (GetScreenWidth() - 1000.0f * s) * 0.5f) / s,
-        (m.y - (GetScreenHeight() - 800.0f * s) * 0.5f) / s};
+        (m.x - (GetScreenWidth()  - 1000.0f * s) * 0.5f) / s,
+        (m.y - (GetScreenHeight() -  800.0f * s) * 0.5f) / s
+    };
 }
 
 void Game::ResetObstacle(Obstacle &obs, float startY)
 {
     obs.rect = {
-        static_cast<float>(GetRandomValue(310, 590)),
+        (float)GetRandomValue(310, 590),
         startY,
-        static_cast<float>(GetRandomValue(70, 110)),
-        40.0f};
+        (float)GetRandomValue(70, 110),
+        40.0f
+    };
 }
 
-void Game::SpawnStar()
-{
-    bonusStar.rect = {static_cast<float>(GetRandomValue(320, 650)), -100.0f, 30.0f, 30.0f};
-    bonusStar.active = true;
-}
+void Game::SpawnStar()   { bonusStar.rect  = {(float)GetRandomValue(320, 650), -100.0f, 30.0f, 30.0f}; bonusStar.active  = true; }
+void Game::SpawnClock()  { clockBuff.rect  = {(float)GetRandomValue(320, 640), -100.0f, 36.0f, 36.0f}; clockBuff.active  = true; }
+void Game::SpawnShield() { shieldBuff.rect = {(float)GetRandomValue(320, 640), -100.0f, 48.0f, 48.0f}; shieldBuff.active = true; }
 
-void Game::SpawnClock()
-{
-    clockBuff.rect = {static_cast<float>(GetRandomValue(320, 640)), -100.0f, 36.0f, 36.0f};
-    clockBuff.active = true;
-}
+// --- Draw ---
 
-void Game::SpawnShield()
-{
-    shieldBuff.rect = {static_cast<float>(GetRandomValue(320, 640)), -100.0f, 48.0f, 48.0f};
-    shieldBuff.active = true;
-}
-
-// ============================================================
-//  Draw
-// ============================================================
 void Game::Draw()
 {
     Vector2 mousePoint = GetScaledMouse();
     BeginTextureMode(target);
     DrawRoadBackground();
+
     bool inGame = (state == PLAYING || state == PAUSED ||
                    state == GAMEOVER || state == EXIT_PROMPT);
     if (inGame)
     {
         for (const auto &obs : obstacles)
-        {
-            DrawTexturePro(obstacleTex,
-                           {0, 0, static_cast<float>(obstacleTex.width), static_cast<float>(obstacleTex.height)},
-                           obs.rect, {0, 0}, 0.0f, WHITE);
-        }
+            DrawTexFull(obstacleTex, obs.rect);
+
         Texture2D &cur = carTextures[saveData.selectedColorId];
-        DrawTexturePro(cur,
-                       {0, 0, static_cast<float>(cur.width), static_cast<float>(cur.height)},
-                       player.rect, {0, 0}, 0.0f, WHITE);
+        DrawTexFull(cur, player.rect);
+
+        // Schild-Rahmen um Spieler
         if (shieldActive)
-        {
-            DrawRectangleLinesEx(
-                {player.rect.x - 4, player.rect.y - 4,
-                 player.rect.width + 8, player.rect.height + 8},
-                4.0f, GOLD);
-        }
-        if (bonusStar.active)
-        {
-            DrawTexturePro(starTex,
-                           {0, 0, static_cast<float>(starTex.width), static_cast<float>(starTex.height)},
-                           bonusStar.rect, {0, 0}, 0.0f, WHITE);
-        }
-        if (clockBuff.active)
-        {
-            DrawTexturePro(clockTex,
-                           {0, 0, static_cast<float>(clockTex.width), static_cast<float>(clockTex.height)},
-                           clockBuff.rect, {0, 0}, 0.0f, WHITE);
-        }
-        if (shieldBuff.active)
-        {
-            DrawTexturePro(shieldTex,
-                           {0, 0, static_cast<float>(shieldTex.width), static_cast<float>(shieldTex.height)},
-                           shieldBuff.rect, {0, 0}, 0.0f, WHITE);
-        }
+            DrawRectangleLinesEx({player.rect.x - 4, player.rect.y - 4,
+                                  player.rect.width + 8, player.rect.height + 8}, 4.0f, GOLD);
+
+        if (bonusStar.active)  DrawTexFull(starTex,   bonusStar.rect);
+        if (clockBuff.active)  DrawTexFull(clockTex,  clockBuff.rect);
+        if (shieldBuff.active) DrawTexFull(shieldTex, shieldBuff.rect);
+
         DrawHUD(playerName, totalTimeSurvived, currentScore,
                 earnedStarsThisRound, saveData.isEnglish, starTex, cachedTopScore);
+
+        // Uhr-Buff Anzeige
         if (buffActive)
         {
             DrawRectangleLinesEx({300, 0, 400, 800}, 4, Fade(SKYBLUE, 0.7f));
-            float barMaxW = 380.0f;
-            float barFill = barMaxW * (buffTimer / 3.0f);
-            DrawRectangle(310, 50, (int)barMaxW, 12, Fade(DARKBLUE, 0.5f));
-            DrawRectangle(310, 50, (int)barFill, 12, SKYBLUE);
-            const char *buffLabel = saveData.isEnglish
-                                        ? TextFormat("SLOW  %.1fs", buffTimer)
-                                        : TextFormat("LANGSAM  %.1fs", buffTimer);
-            DrawText(buffLabel, 355, 65, 18, SKYBLUE);
+            float fill = 380.0f * (buffTimer / 3.0f);
+            DrawRectangle(310, 50, 380, 12, Fade(DARKBLUE, 0.5f));
+            DrawRectangle(310, 50, (int)fill, 12, SKYBLUE);
+            DrawText(saveData.isEnglish ? TextFormat("SLOW  %.1fs", buffTimer)
+                                        : TextFormat("LANGSAM  %.1fs", buffTimer),
+                     355, 65, 18, SKYBLUE);
         }
+
+        // Schild-Buff Anzeige
         if (shieldActive)
         {
             DrawRectangleLinesEx({300, 0, 400, 800}, 4, Fade(GOLD, 0.7f));
-            float barMaxW = 380.0f;
-            float barFill = barMaxW * (shieldTimer / 5.0f);
-            DrawRectangle(310, 85, (int)barMaxW, 12, Fade(DARKBROWN, 0.5f));
-            DrawRectangle(310, 85, (int)barFill, 12, GOLD);
-            const char *shieldLabel = saveData.isEnglish
-                                          ? TextFormat("SHIELD  %.1fs", shieldTimer)
-                                          : TextFormat("SCHILD  %.1fs", shieldTimer);
-            DrawText(shieldLabel, 350, 100, 18, GOLD);
+            float fill = 380.0f * (shieldTimer / 5.0f);
+            DrawRectangle(310, 85, 380, 12, Fade(DARKBROWN, 0.5f));
+            DrawRectangle(310, 85, (int)fill, 12, GOLD);
+            DrawText(saveData.isEnglish ? TextFormat("SHIELD  %.1fs", shieldTimer)
+                                        : TextFormat("SCHILD  %.1fs", shieldTimer),
+                     350, 100, 18, GOLD);
         }
+
         if (state == PAUSED)
             DrawPauseMenu(mousePoint, pauseResumeBtn, pauseMenuBtn, pauseQuitBtn,
                           saveData.isEnglish, musicVolume, showQuitConfirm, showPauseBackConfirm);
@@ -707,6 +642,7 @@ void Game::Draw()
             DrawGameOverMenu(playerName, currentScore, totalTimeSurvived,
                              earnedStarsThisRound, mousePoint, btnMenu, saveData.isEnglish);
     }
+
     switch (state)
     {
     case MAIN_MENU:
@@ -729,9 +665,9 @@ void Game::Draw()
     case DESCRIPTION:
         DrawDescriptionMenu(mousePoint, backMenuBtn, saveData.isEnglish);
         break;
-    default:
-        break;
+    default: break;
     }
+
     // Exit-Dialog
     if (state == EXIT_PROMPT)
     {
@@ -742,99 +678,82 @@ void Game::Draw()
         DrawTextCentered(saveData.isEnglish ? "EXIT GAME?" : "SPIEL BEENDEN?", 340, 25, DARKGRAY);
         Rectangle yBtn = {380, 420, 100, 40};
         Rectangle nBtn = {520, 420, 100, 40};
-        DrawRectangleRec(yBtn, CheckCollisionPointRec(mousePoint, yBtn) ? RED : MAROON);
-        DrawRectangleRec(nBtn, CheckCollisionPointRec(mousePoint, nBtn) ? GRAY : DARKGRAY);
-        DrawText(saveData.isEnglish ? "YES" : "JA", (int)yBtn.x + 35, (int)yBtn.y + 10, 20, WHITE);
-        DrawText(saveData.isEnglish ? "NO" : "NEIN", (int)nBtn.x + 35, (int)nBtn.y + 10, 20, WHITE);
+        DrawRectangleRec(yBtn, CheckCollisionPointRec(mousePoint, yBtn) ? RED    : MAROON);
+        DrawRectangleRec(nBtn, CheckCollisionPointRec(mousePoint, nBtn) ? GRAY   : DARKGRAY);
+        DrawText(saveData.isEnglish ? "YES" : "JA",   (int)yBtn.x + 35, (int)yBtn.y + 10, 20, WHITE);
+        DrawText(saveData.isEnglish ? "NO"  : "NEIN", (int)nBtn.x + 35, (int)nBtn.y + 10, 20, WHITE);
     }
+
     EndTextureMode();
 
+    // Auf den Bildschirm skaliert ausgeben
     BeginDrawing();
     ClearBackground(BLACK);
-    float finalScale = std::min(static_cast<float>(GetScreenWidth()) / 1000.0f,
-                                static_cast<float>(GetScreenHeight()) / 800.0f);
+    float finalScale = std::min((float)GetScreenWidth() / 1000.0f, (float)GetScreenHeight() / 800.0f);
     DrawTexturePro(target.texture,
-                   {0, 0, static_cast<float>(target.texture.width), -static_cast<float>(target.texture.height)},
-                   {(GetScreenWidth() - 1000.0f * finalScale) * 0.5f,
-                    (GetScreenHeight() - 800.0f * finalScale) * 0.5f,
-                    1000.0f * finalScale,
-                    800.0f * finalScale},
+                   {0, 0, (float)target.texture.width, -(float)target.texture.height},
+                   {(GetScreenWidth()  - 1000.0f * finalScale) * 0.5f,
+                    (GetScreenHeight() -  800.0f * finalScale) * 0.5f,
+                    1000.0f * finalScale, 800.0f * finalScale},
                    {0, 0}, 0.0f, WHITE);
     EndDrawing();
 }
 
-// ============================================================
-//  Cleanup
-// ============================================================
+// --- Cleanup ---
+
 void Game::Cleanup()
 {
-    for (int i = 0; i < 3; i++)
-        UnloadTexture(carTextures[i]);
+    for (int i = 0; i < 3; i++) UnloadTexture(carTextures[i]);
     UnloadTexture(obstacleTex);
     UnloadTexture(starTex);
     UnloadTexture(clockTex);
     UnloadTexture(shieldTex);
     UnloadRenderTexture(target);
-    if (musicLoaded)
-    {
-        StopMusicStream(backgroundMusic);
-        UnloadMusicStream(backgroundMusic);
-    }
-    if (crashSoundLoaded)
-        UnloadSound(crashSound);
+    if (musicLoaded)      { StopMusicStream(backgroundMusic); UnloadMusicStream(backgroundMusic); }
+    if (crashSoundLoaded) UnloadSound(crashSound);
     CloseAudioDevice();
     CloseWindow();
     exit(0);
 }
 
-// ============================================================
-//  Straßenrandobjekte initialisieren
-// ============================================================
+// --- Straßenrandobjekte ---
+
 void Game::InitSideObjects()
 {
     sideObjects.clear();
-    const float leftXs[] = {55.0f, 130.0f, 205.0f, 260.0f};
+    const float leftXs[]  = {55.0f, 130.0f, 205.0f, 260.0f};
     const float rightXs[] = {740.0f, 795.0f, 865.0f, 945.0f};
     for (int i = 0; i < 4; i++)
     {
-        sideObjects.push_back({leftXs[i],
-                               (float)GetRandomValue(-700, 800),
-                               0.8f + GetRandomValue(0, 5) * 0.08f,
-                               GetRandomValue(0, 2)});
-        sideObjects.push_back({rightXs[i],
-                               (float)GetRandomValue(-700, 800),
-                               0.8f + GetRandomValue(0, 5) * 0.08f,
-                               GetRandomValue(0, 2)});
+        sideObjects.push_back({leftXs[i],  (float)GetRandomValue(-700, 800),
+                               0.8f + GetRandomValue(0, 5) * 0.08f, GetRandomValue(0, 2)});
+        sideObjects.push_back({rightXs[i], (float)GetRandomValue(-700, 800),
+                               0.8f + GetRandomValue(0, 5) * 0.08f, GetRandomValue(0, 2)});
     }
 }
 
-// ============================================================
-//  Straßenhintergrund zeichnen
-// ============================================================
 void Game::DrawRoadBackground()
 {
     bool isDesert = (currentScore >= 5000);
-    if (isDesert)
-        ClearBackground({210, 180, 110, 255});
-    else
-        ClearBackground({28, 80, 28, 255});
+    ClearBackground(isDesert ? Color{210, 180, 110, 255} : Color{28, 80, 28, 255});
 
     for (const auto &obj : sideObjects)
     {
-        if (isDesert)
-            DrawCactus(obj.x, obj.y, obj.size);
-        else
-            DrawTree(obj.x, obj.y, obj.size);
+        if (isDesert) DrawCactus(obj.x, obj.y, obj.size);
+        else          DrawTree(obj.x, obj.y, obj.size);
     }
 
+    // Fahrbahn
     DrawRectangle(300, 0, 400, 800, {48, 48, 48, 255});
+    // Fahrbahnmarkierungen
     DrawRectangle(297, 0, 6, 800, {210, 210, 210, 255});
     DrawRectangle(697, 0, 6, 800, {210, 210, 210, 255});
     DrawRectangle(280, 0, 18, 800, {150, 150, 155, 255});
-    DrawRectangle(280, 0, 4, 800, {220, 225, 230, 255});
+    DrawRectangle(280, 0,  4, 800, {220, 225, 230, 255});
     DrawRectangle(702, 0, 18, 800, {150, 150, 155, 255});
-    DrawRectangle(716, 0, 4, 800, {220, 225, 230, 255});
+    DrawRectangle(716, 0,  4, 800, {220, 225, 230, 255});
 
+    // Scrollende Randpfosten
     const float postSpacing = 90.0f;
     float postStart = std::fmod(roadScrollOffset, postSpacing) - postSpacing;
     for (float py = postStart; py < 800.0f; py += postSpacing)
@@ -843,6 +762,7 @@ void Game::DrawRoadBackground()
         DrawRectangle(705, (int)py, 12, 14, {90, 90, 95, 255});
     }
 
+    // Scrollende Mittellinie
     const float dashLen = 40.0f, dashSpacing = 80.0f;
     Color dashColor = isDesert ? Color{255, 240, 100, 220} : Color{255, 255, 255, 200};
     float dashStart = std::fmod(roadScrollOffset, dashSpacing) - dashSpacing;

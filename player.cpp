@@ -1,8 +1,7 @@
 #include "player.h"
 #include "config.h"
 
-void InitPlayer(Player &player, int screenWidth, int screenHeight,
-                float width, float height, Color color)
+void InitPlayer(Player &player, int screenWidth, int screenHeight,float width, float height, Color color)
 {
     player.rect.width = width;
     player.rect.height = height;

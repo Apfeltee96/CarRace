@@ -9,9 +9,6 @@
 #include <vector>
 #include <string>
 
-// ============================================================
-//  Spielzustände
-// ============================================================
 enum GameState
 {
     MAIN_MENU,
@@ -25,36 +22,17 @@ enum GameState
     EXIT_PROMPT
 };
 
-// ============================================================
-/// Ein Hindernis auf der Fahrbahn.
 struct Obstacle
 {
     Rectangle rect;
     Color color;
 };
 
-/// Ein einsammelbarer Stern auf der Fahrbahn.
-struct CollectableStar
-{
-    Rectangle rect;
-    bool active;
-};
+struct CollectableStar   { Rectangle rect; bool active; };
+struct CollectableClock  { Rectangle rect; bool active; }; // verlangsamt das Spiel kurz
+struct CollectableShield { Rectangle rect; bool active; }; // schützt vor einem Treffer
 
-/// Eine einsammelbare Uhr auf der Fahrbahn (verlangsamt das Spiel kurz).
-struct CollectableClock
-{
-    Rectangle rect;
-    bool active;
-};
-
-/// Ein einsammelbares Schild auf der Fahrbahn (schützt vor Hindernissen kurz).
-struct CollectableShield
-{
-    Rectangle rect;
-    bool active;
-};
-
-/// Ein Straßenrandobjekt (Baum im Wald oder Kaktus in der Wüste), scrollt mit der Straße.
+/// Straßenrandobjekt (Baum oder Kaktus), scrollt mit der Straße.
 struct RoadSideObj
 {
     float x, y;
@@ -62,9 +40,6 @@ struct RoadSideObj
     int variant;
 };
 
-// ============================================================
-//  Hauptspielklasse
-// ============================================================
 class Game
 {
 public:
@@ -112,8 +87,8 @@ public:
     SaveGame saveData;
     Player player;
     std::vector<Obstacle> obstacles;
-    CollectableStar bonusStar;
-    CollectableClock clockBuff;
+    CollectableStar   bonusStar;
+    CollectableClock  clockBuff;
     CollectableShield shieldBuff;
 
     int currentScore;
@@ -122,23 +97,25 @@ public:
     int earnedStarsThisRound;
     int framesCounter;
     int cachedTopScore;
-    bool buffActive;
+
+    bool buffActive;        // Uhr-Buff aktiv?
     float buffTimer;
     float speedBeforeBuff;
     bool shieldActive;
     float shieldTimer;
+
     char playerName[16];
     int letterCount;
     bool isNameSaved;
 
-    // --- UI-Button-Rechtecke ---
+    // --- UI-Buttons ---
     Rectangle startBtn, scoreBtn, shopBtn, settingsBtn, descBtn, backMenuBtn;
     Rectangle langBtn, resBtn, nameChangeBtn, deleteDataBtn, backSetBtn;
     Rectangle btnPrimary, btnMenu;
     Rectangle redCarBtn, blueCarBtn;
-    // Pause-Menü Buttons
     Rectangle pauseResumeBtn, pauseMenuBtn, pauseQuitBtn;
-    // Bestätigungsdialoge
+
+    // --- Bestätigungsdialoge ---
     bool showQuitConfirm;
     bool showPauseBackConfirm;
     bool showNameChangeConfirm;

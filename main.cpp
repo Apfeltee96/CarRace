@@ -1,5 +1,6 @@
 #include "game.h"
 
+// Hauptprogramm
 int main()
 {
     Game game;

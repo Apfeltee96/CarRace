@@ -2,6 +2,8 @@
 #include <cassert>
 #include <cstdio>
 
+
+//Einfache Unit-Tests für die Funktionen in config.h
 static void test_GetCurrentSpeed()
 {
     float increased = GetCurrentSpeed(SPEED_START, 1.0f);

@@ -6,10 +6,7 @@
 
 static const char *SAVE_FILE = "savegame.dat";
 
-// ============================================================
-//  Speicherstand laden / speichern
-// ============================================================
-
+// Speicherstand laden / speichern
 SaveGame LoadSaveGame()
 {
     // Standardwerte falls keine Datei existiert
@@ -64,9 +61,7 @@ void DeleteSaveData()
     std::filesystem::remove(SAVE_FILE);
 }
 
-// ============================================================
 //  Spielmechanik-Hilfsfunktionen
-// ============================================================
 
 float GetCurrentSpeed(float currentSpeed, float deltaTime)
 {
@@ -83,6 +78,7 @@ float GetDynamicPlayerSpeed(float currentWorldSpeed)
     return std::min(BASE_STEER + currentWorldSpeed * STEER_FACTOR, STEER_MAX);
 }
 
+// Gibt die Farbe zum Auto-ID zurück (0=weiß, 1=rot, 2=lila).
 Color GetCarColor(int colorId)
 {
     switch (colorId)
@@ -92,6 +88,6 @@ Color GetCarColor(int colorId)
     case 2:
         return BLUE;
     default:
-        return WHITE; // colorId 0 = weißes Auto
+        return WHITE; 
     }
 }

@@ -44,4 +44,4 @@ void DrawGameOverMenu(const char *name, int score, float time, int stars,
 void DrawScoreboardMenu(const std::vector<ScoreEntry> &scores,
                         Vector2 mousePoint, Rectangle backBtn, bool isEnglish);
 
-#endif // UI_H
+#endif 
