@@ -9,16 +9,18 @@ Ein rasantes 2D-Autorennen, entwickelt mit **C++** und der **raylib** Library. W
 ## ✨ Features
 
 - **Dynamisches Gameplay:** Die Geschwindigkeit erhöht sich, je länger du überlebst.
-- **Car Shop:** Besuche den Shop, um mit gesammelten Sternen neue Skins bzw. Autos freizuschalten.
-- **Scoreboard:** Deine Bestzeiten und Punkte werden lokal gespeichert.
+- **Car Shop:** Besuche den Shop, um mit gesammelten Sternen neue Autos freizuschalten.
+- **Scoreboard:** Deine Bestzeiten und Punkte werden lokal gespeichert – mit tabellarischer Ansicht.
 - **Smart UI:** Ein HUD, das Punkte, Zeit sowie Sterne in Echtzeit wiedergibt.
 - **Multi-Language:** Unterstützung für Deutsch und Englisch.
 - **Uhr-Buff:** Sammle eine Uhr ein, um die Spielgeschwindigkeit für 3 Sekunden zu verlangsamen.
 - **Schild-Buff:** Sammle ein Schild ein, um für 5 Sekunden unverwundbar zu sein.
 - **Wüsten-Modus:** Ab 5.000 Punkten wechselt die Umgebung von der Waldstraße zur Wüste.
-- **Pause-Menü (ESC):** Vollständiges Pause-Menü mit Weiter, Zurück zum Menü, Lautstärkeregler und Spiel beenden.
+- **Weltall-Modus:** Ab 10.000 Punkten wechselt die Umgebung ins Weltall – mit Regenbogenstraße, UFOs und Planeten.
+- **Effekte-Schutz (Epilepsie):** Die blinkenden Weltall-Effekte können in den Einstellungen und im Pause-Menü deaktiviert werden.
+- **Pause-Menü (ESC):** Vollständiges Pause-Menü mit Weiter, Zurück zum Menü, Lautstärkeregler, Effekte-Toggle und Spiel beenden.
 - **Bestätigungsdialoge:** Kritische Aktionen (Menü verlassen, Spiel beenden, Name ändern, Daten löschen) werden mit einem Ja/Nein-Dialog abgesichert.
-- **Sound-Kontrolle:** Musik startet erst beim Spielbeginn. Lautstärke im Pause-Menü anpassbar. Musik pausiert beim Pausieren und setzt nahtlos fort.
+- **Sound-Kontrolle:** Lautstärke in den Einstellungen und im Pause-Menü anpassbar. Einstellung wird gespeichert. Musik stoppt beim Absturz.
 
 ## 🎮 Steuerung
 
@@ -37,14 +39,27 @@ Ein rasantes 2D-Autorennen, entwickelt mit **C++** und der **raylib** Library. W
 | **Weiter** | Spiel fortsetzen |
 | **Zurück zum Menü** | Ins Hauptmenü (Bestätigung erforderlich) |
 | **Lautstärke** | Musik-Lautstärke per Slider anpassen |
+| **Effekte: AN/AUS** | Blinkeffekte im Weltall-Modus umschalten |
 | **Spiel beenden** | Anwendung beenden (Bestätigung erforderlich) |
 
 ## ⚙️ Einstellungen
 
 - **Sprache:** Deutsch / Englisch umschalten
 - **Vollbild:** Fenster- oder Vollbildmodus
+- **Effekte:** Blinkende Weltall-Effekte aktivieren / deaktivieren (Epilepsie-Schutz)
+- **Lautstärke:** Musik-Lautstärke per Slider einstellen (wird gespeichert)
 - **Name ändern:** Spielernamen neu eingeben (Bestätigung erforderlich)
 - **Daten löschen:** Löscht Name, Bestenliste und alle Sterne & Autos (Bestätigung erforderlich)
+
+## 🌍 Umgebungen
+
+| Punkte | Umgebung | Besonderheit |
+|---|---|---|
+| 0 – 4.999 | 🌲 Waldstraße | Standard-Umgebung mit Bäumen |
+| 5.000 – 9.999 | 🏜️ Wüste | Kakteen, gelbe Fahrbahnmarkierungen |
+| 10.000+ | 🚀 Weltall | Regenbogenstraße, UFOs, Planeten, leuchtende Ränder |
+
+> ⚠️ **Epilepsie-Hinweis:** Der Weltall-Modus enthält blinkende Farbeffekte. Diese können in den Einstellungen deaktiviert werden.
 
 ## 📂 Projektstruktur
 
@@ -62,7 +77,7 @@ Ein rasantes 2D-Autorennen, entwickelt mit **C++** und der **raylib** Library. W
 ## Drittleistungen:
 - Programmiert in VS Code
 - GitHub als Softwareentwicklungsplattform (Repository)
-- Claude code als KI-Assistent für das Schreiben und Debuggen des C++-Codes
+- Claude Code als KI-Assistent für das Schreiben und Debuggen des C++-Codes
 - Raylib als C-Bibliothek für 2D/3D-Spieleentwicklung (zlib-Lizenz)
 - Google Gemini für Bildgenerierung
 
@@ -90,15 +105,17 @@ A fast-paced 2D car racing game built with **C++** and the **raylib** library. D
 
 - **Dynamic Gameplay:** Speed increases the longer you survive.
 - **Car Shop:** Spend collected stars to unlock new car skins.
-- **Scoreboard:** Your best times and scores are saved locally.
+- **Scoreboard:** Your best times and scores are saved locally – displayed as a clean table.
 - **Smart UI:** A HUD displaying score, time, and stars in real time.
 - **Multi-Language:** Supports German and English.
 - **Clock Buff:** Pick up a clock to slow down the game speed for 3 seconds.
 - **Shield Buff:** Pick up a shield to become invincible for 5 seconds.
 - **Desert Mode:** After 5,000 points the environment switches from forest road to desert.
-- **Pause Menu (ESC):** Full pause menu with resume, back to menu, volume slider, and quit game.
+- **Space Mode:** After 10,000 points the environment changes to outer space – with a rainbow road, UFOs, and planets.
+- **Effects Toggle (Epilepsy Safety):** The flashing space effects can be disabled in Settings and the Pause Menu.
+- **Pause Menu (ESC):** Full pause menu with resume, back to menu, volume slider, effects toggle, and quit game.
 - **Confirmation Dialogs:** Critical actions (leave menu, quit game, change name, delete data) require a yes/no confirmation.
-- **Sound Control:** Music only starts when the game begins. Volume is adjustable in the pause menu. Music pauses and resumes seamlessly.
+- **Sound Control:** Volume adjustable in Settings and Pause Menu. Setting is saved. Music stops on crash.
 
 ## 🎮 Controls
 
@@ -117,14 +134,27 @@ A fast-paced 2D car racing game built with **C++** and the **raylib** library. D
 | **Resume** | Continue the game |
 | **Back to Menu** | Return to main menu (confirmation required) |
 | **Volume** | Adjust music volume via slider |
+| **Effects: ON/OFF** | Toggle flashing effects in space mode |
 | **Quit Game** | Exit the application (confirmation required) |
 
 ## ⚙️ Settings
 
 - **Language:** Toggle between German and English
 - **Fullscreen:** Switch between windowed and fullscreen mode
+- **Effects:** Enable / disable flashing space effects (epilepsy safety)
+- **Volume:** Adjust music volume via slider (saved persistently)
 - **Change Name:** Re-enter your player name (confirmation required)
 - **Delete Data:** Deletes name, scoreboard, and all stars & cars (confirmation required)
+
+## 🌍 Environments
+
+| Points | Environment | Details |
+|---|---|---|
+| 0 – 4,999 | 🌲 Forest Road | Default environment with trees |
+| 5,000 – 9,999 | 🏜️ Desert | Cacti, yellow road markings |
+| 10,000+ | 🚀 Space | Rainbow road, UFOs, planets, glowing edges |
+
+> ⚠️ **Epilepsy Warning:** Space mode contains flashing color effects. These can be disabled in Settings.
 
 ## 📂 Project Structure
 
@@ -147,7 +177,7 @@ A fast-paced 2D car racing game built with **C++** and the **raylib** library. D
 - Raylib as C library for 2D/3D game development (zlib license)
 - Google Gemini for generating icon
 
-## Source:
+## Sources:
 
 //Assets
 - Cars: https://looneybits.itch.io/2d-urban-cars
