@@ -28,9 +28,21 @@ struct Obstacle
     Color color;
 };
 
-struct CollectableStar   { Rectangle rect; bool active; };
-struct CollectableClock  { Rectangle rect; bool active; }; // verlangsamt das Spiel kurz
-struct CollectableShield { Rectangle rect; bool active; }; // schützt vor einem Treffer
+struct CollectableStar
+{
+    Rectangle rect;
+    bool active;
+};
+struct CollectableClock
+{
+    Rectangle rect;
+    bool active;
+}; // verlangsamt das Spiel kurz
+struct CollectableShield
+{
+    Rectangle rect;
+    bool active;
+}; // schützt vor einem Treffer
 
 // Straßenrandobjekt
 struct RoadSideObj
@@ -87,8 +99,8 @@ public:
     SaveGame saveData;
     Player player;
     std::vector<Obstacle> obstacles;
-    CollectableStar   bonusStar;
-    CollectableClock  clockBuff;
+    CollectableStar bonusStar;
+    CollectableClock clockBuff;
     CollectableShield shieldBuff;
 
     int currentScore;
@@ -110,7 +122,7 @@ public:
 
     // --- UI-Buttons ---
     Rectangle startBtn, scoreBtn, shopBtn, settingsBtn, descBtn, backMenuBtn;
-    Rectangle langBtn, resBtn, nameChangeBtn, deleteDataBtn, backSetBtn;
+    Rectangle langBtn, resBtn, nameChangeBtn, deleteDataBtn, backSetBtn, effectsBtn;
     Rectangle btnPrimary, btnMenu;
     Rectangle redCarBtn, blueCarBtn;
     Rectangle pauseResumeBtn, pauseMenuBtn, pauseQuitBtn;

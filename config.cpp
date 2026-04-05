@@ -9,7 +9,7 @@ static const char *SAVE_FILE = "savegame.dat";
 // Speicherstand laden / speichern
 SaveGame LoadSaveGame()
 {
-    SaveGame data = {0, false, false, 0, false, false, "Gast", 0.2f};
+    SaveGame data = {0, false, false, 0, false, false, "Gast", 0.2f, true};
 
     std::ifstream file(SAVE_FILE, std::ios::binary);
     if (!file.is_open())
@@ -31,7 +31,7 @@ SaveGame LoadSaveGame()
     file.read(reinterpret_cast<char *>(&data.isEnglish), sizeof(bool));
     file.read(reinterpret_cast<char *>(&data.isFullscreen), sizeof(bool));
     file.read(reinterpret_cast<char *>(&data.musicVolume), sizeof(float));
-
+    file.read(reinterpret_cast<char *>(&data.effectsEnabled), sizeof(bool));
     return data;
 }
 
@@ -53,6 +53,7 @@ void SaveGameData(const SaveGame &data)
     file.write(reinterpret_cast<const char *>(&data.isEnglish), sizeof(bool));
     file.write(reinterpret_cast<const char *>(&data.isFullscreen), sizeof(bool));
     file.write(reinterpret_cast<const char *>(&data.musicVolume), sizeof(float));
+    file.write(reinterpret_cast<const char *>(&data.effectsEnabled), sizeof(bool));
 }
 
 void DeleteSaveData()

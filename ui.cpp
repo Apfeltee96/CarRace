@@ -21,8 +21,6 @@ void DrawButton(Rectangle rect, const char *text, Vector2 mouse,
              fontSize, textColor);
 }
 
-// Zeichnet einen Ja/Nein-Button-Bereich für Bestätigungsdialoge.
-// danger=true → roter Stil (Löschen/Beenden), false → goldener Stil.
 static void DrawConfirmButtons(Vector2 mouse,
                                Rectangle yBtn, const char *yText, int yFontSize,
                                Rectangle nBtn, const char *nText,
@@ -62,7 +60,7 @@ void DrawHUD(const char *name, float time, int score, int stars,
     DrawText(TextFormat(": %d", stars), rightAlignX + 35, 50, fontSize, GOLD);
 }
 
-// Hauptmenü
+//  Hauptmenü
 void DrawMainMenu(const char *name, int letterCount, int framesCounter,
                   Vector2 mousePoint, Rectangle startBtn, Rectangle scoreBtn,
                   Rectangle shopBtn, Rectangle settingsBtn, Rectangle descBtn,
@@ -95,28 +93,35 @@ void DrawMainMenu(const char *name, int letterCount, int framesCounter,
 //  Einstellungen
 void DrawSettingsMenu(Vector2 mousePoint, Rectangle langBtn, Rectangle resBtn,
                       Rectangle nameChangeBtn, Rectangle deleteDataBtn,
-                      Rectangle backBtn, bool isEnglish, bool isFullscreen,
-                      float musicVolume,
+                      Rectangle backBtn, Rectangle effectsBtn,
+                      bool isEnglish, bool isFullscreen,
+                      float musicVolume, bool effectsEnabled,
                       bool showNameChangeConfirm, bool showDeleteDataConfirm)
-
 {
     DrawRectangle(0, 0, 1000, 800, Fade(BLACK, 0.6f));
     DrawTextCentered(isEnglish ? "SETTINGS" : "EINSTELLUNGEN", 80, 50, GOLD);
-    DrawButton(langBtn, isEnglish ? "Language: English" : "Sprache: Deutsch", mousePoint, GRAY, BLACK);
-    DrawButton(resBtn, isFullscreen ? (isEnglish ? "Window Mode" : "Fenstermodus") : (isEnglish ? "Fullscreen" : "Vollbild"), mousePoint, GRAY, BLACK);
-    DrawButton(nameChangeBtn, isEnglish ? "Change Name" : "Name aendern", mousePoint, GRAY, BLACK);
-    DrawButton(deleteDataBtn, isEnglish ? "DELETE DATA" : "DATEN LOESCHEN", mousePoint, RED, RAYWHITE);
+
+    DrawButton(langBtn, isEnglish ? "Language: English" : "Sprache: Deutsch",
+               mousePoint, GRAY, BLACK);
+    DrawButton(resBtn, isFullscreen ? (isEnglish ? "Window Mode" : "Fenstermodus") : (isEnglish ? "Fullscreen" : "Vollbild"),
+               mousePoint, GRAY, BLACK);
+    DrawButton(nameChangeBtn, isEnglish ? "Change Name" : "Name aendern",
+               mousePoint, GRAY, BLACK);
+    DrawButton(deleteDataBtn, isEnglish ? "DELETE DATA" : "DATEN LOESCHEN",
+               mousePoint, RED, RAYWHITE);
+    DrawButton(effectsBtn, isEnglish ? (effectsEnabled ? "EFFECTS: ON" : "EFFECTS: OFF") : (effectsEnabled ? "EFFEKTE: AN" : "EFFEKTE: AUS"),
+               mousePoint, effectsEnabled ? DARKGREEN : DARKGRAY, WHITE);
 
     // Lautstärke-Slider
     const char *volLabel = isEnglish ? "Volume:" : "Lautstaerke:";
-    DrawText(volLabel, (1000 - MeasureText(volLabel, 20)) / 2, 462, 20, RAYWHITE);
-    Rectangle track = {350, 490, 300, 16};
+    DrawText(volLabel, (1000 - MeasureText(volLabel, 20)) / 2, 502, 20, RAYWHITE);
+    Rectangle track = {350, 525, 300, 16};
     DrawRectangleRec(track, {60, 60, 60, 255});
-    DrawRectangle(350, 490, (int)(musicVolume * 300.0f), 16, {100, 180, 255, 255});
+    DrawRectangle(350, 525, (int)(musicVolume * 300.0f), 16, {100, 180, 255, 255});
     DrawRectangleLinesEx(track, 2, {120, 120, 120, 255});
     int handleX = 350 + (int)(musicVolume * 300.0f);
-    DrawCircle(handleX, 498, 10, WHITE);
-    DrawCircleLines(handleX, 498, 10, LIGHTGRAY);
+    DrawCircle(handleX, 533, 10, WHITE);
+    DrawCircleLines(handleX, 533, 10, LIGHTGRAY);
 
     DrawButton(backBtn, isEnglish ? "BACK" : "ZURUECK", mousePoint, GRAY, BLACK);
 
@@ -151,7 +156,8 @@ void DrawSettingsMenu(Vector2 mousePoint, Rectangle langBtn, Rectangle resBtn,
     }
 }
 
-// Shop-Menü
+//  Shop-Menü
+
 void DrawWorkshopBackground()
 {
     DrawRectangle(0, 0, 1000, 400, DARKGRAY);
@@ -185,47 +191,107 @@ void DrawShopMenu(const SaveGame &data, Vector2 mousePoint,
         DrawTextureEx(carTexs[i], {carX, carY}, 0.0f, shopScale, WHITE);
     }
 
-    DrawButton({150, 500, 200, 50}, isEnglish ? "SELECT" : "WAEHLEN", mousePoint, (data.selectedColorId == 0 ? GREEN : GRAY), BLACK);
+    DrawButton({150, 500, 200, 50}, isEnglish ? "SELECT" : "WAEHLEN", mousePoint,
+               (data.selectedColorId == 0 ? GREEN : GRAY), BLACK);
+
     const char *redLabel = data.ownsRedCar ? (isEnglish ? "SELECT" : "WAEHLEN") : TextFormat(isEnglish ? "%d Stars" : "%d Sterne", PRICE_RED_CAR);
     const char *blueLabel = data.ownsBlueCar ? (isEnglish ? "SELECT" : "WAEHLEN") : TextFormat(isEnglish ? "%d Stars" : "%d Sterne", PRICE_BLUE_CAR);
 
-    DrawButton(redBtn, redLabel, mousePoint, data.selectedColorId == 1 ? GREEN : (data.ownsRedCar ? GRAY : MAROON), data.ownsRedCar ? BLACK : WHITE);
-    DrawButton(blueBtn, blueLabel, mousePoint, data.selectedColorId == 2 ? GREEN : (data.ownsBlueCar ? GRAY : DARKBLUE), data.ownsBlueCar ? BLACK : WHITE);
+    DrawButton(redBtn, redLabel, mousePoint,
+               data.selectedColorId == 1 ? GREEN : (data.ownsRedCar ? GRAY : MAROON),
+               data.ownsRedCar ? BLACK : WHITE);
+    DrawButton(blueBtn, blueLabel, mousePoint,
+               data.selectedColorId == 2 ? GREEN : (data.ownsBlueCar ? GRAY : DARKBLUE),
+               data.ownsBlueCar ? BLACK : WHITE);
+
     DrawButton(backBtn, isEnglish ? "BACK" : "ZURUECK", mousePoint, GRAY, BLACK);
 }
 
-// Steuerungsübersicht
+//  Steuerungsübersicht
+
 void DrawDescriptionMenu(Vector2 mousePoint, Rectangle backBtn, bool isEnglish)
 {
     DrawRectangle(0, 0, 1000, 800, Fade(BLACK, 0.85f));
-    DrawTextCentered(isEnglish ? "HOW TO PLAY" : "STEUERUNG", 60, 45, GOLD);
+    DrawTextCentered(isEnglish ? "HOW TO PLAY" : "STEUERUNG", 20, 45, GOLD);
 
-    Color sec = {180, 180, 180, 255};
-    DrawTextCentered(isEnglish ? "-- CONTROLS --" : "-- TASTEN --", 130, 22, sec);
-    DrawTextCentered(isEnglish ? "LEFT / RIGHT ARROWS  -  Move car" : "LINKS / RECHTS Pfeile  -  Fahrzeug lenken", 162, 22, RAYWHITE);
-    DrawTextCentered(isEnglish ? "ESC  -  Pause menu (resume, menu, volume, quit)" : "ESC  -  Pause-Menue (Weiter, Menue, Lautstaerke, Beenden)", 194, 22, RAYWHITE);
-    DrawTextCentered(isEnglish ? "-- POWER-UPS --" : "-- POWER-UPS --", 250, 22, sec);
-    DrawTextCentered(isEnglish ? "CLOCK  -  Slows the game for 3 seconds" : "UHR  -  Verlangsamt das Spiel fuer 3 Sekunden", 282, 22, {100, 220, 255, 255});
-    DrawTextCentered(isEnglish ? "SHIELD  -  Protects from one obstacle (5 sec)" : "SCHILD  -  Schuetzt vor einem Hindernis (5 Sek.)", 314, 22, GOLD);
-    DrawTextCentered(isEnglish ? "STAR  -  Collect currency to buy new cars" : "STERN  -  Sammelwaehrung fuer den Autoladen", 346, 22, {255, 230, 80, 255});
-    DrawTextCentered(isEnglish ? "-- ENVIRONMENT --" : "-- UMGEBUNG --", 396, 22, sec);
-    DrawTextCentered(isEnglish ? "Forest road  -  default environment" : "Waldstrasse  -  Standard-Umgebung", 428, 22, {100, 200, 100, 255});
-    DrawTextCentered(isEnglish ? "5000+ points  -  environment changes to DESERT!" : "Ab 5000 Punkten  -  Umgebung wechselt zur WUESTE!", 460, 22, {230, 180, 60, 255});
-    DrawTextCentered(isEnglish ? "-- SOUND --" : "-- SOUND --", 510, 22, sec);
-    DrawTextCentered(isEnglish ? "ESC  -  open pause menu with volume slider" : "ESC  -  Pause-Menue mit Lautstaerke-Slider oeffnen", 542, 22, RAYWHITE);
-    DrawTextCentered(isEnglish ? "Music starts when the game begins" : "Musik startet erst beim Spielstart", 574, 20, {160, 160, 160, 255});
+    // Epilepsie-Warnung
+    DrawRectangle(80, 75, 840, 42, {60, 10, 10, 220});
+    DrawRectangleLinesEx({80.0f, 75.0f, 840.0f, 42.0f}, 2, {255, 80, 80, 255});
+    DrawTextCentered(isEnglish
+                         ? "! WARNING: Space mode (10000+ pts) contains flashing effects. Disable in Settings."
+                         : "! HINWEIS: Weltall-Modus (ab 10000 Pkt.) enthaelt Blitzeffekte. In Einstellungen deaktivierbar.",
+                     84, 18, {255, 180, 180, 255});
+
+    auto DrawSection = [](int y, int h, Color border)
+    {
+        DrawRectangle(80, y, 840, h, {20, 20, 20, 210});
+        DrawRectangleLinesEx({80.0f, (float)y, 840.0f, (float)h}, 2, border);
+    };
+
+    // --- TASTEN ---
+    DrawSection(128, 88, {100, 180, 255, 200});
+    DrawTextCentered(isEnglish ? "CONTROLS" : "TASTEN", 134, 20, {100, 180, 255, 255});
+    DrawTextCentered(isEnglish ? "LEFT / RIGHT  ->  Move car"
+                               : "LINKS / RECHTS  ->  Fahrzeug lenken",
+                     160, 20, RAYWHITE);
+    DrawTextCentered(isEnglish ? "ESC  ->  Pause (resume, menu, volume, quit)"
+                               : "ESC  ->  Pause (Weiter, Menue, Lautst., Beenden)",
+                     184, 20, RAYWHITE);
+
+    // --- POWER-UPS ---
+    DrawSection(228, 108, {100, 220, 255, 200});
+    DrawTextCentered(isEnglish ? "POWER-UPS" : "POWER-UPS", 234, 20, {100, 220, 255, 255});
+    DrawTextCentered(isEnglish ? "CLOCK   ->  Slows the game for 3 seconds"
+                               : "UHR      ->  Verlangsamt das Spiel fuer 3 Sek.",
+                     260, 20, {100, 220, 255, 255});
+    DrawTextCentered(isEnglish ? "SHIELD  ->  Protects from one obstacle (5 sec)"
+                               : "SCHILD  ->  Schuetzt vor einem Hindernis (5 Sek.)",
+                     284, 20, GOLD);
+    DrawTextCentered(isEnglish ? "STAR    ->  Collect currency to buy new cars"
+                               : "STERN   ->  Sammelwaehrung fuer den Autoladen",
+                     308, 20, {255, 220, 60, 255});
+
+    // --- UMGEBUNG ---
+    DrawSection(348, 114, {100, 200, 100, 200});
+    DrawTextCentered(isEnglish ? "ENVIRONMENT" : "UMGEBUNG", 354, 20, {100, 200, 100, 255});
+    DrawTextCentered(isEnglish ? "Forest road  ->  default environment"
+                               : "Waldstrasse  ->  Standard-Umgebung",
+                     380, 20, {100, 200, 100, 255});
+    DrawTextCentered(isEnglish ? "5000+ points  ->  environment changes to DESERT!"
+                               : "Ab 5000 Punkten  ->  Umgebung wechselt zur WUESTE!",
+                     404, 20, {230, 180, 60, 255});
+    DrawTextCentered(isEnglish ? "10000+ points  ->  SPACE with rainbow road!"
+                               : "Ab 10000 Punkten  ->  WELTALL mit Regenbogenstrasse!",
+                     428, 20, {180, 100, 255, 255});
+
+    // --- SHOP ---
+    DrawSection(474, 74, {255, 180, 50, 200});
+    DrawTextCentered(isEnglish ? "SHOP" : "SHOP", 480, 20, {255, 180, 50, 255});
+    DrawTextCentered(isEnglish ? "Red car: 30 stars  |  Blue car: 75 stars"
+                               : "Rotes Auto: 30 Sterne  |  Blaues Auto: 75 Sterne",
+                     506, 20, {255, 220, 60, 255});
+
+    // --- SOUND ---
+    DrawSection(560, 50, {180, 100, 255, 200});
+    DrawTextCentered(isEnglish ? "SOUND  ->  Adjust volume in Settings or Pause menu"
+                               : "SOUND  ->  Lautstaerke in Einstellungen oder Pause",
+                     570, 20, RAYWHITE);
 
     DrawButton(backBtn, isEnglish ? "BACK" : "ZURUECK", mousePoint, GRAY, BLACK);
 }
 
 //  Pause-Menü
-void DrawPauseMenu(Vector2 mousePoint, Rectangle resumeBtn, Rectangle menuBtn, Rectangle quitBtn, bool isEnglish, float musicVolume, bool showQuitConfirm, bool showPauseBackConfirm)
+
+void DrawPauseMenu(Vector2 mousePoint, Rectangle resumeBtn,
+                   Rectangle menuBtn, Rectangle quitBtn,
+                   bool isEnglish, float musicVolume, bool effectsEnabled,
+                   bool showQuitConfirm, bool showPauseBackConfirm)
 {
     DrawRectangle(0, 0, 1000, 800, Fade(BLACK, 0.5f));
-    Rectangle box = {250, 210, 500, 370};
+    Rectangle box = {250, 200, 500, 410};
     DrawRectangleRec(box, {20, 20, 20, 230});
     DrawRectangleLinesEx(box, 2, GOLD);
-    DrawTextCentered(isEnglish ? "PAUSED" : "PAUSE", 228, 42, RAYWHITE);
+    DrawTextCentered(isEnglish ? "PAUSED" : "PAUSE", 218, 42, RAYWHITE);
 
     DrawButton(resumeBtn, isEnglish ? "RESUME" : "WEITER", mousePoint, GRAY, BLACK);
     DrawButton(menuBtn, isEnglish ? "BACK TO MENU" : "ZURUECK ZUM MENUE", mousePoint, GRAY, BLACK);
@@ -241,6 +307,13 @@ void DrawPauseMenu(Vector2 mousePoint, Rectangle resumeBtn, Rectangle menuBtn, R
     int handleX = 350 + (int)(musicVolume * 300.0f);
     DrawCircle(handleX, 528, 10, WHITE);
     DrawCircleLines(handleX, 528, 10, LIGHTGRAY);
+
+    // Effekte-Toggle
+    Rectangle effBtn = {375, 558, 250, 35};
+    DrawButton(effBtn,
+               isEnglish ? (effectsEnabled ? "EFFECTS: ON" : "EFFECTS: OFF")
+                         : (effectsEnabled ? "EFFEKTE: AN" : "EFFEKTE: AUS"),
+               mousePoint, effectsEnabled ? DARKGREEN : DARKGRAY, WHITE);
 
     if (showPauseBackConfirm)
     {
@@ -280,14 +353,13 @@ void DrawGameOverMenu(const char *name, int score, float time, int stars,
     DrawButton(menuBtn, isEnglish ? "MAIN MENU" : "HAUPTMENU", mousePoint, GRAY, BLACK);
 }
 
-//  Bestenliste
+// Bestenliste
 void DrawScoreboardMenu(const std::vector<ScoreEntry> &scores,
                         Vector2 mousePoint, Rectangle backBtn, bool isEnglish)
 {
     DrawRectangle(0, 0, 1000, 800, Fade(BLACK, 0.8f));
     DrawTextCentered(isEnglish ? "TOP 10 SCORES" : "BESTENLISTE", 80, 50, GOLD);
 
-    // Tabellen-Header
     DrawRectangle(200, 155, 600, 35, {50, 50, 50, 255});
     DrawRectangleLinesEx({200.0f, 155.0f, 600.0f, 35.0f}, 1, {100, 100, 100, 255});
     DrawText("NAME", 310, 163, 20, {180, 180, 180, 255});

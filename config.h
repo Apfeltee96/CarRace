@@ -22,6 +22,7 @@ struct SaveGame
     bool isFullscreen;
     std::string lastPlayerName;
     float musicVolume;
+    bool effectsEnabled;
 };
 
 SaveGame LoadSaveGame();

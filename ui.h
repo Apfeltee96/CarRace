@@ -13,8 +13,9 @@ void DrawButton(Rectangle rect, const char *text, Vector2 mouse, Color baseColor
 // --- HUD & In-Game UI ---
 void DrawHUD(const char *name, float time, int score, int stars, bool isEnglish, Texture2D starTex, int highScore);
 
-void DrawPauseMenu(Vector2 mousePoint, Rectangle resumeBtn, Rectangle menuBtn, Rectangle quitBtn,
-                   bool isEnglish, float musicVolume,
+void DrawPauseMenu(Vector2 mousePoint, Rectangle resumeBtn,
+                   Rectangle menuBtn, Rectangle quitBtn,
+                   bool isEnglish, float musicVolume, bool effectsEnabled,
                    bool showQuitConfirm, bool showPauseBackConfirm);
 
 // --- Menüs ---
@@ -25,8 +26,9 @@ void DrawMainMenu(const char *name, int letterCount, int framesCounter,
 
 void DrawSettingsMenu(Vector2 mousePoint, Rectangle langBtn, Rectangle resBtn,
                       Rectangle nameChangeBtn, Rectangle deleteDataBtn,
-                      Rectangle backBtn, bool isEnglish, bool isFullscreen,
-                      float musicVolume,
+                      Rectangle backBtn, Rectangle effectsBtn,
+                      bool isEnglish, bool isFullscreen,
+                      float musicVolume, bool effectsEnabled,
                       bool showNameChangeConfirm, bool showDeleteDataConfirm);
 
 void DrawShopMenu(const SaveGame &data, Vector2 mousePoint,
