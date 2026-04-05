@@ -16,14 +16,14 @@ enum GameState
 {
     MAIN_MENU,
     SHOP_MENU,
-    SETTINGS,        // Hinzugefügt
-    SCOREBOARD_MENU, // Hinzugefügt
+    SETTINGS,
+    SCOREBOARD_MENU,
     DESCRIPTION,
-    PLAYING,    // Hinzugefügt
-    PAUSED,     // Hinzugefügt
-    GAMEOVER,   // Hinzugefügt
-    EXIT_PROMPT // Hinzugefügt
-}; // Klammer und Semikolon fehlten
+    PLAYING,
+    PAUSED,
+    GAMEOVER,
+    EXIT_PROMPT
+};
 
 // ============================================================
 /// Ein Hindernis auf der Fahrbahn.
@@ -58,8 +58,8 @@ struct CollectableShield
 struct RoadSideObj
 {
     float x, y;
-    float size;  // Skalierungsfaktor
-    int variant; // Variante für optische Abwechslung (0-2)
+    float size;
+    int variant;
 };
 
 // ============================================================
@@ -68,38 +68,22 @@ struct RoadSideObj
 class Game
 {
 public:
-    /// Fenster öffnen, Assets laden, Startzustand setzen.
     void Init();
-
-    /// Haupt-Update-Loop (Eingabe & Logik-Verteilung).
     void Update();
-
-    /// Haupt-Draw-Loop.
     void Draw();
-
-    /// Ressourcen freigeben und Fenster schließen.
     void Cleanup();
 
-    // --- Interne Hilfsmethoden ---
-    /// Setzt ein Hindernis auf eine neue zufällige Position.
     void ResetObstacle(Obstacle &obs, float startY);
-    /// Spawnt einen Bonusstern an zufälliger X-Position.
     void SpawnStar();
-    /// Spawnt eine Uhr an zufälliger X-Position.
     void SpawnClock();
-    /// Spawnt ein Schild an zufälliger X-Position.
     void SpawnShield();
-    /// Skalierte Mausposition für 1000x800-Logikraum berechnen.
     Vector2 GetScaledMouse() const;
-    /// Straßenrandobjekte (Bäume / Kakteen) initialisieren.
     void InitSideObjects();
-    /// Hintergrund mit Straße, Randobjekten, Leitplanken und Mittellinie zeichnen.
     void DrawRoadBackground();
 
-    // --- Eingabe-Handler pro Zustand ---
     void HandleMenuInput(Vector2 mousePoint);
     void HandleShopInput(Vector2 mousePoint);
-    void HandleSettingsInput(Vector2 mousePoint); // Hinzugefügt
+    void HandleSettingsInput(Vector2 mousePoint);
     void UpdateGameLogic(float deltaTime);
 
     // --- Assets ---
@@ -152,6 +136,13 @@ public:
     Rectangle langBtn, resBtn, nameChangeBtn, deleteDataBtn, backSetBtn;
     Rectangle btnPrimary, btnMenu;
     Rectangle redCarBtn, blueCarBtn;
+    // Pause-Menü Buttons
+    Rectangle pauseResumeBtn, pauseMenuBtn, pauseQuitBtn;
+    // Bestätigungsdialoge
+    bool showQuitConfirm;
+    bool showPauseBackConfirm;
+    bool showNameChangeConfirm;
+    bool showDeleteDataConfirm;
 };
 
 #endif // GAME_H

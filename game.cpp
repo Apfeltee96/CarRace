@@ -9,15 +9,11 @@
 // ============================================================
 static void DrawTree(float x, float y, float s)
 {
-    // Stamm
     DrawRectangle((int)(x - 5 * s), (int)(y - 22 * s), (int)(10 * s), (int)(22 * s),
                   {101, 67, 33, 255});
-    // Untere Blattkrone
     DrawCircle((int)x, (int)(y - 30 * s), (int)(22 * s), {20, 100, 20, 255});
-    // Mittlere Blattkrone
     DrawCircle((int)(x - 10 * s), (int)(y - 42 * s), (int)(16 * s), {30, 130, 30, 255});
     DrawCircle((int)(x + 10 * s), (int)(y - 42 * s), (int)(16 * s), {30, 130, 30, 255});
-    // Obere Blattkrone
     DrawCircle((int)x, (int)(y - 52 * s), (int)(18 * s), {50, 160, 50, 255});
 }
 
@@ -26,14 +22,11 @@ static void DrawCactus(float x, float y, float s)
     Color cGreen = {34, 115, 34, 255};
     int bw = (int)(12 * s);
     int bh = (int)(50 * s);
-    // Hauptkörper
     DrawRectangle((int)(x - bw / 2), (int)(y - bh), bw, bh, cGreen);
-    // Linker Arm
     DrawRectangle((int)(x - bw / 2 - (int)(16 * s)), (int)(y - (int)(32 * s)),
                   (int)(16 * s), (int)(8 * s), cGreen);
     DrawRectangle((int)(x - bw / 2 - (int)(9 * s)), (int)(y - (int)(44 * s)),
                   (int)(9 * s), (int)(14 * s), cGreen);
-    // Rechter Arm
     DrawRectangle((int)(x + bw / 2), (int)(y - (int)(26 * s)),
                   (int)(16 * s), (int)(8 * s), cGreen);
     DrawRectangle((int)(x + bw / 2 + (int)(7 * s)), (int)(y - (int)(38 * s)),
@@ -49,11 +42,9 @@ void Game::Init()
     InitWindow(1000, 800, "Car Race");
     SetExitKey(KEY_NULL);
     SetTargetFPS(60);
-    // Icon setzen
     Image icon = LoadImage("icon.png");
     SetWindowIcon(icon);
     UnloadImage(icon);
-    // Assets laden
     carTextures[0] = LoadTexture("assets/car_white.png");
     carTextures[1] = LoadTexture("assets/car_red.png");
     carTextures[2] = LoadTexture("assets/car_blue.png");
@@ -61,7 +52,6 @@ void Game::Init()
     starTex = LoadTexture("assets/star.png");
     clockTex = LoadTexture("assets/clock.png");
     shieldTex = LoadTexture("assets/shield.png");
-    // Offscreen-RenderTexture für Auflösungsskalierung
     target = LoadRenderTexture(1000, 800);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
     if (saveData.isFullscreen && !IsWindowFullscreen())
@@ -77,7 +67,7 @@ void Game::Init()
         backgroundMusic = LoadMusicStream("sounds/soundtrack.mp3");
         backgroundMusic.looping = true;
         SetMusicVolume(backgroundMusic, musicVolume);
-        PlayMusicStream(backgroundMusic);
+        // Musik startet erst beim Spielstart, nicht im Menü
         musicLoaded = true;
     }
     if (FileExists("sounds/crash.mp3"))
@@ -91,6 +81,10 @@ void Game::Init()
     InitSideObjects();
     // Startzustand
     state = MAIN_MENU;
+    showQuitConfirm = false;
+    showPauseBackConfirm = false;
+    showNameChangeConfirm = false;
+    showDeleteDataConfirm = false;
     isNameSaved = false;
     framesCounter = 0;
     playerName[0] = '\0';
@@ -101,9 +95,8 @@ void Game::Init()
     }
     playerName[15] = '\0';
     letterCount = static_cast<int>(std::strlen(playerName));
-    // Highscore einmal laden (wird nach jedem Spielende aktualisiert)
     cachedTopScore = GetTopScore();
-    // Button-Layouts (1000×800 Logikraum)
+    // Button-Layouts
     float centerX = 1000 / 2.0f - 125.0f;
     startBtn = {centerX, 300, 250, 50};
     scoreBtn = {centerX, 360, 250, 50};
@@ -118,10 +111,14 @@ void Game::Init()
     backSetBtn = {centerX, 550, 250, 50};
     btnPrimary = {centerX, 400, 250, 50};
     btnMenu = {centerX, 480, 250, 50};
+    // Pause-Menü Buttons
+    pauseResumeBtn = {centerX, 280, 250, 50};
+    pauseMenuBtn = {centerX, 350, 250, 50};
+    pauseQuitBtn = {centerX, 420, 250, 50};
     // Shop-Buttons
     redCarBtn = {400, 500, 200, 50};
     blueCarBtn = {650, 500, 200, 50};
-    // Hindernisse gleichmäßig über den oberen Bereich verteilen
+    // Hindernisse
     obstacles.resize(4);
     for (int i = 0; i < 4; i++)
         ResetObstacle(obstacles[i], -200.0f - (i * 400.0f));
@@ -141,20 +138,54 @@ void Game::Init()
 void Game::Update()
 {
     framesCounter++;
-    // Musik-Stream jedes Frame aktualisieren (hält den Buffer gefüllt)
     if (musicLoaded)
         UpdateMusicStream(backgroundMusic);
     Vector2 mousePoint = GetScaledMouse();
+
     if (IsKeyPressed(KEY_ESCAPE))
     {
-        if (state == EXIT_PROMPT)
+        if (state == PLAYING)
+        {
+            if (musicLoaded)
+                PauseMusicStream(backgroundMusic);
+            state = PAUSED;
+            showQuitConfirm = false;
+            showPauseBackConfirm = false;
+        }
+        else if (state == PAUSED)
+        {
+            if (showQuitConfirm)
+                showQuitConfirm = false;
+            else if (showPauseBackConfirm)
+                showPauseBackConfirm = false;
+            else
+            {
+                if (musicLoaded)
+                    ResumeMusicStream(backgroundMusic);
+                state = PLAYING;
+            }
+        }
+        else if (state == SETTINGS)
+        {
+            if (showNameChangeConfirm)
+                showNameChangeConfirm = false;
+            else if (showDeleteDataConfirm)
+                showDeleteDataConfirm = false;
+            else
+            {
+                previousState = state;
+                state = EXIT_PROMPT;
+            }
+        }
+        else if (state == EXIT_PROMPT)
             state = previousState;
-        else
+        else if (state != GAMEOVER)
         {
             previousState = state;
             state = EXIT_PROMPT;
         }
     }
+
     switch (state)
     {
     case EXIT_PROMPT:
@@ -180,39 +211,86 @@ void Game::Update()
         break;
     case PAUSED:
     {
-        // Lautstärke-Slider ziehen
-        const Rectangle sliderTrack = {350, 575, 300, 16};
-        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+        const Rectangle sliderTrack = {350, 520, 300, 16};
+        bool anyConfirm = showQuitConfirm || showPauseBackConfirm;
+        if (!anyConfirm)
         {
-            if (volumeDragging || CheckCollisionPointRec(mousePoint, sliderTrack))
+            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
             {
-                volumeDragging = true;
-                musicVolume = std::clamp(
-                    (mousePoint.x - sliderTrack.x) / sliderTrack.width, 0.0f, 1.0f);
-                if (musicLoaded)
-                    SetMusicVolume(backgroundMusic, musicVolume);
-                if (crashSoundLoaded)
-                    SetSoundVolume(crashSound, musicVolume);
+                if (volumeDragging || CheckCollisionPointRec(mousePoint, sliderTrack))
+                {
+                    volumeDragging = true;
+                    musicVolume = std::clamp(
+                        (mousePoint.x - sliderTrack.x) / sliderTrack.width, 0.0f, 1.0f);
+                    if (musicLoaded)
+                        SetMusicVolume(backgroundMusic, musicVolume);
+                    if (crashSoundLoaded)
+                        SetSoundVolume(crashSound, musicVolume);
+                }
+            }
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+            {
+                volumeDragging = false;
+                if (CheckCollisionPointRec(mousePoint, pauseResumeBtn))
+                {
+                    if (musicLoaded)
+                        ResumeMusicStream(backgroundMusic);
+                    state = PLAYING;
+                }
+                else if (CheckCollisionPointRec(mousePoint, pauseMenuBtn))
+                    showPauseBackConfirm = true;
+                else if (CheckCollisionPointRec(mousePoint, pauseQuitBtn))
+                    showQuitConfirm = true;
             }
         }
-        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+        else if (showPauseBackConfirm)
         {
-            volumeDragging = false;
-            if (CheckCollisionPointRec(mousePoint, btnMenu))
-                state = MAIN_MENU;
-            if (CheckCollisionPointRec(mousePoint, btnPrimary))
-                state = PLAYING;
+            const Rectangle bYesBtn = {330, 420, 150, 50};
+            const Rectangle bNoBtn = {520, 420, 150, 50};
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+            {
+                if (CheckCollisionPointRec(mousePoint, bYesBtn))
+                {
+                    showPauseBackConfirm = false;
+                    if (musicLoaded)
+                        StopMusicStream(backgroundMusic);
+                    state = MAIN_MENU;
+                }
+                if (CheckCollisionPointRec(mousePoint, bNoBtn))
+                    showPauseBackConfirm = false;
+            }
+        }
+        else if (showQuitConfirm)
+        {
+            const Rectangle qYesBtn = {330, 420, 150, 50};
+            const Rectangle qNoBtn = {520, 420, 150, 50};
+            if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+            {
+                if (CheckCollisionPointRec(mousePoint, qYesBtn))
+                    Cleanup();
+                if (CheckCollisionPointRec(mousePoint, qNoBtn))
+                    showQuitConfirm = false;
+            }
         }
         break;
     }
     case SCOREBOARD_MENU:
     case DESCRIPTION:
+        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+        {
+            if (CheckCollisionPointRec(mousePoint, backMenuBtn))
+                state = MAIN_MENU;
+        }
+        break;
     case GAMEOVER:
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
         {
-            if (CheckCollisionPointRec(mousePoint, backMenuBtn) ||
-                CheckCollisionPointRec(mousePoint, btnMenu))
+            if (CheckCollisionPointRec(mousePoint, btnMenu))
+            {
+                if (musicLoaded)
+                    StopMusicStream(backgroundMusic);
                 state = MAIN_MENU;
+            }
         }
         break;
     default:
@@ -220,20 +298,14 @@ void Game::Update()
     }
 }
 
+// ============================================================
 //  Spiellogik
 // ============================================================
 void Game::UpdateGameLogic(float deltaTime)
 {
-    if (IsKeyPressed(KEY_P))
-    {
-        state = PAUSED;
-        return;
-    }
     totalTimeSurvived += deltaTime;
     currentScore = static_cast<int>(totalTimeSurvived * 50.0f);
-    // Straßen-Scroll-Offset für Mittellinie & Leitplanken-Pfosten aktualisieren
     roadScrollOffset += currentSpeed * deltaTime;
-    // Seitenrandobjekte (Bäume / Kakteen) nach unten scrollen und zurücksetzen
     for (auto &obj : sideObjects)
     {
         obj.y += currentSpeed * deltaTime;
@@ -244,7 +316,6 @@ void Game::UpdateGameLogic(float deltaTime)
             obj.variant = GetRandomValue(0, 2);
         }
     }
-    // Uhr-Buff Timer
     if (buffActive)
     {
         buffTimer -= deltaTime;
@@ -255,7 +326,6 @@ void Game::UpdateGameLogic(float deltaTime)
             currentSpeed = speedBeforeBuff;
         }
     }
-    // Schild-Buff Timer
     if (shieldActive)
     {
         shieldTimer -= deltaTime;
@@ -265,17 +335,14 @@ void Game::UpdateGameLogic(float deltaTime)
             shieldTimer = 0.0f;
         }
     }
-    // Geschwindigkeit nur erhöhen wenn kein Uhr-Buff aktiv
     if (!buffActive)
         currentSpeed = GetCurrentSpeed(currentSpeed, deltaTime);
     player.speed = GetDynamicPlayerSpeed(currentSpeed);
-    // Spieler bewegen und auf Fahrbahn begrenzen
     if (IsKeyDown(KEY_LEFT))
         player.rect.x -= player.speed * deltaTime;
     if (IsKeyDown(KEY_RIGHT))
         player.rect.x += player.speed * deltaTime;
     player.rect.x = std::clamp(player.rect.x, 300.0f, 700.0f - player.rect.width);
-    // Hindernisse bewegen und bei Ausfahrt zurücksetzen
     for (auto &obs : obstacles)
     {
         obs.rect.y += currentSpeed * deltaTime;
@@ -287,7 +354,6 @@ void Game::UpdateGameLogic(float deltaTime)
                     highestY = o.rect.y;
             ResetObstacle(obs, highestY - 400.0f);
         }
-        // Kollision → nur Game Over wenn kein Schild aktiv
         if (CheckCollisionRecs(player.rect, obs.rect) && !shieldActive)
         {
             if (crashSoundLoaded)
@@ -300,7 +366,6 @@ void Game::UpdateGameLogic(float deltaTime)
             return;
         }
     }
-    // Bonusstern spawnen
     if (!bonusStar.active && GetRandomValue(0, 600) < 3)
         SpawnStar();
     if (bonusStar.active)
@@ -314,7 +379,6 @@ void Game::UpdateGameLogic(float deltaTime)
         if (bonusStar.rect.y > 800.0f)
             bonusStar.active = false;
     }
-    // Uhr-Buff spawnen
     if (!clockBuff.active && !buffActive && GetRandomValue(0, 3000) < 2)
         SpawnClock();
     if (clockBuff.active)
@@ -331,7 +395,6 @@ void Game::UpdateGameLogic(float deltaTime)
         if (clockBuff.rect.y > 800.0f)
             clockBuff.active = false;
     }
-    // Schild-Buff spawnen
     if (!shieldBuff.active && !shieldActive && GetRandomValue(0, 6000) < 2)
         SpawnShield();
     if (shieldBuff.active)
@@ -348,6 +411,7 @@ void Game::UpdateGameLogic(float deltaTime)
     }
 }
 
+// ============================================================
 //  Eingabe-Handler
 // ============================================================
 void Game::HandleMenuInput(Vector2 mousePoint)
@@ -363,7 +427,7 @@ void Game::HandleMenuInput(Vector2 mousePoint)
                 playerName[letterCount + 1] = '\0';
                 letterCount++;
             }
-            key = GetCharPressed(); // Korrigiert: Hole nächsten Key in der Schleife
+            key = GetCharPressed();
         }
         if (IsKeyPressed(KEY_BACKSPACE) && letterCount > 0)
             playerName[--letterCount] = '\0';
@@ -391,10 +455,8 @@ void Game::HandleMenuInput(Vector2 mousePoint)
         InitPlayer(player, 1000, 800, 45.0f,
                    45.0f * (static_cast<float>(cur.height) / cur.width),
                    GetCarColor(saveData.selectedColorId));
-        // Korrigiert: Schleife zum Resetten der Hindernisse hinzugefügt
         for (int i = 0; i < (int)obstacles.size(); i++)
             ResetObstacle(obstacles[i], -200.0f - (i * 400.0f));
-
         bonusStar.active = false;
         clockBuff.active = false;
         shieldBuff.active = false;
@@ -403,6 +465,15 @@ void Game::HandleMenuInput(Vector2 mousePoint)
         speedBeforeBuff = 0.0f;
         shieldActive = false;
         shieldTimer = 0.0f;
+        // Musik erst beim Spielstart starten
+        if (musicLoaded)
+        {
+            StopMusicStream(backgroundMusic);
+            SeekMusicStream(backgroundMusic, 0.0f);
+            PlayMusicStream(backgroundMusic);
+        }
+        showQuitConfirm = false;
+        showPauseBackConfirm = false;
         state = PLAYING;
     }
     else if (CheckCollisionPointRec(mousePoint, scoreBtn))
@@ -455,10 +526,50 @@ void Game::HandleSettingsInput(Vector2 mousePoint)
 {
     if (!IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
         return;
-    if (CheckCollisionPointRec(mousePoint, backSetBtn))
+
+    // Bestätigungsdialoge zuerst auswerten
+    if (showNameChangeConfirm)
     {
-        state = MAIN_MENU;
+        const Rectangle yBtn = {330, 420, 150, 50};
+        const Rectangle nBtn = {520, 420, 150, 50};
+        if (CheckCollisionPointRec(mousePoint, yBtn))
+        {
+            showNameChangeConfirm = false;
+            isNameSaved = false;
+            playerName[0] = '\0';
+            letterCount = 0;
+            state = MAIN_MENU;
+        }
+        else if (CheckCollisionPointRec(mousePoint, nBtn))
+            showNameChangeConfirm = false;
+        return;
     }
+    if (showDeleteDataConfirm)
+    {
+        const Rectangle yBtn = {290, 460, 150, 50};
+        const Rectangle nBtn = {480, 460, 150, 50};
+        if (CheckCollisionPointRec(mousePoint, yBtn))
+        {
+            showDeleteDataConfirm = false;
+            DeleteSaveData();
+            ClearScoreboard();
+            if (IsWindowFullscreen())
+                ToggleFullscreen();
+            saveData = {0, false, false, 0, saveData.isEnglish, false, ""};
+            playerName[0] = '\0';
+            letterCount = 0;
+            isNameSaved = false;
+            cachedTopScore = 0;
+            state = MAIN_MENU;
+        }
+        else if (CheckCollisionPointRec(mousePoint, nBtn))
+            showDeleteDataConfirm = false;
+        return;
+    }
+
+    // Normale Button-Aktionen
+    if (CheckCollisionPointRec(mousePoint, backSetBtn))
+        state = MAIN_MENU;
     else if (CheckCollisionPointRec(mousePoint, langBtn))
     {
         saveData.isEnglish = !saveData.isEnglish;
@@ -471,27 +582,12 @@ void Game::HandleSettingsInput(Vector2 mousePoint)
         SaveGameData(saveData);
     }
     else if (CheckCollisionPointRec(mousePoint, nameChangeBtn))
-    {
-        isNameSaved = false;
-        playerName[0] = '\0';
-        letterCount = 0;
-        state = MAIN_MENU;
-    }
+        showNameChangeConfirm = true;
     else if (CheckCollisionPointRec(mousePoint, deleteDataBtn))
-    {
-        DeleteSaveData();
-        ClearScoreboard();
-        if (IsWindowFullscreen())
-            ToggleFullscreen();
-        saveData = {0, false, false, 0, saveData.isEnglish, false, ""};
-        playerName[0] = '\0';
-        letterCount = 0;
-        isNameSaved = false;
-        cachedTopScore = 0;
-        state = MAIN_MENU;
-    }
+        showDeleteDataConfirm = true;
 }
 
+// ============================================================
 //  Hilfsmethoden
 // ============================================================
 Vector2 Game::GetScaledMouse() const
@@ -543,19 +639,16 @@ void Game::Draw()
                    state == GAMEOVER || state == EXIT_PROMPT);
     if (inGame)
     {
-        // Hindernisse
         for (const auto &obs : obstacles)
         {
             DrawTexturePro(obstacleTex,
                            {0, 0, static_cast<float>(obstacleTex.width), static_cast<float>(obstacleTex.height)},
                            obs.rect, {0, 0}, 0.0f, WHITE);
         }
-        // Spielerauto
         Texture2D &cur = carTextures[saveData.selectedColorId];
         DrawTexturePro(cur,
                        {0, 0, static_cast<float>(cur.width), static_cast<float>(cur.height)},
                        player.rect, {0, 0}, 0.0f, WHITE);
-        // Schild-Rahmen um das Auto
         if (shieldActive)
         {
             DrawRectangleLinesEx(
@@ -563,31 +656,26 @@ void Game::Draw()
                  player.rect.width + 8, player.rect.height + 8},
                 4.0f, GOLD);
         }
-        // Bonusstern
         if (bonusStar.active)
         {
             DrawTexturePro(starTex,
                            {0, 0, static_cast<float>(starTex.width), static_cast<float>(starTex.height)},
                            bonusStar.rect, {0, 0}, 0.0f, WHITE);
         }
-        // Uhr-Buff Icon
         if (clockBuff.active)
         {
             DrawTexturePro(clockTex,
                            {0, 0, static_cast<float>(clockTex.width), static_cast<float>(clockTex.height)},
                            clockBuff.rect, {0, 0}, 0.0f, WHITE);
         }
-        // Schild-Buff Icon
         if (shieldBuff.active)
         {
             DrawTexturePro(shieldTex,
                            {0, 0, static_cast<float>(shieldTex.width), static_cast<float>(shieldTex.height)},
                            shieldBuff.rect, {0, 0}, 0.0f, WHITE);
         }
-        // HUD
         DrawHUD(playerName, totalTimeSurvived, currentScore,
                 earnedStarsThisRound, saveData.isEnglish, starTex, cachedTopScore);
-        // Uhr-Buff Anzeige
         if (buffActive)
         {
             DrawRectangleLinesEx({300, 0, 400, 800}, 4, Fade(SKYBLUE, 0.7f));
@@ -600,7 +688,6 @@ void Game::Draw()
                                         : TextFormat("LANGSAM  %.1fs", buffTimer);
             DrawText(buffLabel, 355, 65, 18, SKYBLUE);
         }
-        // Schild-Buff Anzeige
         if (shieldActive)
         {
             DrawRectangleLinesEx({300, 0, 400, 800}, 4, Fade(GOLD, 0.7f));
@@ -614,12 +701,12 @@ void Game::Draw()
             DrawText(shieldLabel, 350, 100, 18, GOLD);
         }
         if (state == PAUSED)
-            DrawPauseMenu(mousePoint, btnPrimary, btnMenu, saveData.isEnglish, musicVolume);
+            DrawPauseMenu(mousePoint, pauseResumeBtn, pauseMenuBtn, pauseQuitBtn,
+                          saveData.isEnglish, musicVolume, showQuitConfirm, showPauseBackConfirm);
         if (state == GAMEOVER)
             DrawGameOverMenu(playerName, currentScore, totalTimeSurvived,
                              earnedStarsThisRound, mousePoint, btnMenu, saveData.isEnglish);
     }
-    // Menüs
     switch (state)
     {
     case MAIN_MENU:
@@ -633,7 +720,8 @@ void Game::Draw()
         break;
     case SETTINGS:
         DrawSettingsMenu(mousePoint, langBtn, resBtn, nameChangeBtn,
-                         deleteDataBtn, backSetBtn, saveData.isEnglish, saveData.isFullscreen);
+                         deleteDataBtn, backSetBtn, saveData.isEnglish, saveData.isFullscreen,
+                         showNameChangeConfirm, showDeleteDataConfirm);
         break;
     case SCOREBOARD_MENU:
         DrawScoreboardMenu(LoadScoreboard(), mousePoint, backMenuBtn, saveData.isEnglish);
@@ -661,7 +749,6 @@ void Game::Draw()
     }
     EndTextureMode();
 
-    // Offscreen-Buffer skaliert auf tatsächliche Fenstergröße zeichnen
     BeginDrawing();
     ClearBackground(BLACK);
     float finalScale = std::min(static_cast<float>(GetScreenWidth()) / 1000.0f,
@@ -676,6 +763,7 @@ void Game::Draw()
     EndDrawing();
 }
 
+// ============================================================
 //  Cleanup
 // ============================================================
 void Game::Cleanup()
