@@ -96,7 +96,9 @@ void DrawMainMenu(const char *name, int letterCount, int framesCounter,
 void DrawSettingsMenu(Vector2 mousePoint, Rectangle langBtn, Rectangle resBtn,
                       Rectangle nameChangeBtn, Rectangle deleteDataBtn,
                       Rectangle backBtn, bool isEnglish, bool isFullscreen,
+                      float musicVolume,
                       bool showNameChangeConfirm, bool showDeleteDataConfirm)
+
 {
     DrawRectangle(0, 0, 1000, 800, Fade(BLACK, 0.6f));
     DrawTextCentered(isEnglish ? "SETTINGS" : "EINSTELLUNGEN", 80, 50, GOLD);
@@ -104,6 +106,18 @@ void DrawSettingsMenu(Vector2 mousePoint, Rectangle langBtn, Rectangle resBtn,
     DrawButton(resBtn, isFullscreen ? (isEnglish ? "Window Mode" : "Fenstermodus") : (isEnglish ? "Fullscreen" : "Vollbild"), mousePoint, GRAY, BLACK);
     DrawButton(nameChangeBtn, isEnglish ? "Change Name" : "Name aendern", mousePoint, GRAY, BLACK);
     DrawButton(deleteDataBtn, isEnglish ? "DELETE DATA" : "DATEN LOESCHEN", mousePoint, RED, RAYWHITE);
+
+    // Lautstärke-Slider
+    const char *volLabel = isEnglish ? "Volume:" : "Lautstaerke:";
+    DrawText(volLabel, (1000 - MeasureText(volLabel, 20)) / 2, 462, 20, RAYWHITE);
+    Rectangle track = {350, 490, 300, 16};
+    DrawRectangleRec(track, {60, 60, 60, 255});
+    DrawRectangle(350, 490, (int)(musicVolume * 300.0f), 16, {100, 180, 255, 255});
+    DrawRectangleLinesEx(track, 2, {120, 120, 120, 255});
+    int handleX = 350 + (int)(musicVolume * 300.0f);
+    DrawCircle(handleX, 498, 10, WHITE);
+    DrawCircleLines(handleX, 498, 10, LIGHTGRAY);
+
     DrawButton(backBtn, isEnglish ? "BACK" : "ZURUECK", mousePoint, GRAY, BLACK);
 
     if (showNameChangeConfirm)
@@ -273,13 +287,27 @@ void DrawScoreboardMenu(const std::vector<ScoreEntry> &scores,
     DrawRectangle(0, 0, 1000, 800, Fade(BLACK, 0.8f));
     DrawTextCentered(isEnglish ? "TOP 10 SCORES" : "BESTENLISTE", 80, 50, GOLD);
 
+    // Tabellen-Header
+    DrawRectangle(200, 155, 600, 35, {50, 50, 50, 255});
+    DrawRectangleLinesEx({200.0f, 155.0f, 600.0f, 35.0f}, 1, {100, 100, 100, 255});
+    DrawText("NAME", 310, 163, 20, {180, 180, 180, 255});
+    DrawText(isEnglish ? "SCORE" : "PUNKTE", 590, 163, 20, {180, 180, 180, 255});
+
     for (int i = 0; i < (int)scores.size(); i++)
     {
         Color c = (i == 0) ? GOLD : (i == 1) ? LIGHTGRAY
-                                : (i == 2)   ? BROWN
+                                : (i == 2)   ? Color{205, 127, 50, 255}
                                              : WHITE;
-        DrawText(TextFormat("%d. %s", i + 1, scores[i].name), 300, 180 + i * 40, 25, c);
-        DrawText(TextFormat("%d", scores[i].score), 600, 180 + i * 40, 25, c);
+        Color rowBg = (i % 2 == 0) ? Color{30, 30, 30, 200} : Color{45, 45, 45, 200};
+        int rowY = 190 + i * 36;
+
+        DrawRectangle(200, rowY, 600, 36, rowBg);
+        DrawRectangleLinesEx({200.0f, (float)rowY, 600.0f, 36.0f}, 1, {70, 70, 70, 180});
+
+        DrawText(TextFormat("%d.", i + 1), 215, rowY + 7, 22, c);
+        DrawText(scores[i].name, 265, rowY + 7, 22, c);
+        DrawText(TextFormat("%d", scores[i].score), 590, rowY + 7, 22, c);
     }
+
     DrawButton(backBtn, isEnglish ? "BACK" : "ZURUECK", mousePoint, GRAY, BLACK);
 }

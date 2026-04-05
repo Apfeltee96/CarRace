@@ -4,11 +4,11 @@
 #include "raylib.h"
 #include <string>
 
-constexpr float SPEED_START        = 400.0f;
-constexpr float SPEED_MAX          = 1600.0f;
+constexpr float SPEED_START = 400.0f;
+constexpr float SPEED_MAX = 1600.0f;
 constexpr float SPEED_ACCELERATION = 2.5f;
 
-constexpr int PRICE_RED_CAR  = 30;
+constexpr int PRICE_RED_CAR = 30;
 constexpr int PRICE_BLUE_CAR = 75;
 
 /// Persistente Spielerdaten (savegame.dat)
@@ -17,10 +17,11 @@ struct SaveGame
     int totalStars;
     bool ownsRedCar;
     bool ownsBlueCar;
-    int selectedColorId;   // 0=weiß, 1=rot, 2=lila
+    int selectedColorId;
     bool isEnglish;
     bool isFullscreen;
     std::string lastPlayerName;
+    float musicVolume;
 };
 
 SaveGame LoadSaveGame();

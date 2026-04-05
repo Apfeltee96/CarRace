@@ -9,20 +9,17 @@ static const char *SAVE_FILE = "savegame.dat";
 // Speicherstand laden / speichern
 SaveGame LoadSaveGame()
 {
-    // Standardwerte falls keine Datei existiert
-    SaveGame data = {0, false, false, 0, false, false, "Gast"};
+    SaveGame data = {0, false, false, 0, false, false, "Gast", 0.2f};
 
     std::ifstream file(SAVE_FILE, std::ios::binary);
     if (!file.is_open())
         return data;
 
-    // Reihenfolge muss exakt mit SaveGameData übereinstimmen
     file.read(reinterpret_cast<char *>(&data.totalStars), sizeof(int));
     file.read(reinterpret_cast<char *>(&data.ownsRedCar), sizeof(bool));
     file.read(reinterpret_cast<char *>(&data.ownsBlueCar), sizeof(bool));
     file.read(reinterpret_cast<char *>(&data.selectedColorId), sizeof(int));
 
-    // String wird als Länge + Inhalt gespeichert
     int nameLen = 0;
     if (file.read(reinterpret_cast<char *>(&nameLen), sizeof(int)) && nameLen > 0 && nameLen <= 15)
     {
@@ -33,6 +30,7 @@ SaveGame LoadSaveGame()
 
     file.read(reinterpret_cast<char *>(&data.isEnglish), sizeof(bool));
     file.read(reinterpret_cast<char *>(&data.isFullscreen), sizeof(bool));
+    file.read(reinterpret_cast<char *>(&data.musicVolume), sizeof(float));
 
     return data;
 }
@@ -54,6 +52,7 @@ void SaveGameData(const SaveGame &data)
 
     file.write(reinterpret_cast<const char *>(&data.isEnglish), sizeof(bool));
     file.write(reinterpret_cast<const char *>(&data.isFullscreen), sizeof(bool));
+    file.write(reinterpret_cast<const char *>(&data.musicVolume), sizeof(float));
 }
 
 void DeleteSaveData()
@@ -62,7 +61,6 @@ void DeleteSaveData()
 }
 
 //  Spielmechanik-Hilfsfunktionen
-
 float GetCurrentSpeed(float currentSpeed, float deltaTime)
 {
     // Geschwindigkeit steigt linear bis SPEED_MAX
@@ -88,6 +86,6 @@ Color GetCarColor(int colorId)
     case 2:
         return BLUE;
     default:
-        return WHITE; 
+        return WHITE;
     }
 }

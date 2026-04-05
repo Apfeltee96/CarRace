@@ -66,7 +66,7 @@ void Game::Init()
 
     // Audio
     InitAudioDevice();
-    musicVolume = 0.7f;
+    musicVolume = saveData.musicVolume;
     musicLoaded = false;
     crashSoundLoaded = false;
     volumeDragging = false;
@@ -554,6 +554,30 @@ void Game::HandleShopInput(Vector2 mousePoint)
 
 void Game::HandleSettingsInput(Vector2 mousePoint)
 {
+    // Lautstärke-Slider
+    const Rectangle settingsSlider = {350, 490, 300, 16};
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+    {
+        if (volumeDragging || CheckCollisionPointRec(mousePoint, settingsSlider))
+        {
+            volumeDragging = true;
+            musicVolume = std::clamp((mousePoint.x - settingsSlider.x) / settingsSlider.width, 0.0f, 1.0f);
+            if (musicLoaded)
+                SetMusicVolume(backgroundMusic, musicVolume);
+            if (crashSoundLoaded)
+                SetSoundVolume(crashSound, musicVolume);
+            saveData.musicVolume = musicVolume;
+        }
+    }
+    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+    {
+        if (volumeDragging)
+        {
+            SaveGameData(saveData);
+            volumeDragging = false;
+        }
+    }
+
     if (!IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
         return;
 
@@ -652,15 +676,15 @@ void Game::SpawnShield()
 }
 
 // --- Draw ---
-
 void Game::Draw()
 {
     Vector2 mousePoint = GetScaledMouse();
     BeginTextureMode(target);
     DrawRoadBackground();
 
-    bool inGame = (state == PLAYING || state == PAUSED ||
-                   state == GAMEOVER || state == EXIT_PROMPT);
+    bool gameWasActive = (previousState == PLAYING || previousState == PAUSED || previousState == GAMEOVER);
+    bool inGame = (state == PLAYING || state == PAUSED || state == GAMEOVER ||
+                   (state == EXIT_PROMPT && gameWasActive));
     if (inGame)
     {
         for (const auto &obs : obstacles)
@@ -731,7 +755,8 @@ void Game::Draw()
     case SETTINGS:
         DrawSettingsMenu(mousePoint, langBtn, resBtn, nameChangeBtn,
                          deleteDataBtn, backSetBtn, saveData.isEnglish, saveData.isFullscreen,
-                         showNameChangeConfirm, showDeleteDataConfirm);
+                         musicVolume, showNameChangeConfirm, showDeleteDataConfirm);
+
         break;
     case SCOREBOARD_MENU:
         DrawScoreboardMenu(LoadScoreboard(), mousePoint, backMenuBtn, saveData.isEnglish);
@@ -744,19 +769,24 @@ void Game::Draw()
     }
 
     // Exit-Dialog
+    // Exit-Dialog
     if (state == EXIT_PROMPT)
     {
-        DrawRectangle(0, 0, 1000, 800, Fade(BLACK, 0.7f));
-        Rectangle box = {350, 300, 300, 200};
-        DrawRectangleRec(box, RAYWHITE);
-        DrawRectangleLinesEx(box, 3, GOLD);
-        DrawTextCentered(saveData.isEnglish ? "EXIT GAME?" : "SPIEL BEENDEN?", 340, 25, DARKGRAY);
-        Rectangle yBtn = {380, 420, 100, 40};
-        Rectangle nBtn = {520, 420, 100, 40};
+        DrawRectangle(0, 0, 1000, 800, Fade(BLACK, 0.55f));
+        Rectangle box = {300, 290, 400, 200};
+        DrawRectangleRec(box, {25, 25, 25, 245});
+        DrawRectangleLinesEx(box, 3, RED);
+        DrawTextCentered(saveData.isEnglish ? "EXIT GAME?" : "SPIEL BEENDEN?", 325, 26, RAYWHITE);
+        Rectangle yBtn = {330, 420, 150, 50};
+        Rectangle nBtn = {520, 420, 150, 50};
         DrawRectangleRec(yBtn, CheckCollisionPointRec(mousePoint, yBtn) ? RED : MAROON);
         DrawRectangleRec(nBtn, CheckCollisionPointRec(mousePoint, nBtn) ? GRAY : DARKGRAY);
-        DrawText(saveData.isEnglish ? "YES" : "JA", (int)yBtn.x + 35, (int)yBtn.y + 10, 20, WHITE);
-        DrawText(saveData.isEnglish ? "NO" : "NEIN", (int)nBtn.x + 35, (int)nBtn.y + 10, 20, WHITE);
+        DrawRectangleLinesEx(yBtn, 2, {255, 80, 80, 200});
+        DrawRectangleLinesEx(nBtn, 2, {160, 160, 160, 200});
+        int yw = MeasureText(saveData.isEnglish ? "YES" : "JA", 22);
+        int nw = MeasureText(saveData.isEnglish ? "NO" : "NEIN", 22);
+        DrawText(saveData.isEnglish ? "YES" : "JA", (int)(yBtn.x + (yBtn.width - yw) / 2), (int)(yBtn.y + 14), 22, WHITE);
+        DrawText(saveData.isEnglish ? "NO" : "NEIN", (int)(nBtn.x + (nBtn.width - nw) / 2), (int)(nBtn.y + 14), 22, WHITE);
     }
 
     EndTextureMode();
