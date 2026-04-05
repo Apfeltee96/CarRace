@@ -6,34 +6,27 @@
 
 static void DrawTexFull(Texture2D tex, Rectangle dst)
 {
-    DrawTexturePro(tex,
-                   {0, 0, (float)tex.width, (float)tex.height},
-                   dst, {0, 0}, 0.0f, WHITE);
+    DrawTexturePro(tex,{0, 0, (float)tex.width, (float)tex.height},dst, {0, 0}, 0.0f, WHITE);
 }
-
+//Baum
 static void DrawTree(float x, float y, float s)
 {
-    DrawRectangle((int)(x - 5 * s), (int)(y - 22 * s), (int)(10 * s), (int)(22 * s),
-                  {101, 67, 33, 255});
+    DrawRectangle((int)(x - 5 * s), (int)(y - 22 * s), (int)(10 * s), (int)(22 * s),{101, 67, 33, 255});
     DrawCircle((int)x, (int)(y - 30 * s), (int)(22 * s), {20, 100, 20, 255});
     DrawCircle((int)(x - 10 * s), (int)(y - 42 * s), (int)(16 * s), {30, 130, 30, 255});
     DrawCircle((int)(x + 10 * s), (int)(y - 42 * s), (int)(16 * s), {30, 130, 30, 255});
     DrawCircle((int)x, (int)(y - 52 * s), (int)(18 * s), {50, 160, 50, 255});
 }
-
+//Kaktus
 static void DrawCactus(float x, float y, float s)
 {
     Color cGreen = {34, 115, 34, 255};
     int bw = (int)(12 * s), bh = (int)(50 * s);
     DrawRectangle((int)(x - bw / 2), (int)(y - bh), bw, bh, cGreen);
-    DrawRectangle((int)(x - bw / 2 - (int)(16 * s)), (int)(y - (int)(32 * s)),
-                  (int)(16 * s), (int)(8 * s), cGreen);
-    DrawRectangle((int)(x - bw / 2 - (int)(9 * s)), (int)(y - (int)(44 * s)),
-                  (int)(9 * s), (int)(14 * s), cGreen);
-    DrawRectangle((int)(x + bw / 2), (int)(y - (int)(26 * s)),
-                  (int)(16 * s), (int)(8 * s), cGreen);
-    DrawRectangle((int)(x + bw / 2 + (int)(7 * s)), (int)(y - (int)(38 * s)),
-                  (int)(9 * s), (int)(14 * s), cGreen);
+    DrawRectangle((int)(x - bw / 2 - (int)(16 * s)), (int)(y - (int)(32 * s)),(int)(16 * s), (int)(8 * s), cGreen);
+    DrawRectangle((int)(x - bw / 2 - (int)(9 * s)), (int)(y - (int)(44 * s)),(int)(9 * s), (int)(14 * s), cGreen);
+    DrawRectangle((int)(x + bw / 2), (int)(y - (int)(26 * s)),(int)(16 * s), (int)(8 * s), cGreen);
+    DrawRectangle((int)(x + bw / 2 + (int)(7 * s)), (int)(y - (int)(38 * s)),(int)(9 * s), (int)(14 * s), cGreen);
 }
 
 static void DrawUFO(float x, float y, float s)
@@ -63,7 +56,6 @@ static void DrawPlanet(float x, float y, float s, int variant)
 }
 
 // --- Init ---
-
 void Game::Init()
 {
     saveData = LoadSaveGame();
@@ -169,7 +161,6 @@ void Game::Init()
 }
 
 // --- Update ---
-
 void Game::Update()
 {
     framesCounter++;
@@ -346,7 +337,6 @@ void Game::Update()
 }
 
 // --- Spiellogik ---
-
 void Game::UpdateGameLogic(float deltaTime)
 {
     totalTimeSurvived += deltaTime;
@@ -469,7 +459,6 @@ void Game::UpdateGameLogic(float deltaTime)
 }
 
 // --- Eingabe-Handler ---
-
 void Game::HandleMenuInput(Vector2 mousePoint)
 {
     if (!isNameSaved)
