@@ -11,62 +11,53 @@ Ein rasantes 2D-Autorennen, entwickelt mit **C++** und der **raylib** Library. W
 - **Dynamisches Gameplay:** Die Geschwindigkeit erhöht sich, je länger du überlebst.
 - **Car Shop:** Besuche den Shop, um mit gesammelten Sternen neue Skins bzw. Autos freizuschalten.
 - **Scoreboard:** Deine Bestzeiten und Punkte werden lokal gespeichert.
-- **Smart UI:** Ein HUD, das Punkte, Zeit, sowie Sterne in Echtzeit wiedergibt.
+- **Smart UI:** Ein HUD, das Punkte, Zeit sowie Sterne in Echtzeit wiedergibt.
 - **Multi-Language:** Unterstützung für Deutsch und Englisch.
-- **Uhr-Buff:** Sammle eine Uhr ein, um die Spielgeschwindigkeit für 3 Sekunden zu verlangsamen – mehr Zeit, um Hindernissen auszuweichen und Punkte zu sammeln!
-- **Schild-Buff:** Sammle ein Schild ein, um für 5 Sekunden unverwundbar zu sein – fahre durch Hindernisse hindurch, ohne das Spiel zu verlieren!
-
-## 🛠️ Technische Highlights
-
-- **Custom Rendering:** Nutzt `RenderTexture2D` für eine perfekte Skalierung in jedem Fensterformat (Vollbild/Fenster) ohne Verzerrung.
-- **Speichersystem:** Automatisches Laden und Speichern von Spielständen und Einstellungen.
-- **Performance:** Ressourcen-schonendes Rendering mit 60 FPS Zielrate.
-
-## 🚀 Installation & Start
-
-### Voraussetzungen
-* Ein C++ Compiler (z.B. GCC, MSVC, Clang)
-* [CMake](https://cmake.org/) (Version 3.10 oder höher)
-
-### Build-Anleitung
-
-**Via Terminal:**
-```bash
-git clone https://github.com/apfeltee96/carrace.git
-cd carrace
-mkdir build && cd build
-cmake ..
-cmake --build .
-```
-
-**Via VS Code:**
-1. Öffne den Ordner in VS Code.
-2. Installiere die CMake-Extension.
-3. Führe `CMake: Configure` und anschließend `CMake: Build` aus.
-
-> **Hinweis:** Die Assets (`assets/`-Ordner mit den Grafiken) sind **nicht** im Repository enthalten und müssen separat bereitgestellt werden. Lege den `assets/`-Ordner mit den folgenden Dateien im Projektverzeichnis ab, bevor du das Spiel startest:
-> - `car_white.png`, `car_red.png`, `car_blue.png`
-> - `hindernis.png`, `star.png`, `clock.png`, `shield.png`
+- **Uhr-Buff:** Sammle eine Uhr ein, um die Spielgeschwindigkeit für 3 Sekunden zu verlangsamen.
+- **Schild-Buff:** Sammle ein Schild ein, um für 5 Sekunden unverwundbar zu sein.
+- **Wüsten-Modus:** Ab 5.000 Punkten wechselt die Umgebung von der Waldstraße zur Wüste.
+- **Pause-Menü (ESC):** Vollständiges Pause-Menü mit Weiter, Zurück zum Menü, Lautstärkeregler und Spiel beenden.
+- **Bestätigungsdialoge:** Kritische Aktionen (Menü verlassen, Spiel beenden, Name ändern, Daten löschen) werden mit einem Ja/Nein-Dialog abgesichert.
+- **Sound-Kontrolle:** Musik startet erst beim Spielbeginn. Lautstärke im Pause-Menü anpassbar. Musik pausiert beim Pausieren und setzt nahtlos fort.
 
 ## 🎮 Steuerung
 
-- **Pfeiltasten Links/Rechts:** Auto steuern
-- **Taste P:** Spiel pausieren
-- **Taste ESC:** Zurück zum Menü / Spiel beenden
-- **Enter:** Namen bestätigen
+| Taste | Aktion |
+|---|---|
+| **Pfeiltaste Links / Rechts** | Auto steuern |
+| **ESC** (im Spiel) | Pause-Menü öffnen |
+| **ESC** (im Pause-Menü) | Spiel fortsetzen |
+| **ESC** (im Hauptmenü) | Spiel beenden (mit Bestätigung) |
+| **Enter** | Namen bestätigen |
+
+### Pause-Menü (ESC im Spiel)
+
+| Option | Beschreibung |
+|---|---|
+| **Weiter** | Spiel fortsetzen |
+| **Zurück zum Menü** | Ins Hauptmenü (Bestätigung erforderlich) |
+| **Lautstärke** | Musik-Lautstärke per Slider anpassen |
+| **Spiel beenden** | Anwendung beenden (Bestätigung erforderlich) |
+
+## ⚙️ Einstellungen
+
+- **Sprache:** Deutsch / Englisch umschalten
+- **Vollbild:** Fenster- oder Vollbildmodus
+- **Name ändern:** Spielernamen neu eingeben (Bestätigung erforderlich)
+- **Daten löschen:** Löscht Name, Bestenliste und alle Sterne & Autos (Bestätigung erforderlich)
 
 ## 📂 Projektstruktur
 
-* `main.cpp` - Der Zündschlüssel des Spiels.
-* `game.cpp/h` - Die zentrale Spiellogik (Game Loop).
-* `ui.cpp/h` - Alles rund um Menüs, Buttons und das Laden-Design.
-* `player.cpp/h` - Steuerung und Physik des Fahrzeugs.
-* `config.cpp/h` - Einstellungen, Spielstand-Persistenz und Speed-Berechnung.
-* `scoreboard.cpp/h` - Highscore-Verwaltung (lokal gespeichert als `scoreboard.dat`).
-* `tests.cpp` - Unit-Tests für die Spielmechanik (Geschwindigkeitslogik).
-* `assets/` - Alle Grafiken (Autos, Sterne, Hindernisse, Uhr, Schild) – **nicht im Repo enthalten**.
-* `raylib/` - Mitgelieferte raylib-Bibliothek (kein separater Download nötig).
-
+* `main.cpp` – Der Einstiegspunkt des Spiels.
+* `game.cpp/h` – Zentrale Spiellogik (Game Loop, Zustände, Eingabe).
+* `ui.cpp/h` – Alle Menüs, Buttons, HUD und Bestätigungsdialoge.
+* `player.cpp/h` – Steuerung und Physik des Fahrzeugs.
+* `config.cpp/h` – Einstellungen, Spielstand-Persistenz und Speed-Berechnung.
+* `scoreboard.cpp/h` – Highscore-Verwaltung (lokal gespeichert als `scoreboard.dat`).
+* `tests.cpp` – Unit-Tests für die Spielmechanik (Geschwindigkeitslogik).
+* `assets/` – Alle Grafiken (Autos, Sterne, Hindernisse, Uhr, Schild) – **nicht im Repo enthalten**.
+* `sounds/` – Musikdatei (`soundtrack.mp3`) und Crash-Sound (`crash.mp3`) – **nicht im Repo enthalten**.
+* `raylib/` – Mitgelieferte raylib-Bibliothek (kein separater Download nötig).
 
 ## Drittleistungen:
 - Programmiert in VS Code
@@ -75,13 +66,19 @@ cmake --build .
 - Raylib als C-Bibliothek für 2D/3D-Spieleentwicklung (zlib-Lizenz)
 - Google Gemini für Bildgenerierung
 
-## Quellen-Assets-PNG's:
+## Quellen:
+
+//Assets
 - Autos: https://looneybits.itch.io/2d-urban-cars
 - Hindernis: https://gamedeveloperstudio.itch.io/animated-spikes
 - Stern: https://pix3lcat.itch.io/star-collectibles
 - Icon: Generiert von Google Gemini
 - Uhr: https://cocodog.itch.io/pixel-clock-2d
 - Schild: https://tekilor.itch.io/pixel-shield-pack-1
+
+//Sounds
+- Musik: https://www.youtube.com/watch?v=na_YhseAgBs
+- Hinderniss: https://pixabay.com/users/u_mgq59j5ayf-50948372/
 
 ---
 
@@ -96,61 +93,51 @@ A fast-paced 2D car racing game built with **C++** and the **raylib** library. D
 - **Scoreboard:** Your best times and scores are saved locally.
 - **Smart UI:** A HUD displaying score, time, and stars in real time.
 - **Multi-Language:** Supports German and English.
-- **Clock Buff:** Pick up a clock to slow down the game speed for 3 seconds – more time to dodge obstacles and rack up points!
-- **Shield Buff:** Pick up a shield to become invincible for 5 seconds – drive through obstacles without losing the game!
-
-## 🛠️ Technical Highlights
-
-- **Custom Rendering:** Uses `RenderTexture2D` for perfect scaling in any window size (fullscreen/windowed) without distortion.
-- **Save System:** Automatically loads and saves game progress and settings.
-- **Performance:** Resource-efficient rendering targeting 60 FPS.
-
-## 🚀 Installation & Getting Started
-
-### Prerequisites
-* A C++ compiler (e.g. GCC, MSVC, Clang)
-* [CMake](https://cmake.org/) (version 3.10 or higher)
-
-### Build Instructions
-
-**Via Terminal (recommended):**
-```bash
-git clone https://github.com/apfeltee96/carrace.git
-cd carrace
-mkdir build && cd build
-cmake ..
-cmake --build .
-```
-
-**Via VS Code:**
-1. Open the folder in VS Code.
-2. Install the CMake extension.
-3. Run `CMake: Configure` followed by `CMake: Build`.
-
-> **Note:** The assets (`assets/` folder with graphics) are **not included** in the repository and must be provided separately. Place the `assets/` folder with the following files in the project directory before launching the game:
-> - `car_white.png`, `car_red.png`, `car_blue.png`
-> - `hindernis.png`, `star.png`, `clock.png`, `shield.png`
+- **Clock Buff:** Pick up a clock to slow down the game speed for 3 seconds.
+- **Shield Buff:** Pick up a shield to become invincible for 5 seconds.
+- **Desert Mode:** After 5,000 points the environment switches from forest road to desert.
+- **Pause Menu (ESC):** Full pause menu with resume, back to menu, volume slider, and quit game.
+- **Confirmation Dialogs:** Critical actions (leave menu, quit game, change name, delete data) require a yes/no confirmation.
+- **Sound Control:** Music only starts when the game begins. Volume is adjustable in the pause menu. Music pauses and resumes seamlessly.
 
 ## 🎮 Controls
 
-- **Arrow Keys Left/Right:** Steer the car
-- **Key P:** Pause the game
-- **Key ESC:** Back to menu / quit game
-- **Enter:** Confirm name
+| Key | Action |
+|---|---|
+| **Arrow Left / Right** | Steer the car |
+| **ESC** (in game) | Open pause menu |
+| **ESC** (in pause menu) | Resume game |
+| **ESC** (in main menu) | Quit game (with confirmation) |
+| **Enter** | Confirm name |
+
+### Pause Menu (ESC in game)
+
+| Option | Description |
+|---|---|
+| **Resume** | Continue the game |
+| **Back to Menu** | Return to main menu (confirmation required) |
+| **Volume** | Adjust music volume via slider |
+| **Quit Game** | Exit the application (confirmation required) |
+
+## ⚙️ Settings
+
+- **Language:** Toggle between German and English
+- **Fullscreen:** Switch between windowed and fullscreen mode
+- **Change Name:** Re-enter your player name (confirmation required)
+- **Delete Data:** Deletes name, scoreboard, and all stars & cars (confirmation required)
 
 ## 📂 Project Structure
 
-* `main.cpp` - The entry point of the game.
-* `game.cpp/h` - Core game logic (game loop).
-* `ui.cpp/h` - All menus, buttons, and the shop-design.
-* `player.cpp/h` - Vehicle controls and physics.
-* `config.cpp/h` - Settings, save game persistence, and speed calculation.
-* `scoreboard.cpp/h` - Highscore management (saved locally as `scoreboard.dat`).
-* `tests.cpp` - Unit tests for game mechanics (speed logic).
-* `assets/` - All graphics (cars, stars, obstacles, clock, shield) – **not included in the repo**.
-* `raylib/` - Bundled raylib library (no separate download needed).
-
-
+* `main.cpp` – Entry point of the game.
+* `game.cpp/h` – Core game logic (game loop, states, input).
+* `ui.cpp/h` – All menus, buttons, HUD, and confirmation dialogs.
+* `player.cpp/h` – Vehicle controls and physics.
+* `config.cpp/h` – Settings, save game persistence, and speed calculation.
+* `scoreboard.cpp/h` – Highscore management (saved locally as `scoreboard.dat`).
+* `tests.cpp` – Unit tests for game mechanics (speed logic).
+* `assets/` – All graphics (cars, stars, obstacles, clock, shield) – **not included in the repo**.
+* `sounds/` – Music file (`soundtrack.mp3`) and crash sound (`crash.mp3`) – **not included in the repo**.
+* `raylib/` – Bundled raylib library (no separate download needed).
 
 ## Third-Party Services:
 
@@ -160,11 +147,16 @@ cmake --build .
 - Raylib as C library for 2D/3D game development (zlib license)
 - Google Gemini for generating icon
 
-## Source Assets (PNGs):
+## Source:
 
+//Assets
 - Cars: https://looneybits.itch.io/2d-urban-cars
 - Obstacle: https://gamedeveloperstudio.itch.io/animated-spikes
 - Star: https://pix3lcat.itch.io/star-collectibles
 - Icon: Generated by Google Gemini
 - Clock: https://cocodog.itch.io/pixel-clock-2d
 - Shield: https://tekilor.itch.io/pixel-shield-pack-1
+
+//Sounds
+- Music: https://www.youtube.com/watch?v=na_YhseAgBs
+- Crash: https://pixabay.com/users/u_mgq59j5ayf-50948372/
