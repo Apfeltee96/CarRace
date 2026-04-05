@@ -8,15 +8,12 @@
 
 // --- Hilfsfunktionen ---
 void DrawTextCentered(const char *text, int y, int fontSize, Color color);
-void DrawButton(Rectangle rect, const char *text, Vector2 mouse,
-                Color baseColor, Color textColor);
+void DrawButton(Rectangle rect, const char *text, Vector2 mouse,Color baseColor, Color textColor);
 
 // --- HUD & In-Game UI ---
-void DrawHUD(const char *name, float time, int score, int stars,
-             bool isEnglish, Texture2D starTex, int highScore);
+void DrawHUD(const char *name, float time, int score, int stars,bool isEnglish, Texture2D starTex, int highScore);
 
-void DrawPauseMenu(Vector2 mousePoint, Rectangle resumeBtn,
-                   Rectangle menuBtn, Rectangle quitBtn,
+void DrawPauseMenu(Vector2 mousePoint, Rectangle resumeBtn,Rectangle menuBtn, Rectangle quitBtn,
                    bool isEnglish, float musicVolume,
                    bool showQuitConfirm, bool showPauseBackConfirm);
 

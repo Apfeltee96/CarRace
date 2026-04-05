@@ -10,8 +10,7 @@ struct Player
     Color color;
 };
 
-/// Initialisiert den Spieler mittig am unteren Bildschirmrand.
-void InitPlayer(Player &player, int screenWidth, int screenHeight,
-                float width, float height, Color color);
+// Initialisiert den Spieler mittig am unteren Bildschirmrand.
+void InitPlayer(Player &player, int screenWidth, int screenHeight,float width, float height, Color color);
 
-#endif // PLAYER_H
+#endif 

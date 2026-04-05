@@ -32,7 +32,7 @@ struct CollectableStar   { Rectangle rect; bool active; };
 struct CollectableClock  { Rectangle rect; bool active; }; // verlangsamt das Spiel kurz
 struct CollectableShield { Rectangle rect; bool active; }; // schützt vor einem Treffer
 
-/// Straßenrandobjekt (Baum oder Kaktus), scrollt mit der Straße.
+// Straßenrandobjekt
 struct RoadSideObj
 {
     float x, y;
@@ -98,7 +98,7 @@ public:
     int framesCounter;
     int cachedTopScore;
 
-    bool buffActive;        // Uhr-Buff aktiv?
+    bool buffActive;
     float buffTimer;
     float speedBeforeBuff;
     bool shieldActive;

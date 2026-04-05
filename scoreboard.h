@@ -3,7 +3,7 @@
 
 #include <vector>
 
-/// Ein einzelner Eintrag in der Bestenliste.
+// Ein einzelner Eintrag in der Bestenliste.
 struct ScoreEntry
 {
     char name[16];
@@ -16,4 +16,4 @@ void AddOrUpdateScore(const char *name, int score, float time);
 void ClearScoreboard();
 int GetTopScore();
 
-#endif // SCOREBOARD_H
+#endif
