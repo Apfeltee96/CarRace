@@ -1,4 +1,3 @@
-
 #include "config.h"
 #include <fstream>
 #include <filesystem>
@@ -6,13 +5,17 @@
 
 static const char *SAVE_FILE = "savegame.dat";
 
-// Speicherstand laden / speichern
 SaveGame LoadSaveGame()
 {
-    SaveGame data = {0, false, false, 0, false, false, "Gast", 0.2f, true};
+    SaveGame data;
 
     std::ifstream file(SAVE_FILE, std::ios::binary);
     if (!file.is_open())
+        return data;
+
+    // Ungültige/alte Dateien werden ignoriert
+    int version = 0;
+    if (!file.read(reinterpret_cast<char *>(&version), sizeof(int)) || version != SAVE_VERSION)
         return data;
 
     file.read(reinterpret_cast<char *>(&data.totalStars), sizeof(int));
@@ -41,6 +44,8 @@ void SaveGameData(const SaveGame &data)
     if (!file.is_open())
         return;
 
+    int version = SAVE_VERSION;
+    file.write(reinterpret_cast<const char *>(&version), sizeof(int));
     file.write(reinterpret_cast<const char *>(&data.totalStars), sizeof(int));
     file.write(reinterpret_cast<const char *>(&data.ownsRedCar), sizeof(bool));
     file.write(reinterpret_cast<const char *>(&data.ownsBlueCar), sizeof(bool));
@@ -61,23 +66,19 @@ void DeleteSaveData()
     std::filesystem::remove(SAVE_FILE);
 }
 
-//  Spielmechanik-Hilfsfunktionen
 float GetCurrentSpeed(float currentSpeed, float deltaTime)
 {
-    // Geschwindigkeit steigt linear bis SPEED_MAX
     return std::min(currentSpeed + SPEED_ACCELERATION * deltaTime, SPEED_MAX);
 }
 
 float GetDynamicPlayerSpeed(float currentWorldSpeed)
 {
-    // Lenkgeschwindigkeit wächst mit der Weltgeschwindigkeit, aber maximal 1400
     constexpr float BASE_STEER = 500.0f;
     constexpr float STEER_FACTOR = 0.5f;
     constexpr float STEER_MAX = 1400.0f;
     return std::min(BASE_STEER + currentWorldSpeed * STEER_FACTOR, STEER_MAX);
 }
 
-// Gibt die Farbe zum Auto-ID zurück (0=weiß, 1=rot, 2=lila).
 Color GetCarColor(int colorId)
 {
     switch (colorId)

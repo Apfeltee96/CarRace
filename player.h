@@ -3,14 +3,21 @@
 
 #include "raylib.h"
 
-struct Player
+// Spieler mit Auto
+class Player
 {
-    Rectangle rect;
-    float speed;
-    Color color;
+public:
+    Rectangle rect{};
+    float speed = 0.0f;
+
+    // Spieler mittig
+    void Init(int screenWidth, int screenHeight, float width, float height);
+
+    // Tastatureingaben
+    void Move(float deltaTime);
+
+    // Zeichnet das Auto + Schildrahmen
+    void Draw(Texture2D &tex, bool shieldActive) const;
 };
 
-// Initialisiert den Spieler mittig am unteren Bildschirmrand.
-void InitPlayer(Player &player, int screenWidth, int screenHeight,float width, float height, Color color);
-
-#endif 
+#endif

@@ -6,6 +6,7 @@ static void DrawTexFull(Texture2D tex, Rectangle dst)
 {
     DrawTexturePro(tex, {0, 0, (float)tex.width, (float)tex.height}, dst, {0, 0}, 0.0f, WHITE);
 }
+
 // Baum
 static void DrawTree(float x, float y, float s)
 {
@@ -15,7 +16,6 @@ static void DrawTree(float x, float y, float s)
     DrawCircle((int)(x + 10 * s), (int)(y - 42 * s), 16.0f * s, {30, 130, 30, 255});
     DrawCircle((int)x, (int)(y - 52 * s), 18.0f * s, {50, 160, 50, 255});
 }
-
 // Kaktus
 static void DrawCactus(float x, float y, float s)
 {
@@ -27,7 +27,7 @@ static void DrawCactus(float x, float y, float s)
     DrawRectangle((int)(x + bw / 2), (int)(y - (int)(26 * s)), (int)(16 * s), (int)(8 * s), cGreen);
     DrawRectangle((int)(x + bw / 2 + (int)(7 * s)), (int)(y - (int)(38 * s)), (int)(9 * s), (int)(14 * s), cGreen);
 }
-
+// UFO
 static void DrawUFO(float x, float y, float s)
 {
     DrawEllipse((int)x, (int)(y + 4 * s), 26.0f * s, 7.0f * s, {80, 80, 100, 255});
@@ -41,7 +41,7 @@ static void DrawUFO(float x, float y, float s)
     DrawCircle((int)(x - 18 * s), (int)(y + 2 * s), 3.0f * s, {0, 255, 120, 220});
     DrawCircle((int)(x + 18 * s), (int)(y + 2 * s), 3.0f * s, {255, 50, 50, 220});
 }
-
+// Planet
 static void DrawPlanet(float x, float y, float s, int variant)
 {
     Color colors[] = {{220, 80, 80, 255}, {80, 160, 255, 255}, {255, 180, 60, 255}, {180, 80, 255, 255}};
@@ -55,10 +55,11 @@ static void DrawPlanet(float x, float y, float s, int variant)
 }
 
 // --- Init ---
+
 void Game::Init()
 {
     saveData = LoadSaveGame();
-    InitWindow(1000, 800, "Car Race");
+    InitWindow(SCREEN_W, SCREEN_H, "Car Race");
     SetExitKey(KEY_NULL);
     SetTargetFPS(60);
 
@@ -74,13 +75,12 @@ void Game::Init()
     clockTex = LoadTexture("assets/clock.png");
     shieldTex = LoadTexture("assets/shield.png");
 
-    target = LoadRenderTexture(1000, 800);
+    target = LoadRenderTexture(SCREEN_W, SCREEN_H);
     SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
 
     if (saveData.isFullscreen && !IsWindowFullscreen())
         ToggleFullscreen();
 
-    // Audio
     InitAudioDevice();
     musicVolume = saveData.musicVolume;
     musicLoaded = false;
@@ -103,7 +103,6 @@ void Game::Init()
     roadScrollOffset = 0.0f;
     InitSideObjects();
 
-    // Startzustand
     state = MAIN_MENU;
     showQuitConfirm = false;
     showPauseBackConfirm = false;
@@ -121,35 +120,34 @@ void Game::Init()
     letterCount = static_cast<int>(playerName.size());
     cachedTopScore = GetTopScore();
 
-    // Button-Layouts
-    float cx = 1000 / 2.0f - 125.0f;
-    startBtn = {cx, 300, 250, 50};
-    scoreBtn = {cx, 360, 250, 50};
-    shopBtn = {cx, 420, 250, 50};
-    settingsBtn = {cx, 480, 250, 50};
-    descBtn = {cx, 540, 250, 50};
-    backMenuBtn = {cx, 680, 250, 50};
-    langBtn = {cx, 180, 250, 50};
-    resBtn = {cx, 250, 250, 50};
-    nameChangeBtn = {cx, 320, 250, 50};
-    deleteDataBtn = {cx, 390, 250, 50};
-    effectsBtn = {cx, 450, 250, 40};
-    backSetBtn = {cx, 610, 250, 50};
-    btnPrimary = {cx, 400, 250, 50};
-    btnMenu = {cx, 480, 250, 50};
-    pauseResumeBtn = {cx, 280, 250, 50};
-    pauseMenuBtn = {cx, 350, 250, 50};
-    pauseQuitBtn = {cx, 420, 250, 50};
-    redCarBtn = {400, 500, 200, 50};
-    blueCarBtn = {650, 500, 200, 50};
+    const float cx = SCREEN_W / 2.0f - 125.0f;
+    buttons.startBtn = {cx, 300, 250, 50};
+    buttons.scoreBtn = {cx, 360, 250, 50};
+    buttons.shopBtn = {cx, 420, 250, 50};
+    buttons.settingsBtn = {cx, 480, 250, 50};
+    buttons.descBtn = {cx, 540, 250, 50};
+    buttons.backMenuBtn = {cx, 680, 250, 50};
+    buttons.langBtn = {cx, 180, 250, 50};
+    buttons.resBtn = {cx, 250, 250, 50};
+    buttons.nameChangeBtn = {cx, 320, 250, 50};
+    buttons.deleteDataBtn = {cx, 390, 250, 50};
+    buttons.effectsBtn = {cx, 450, 250, 40};
+    buttons.backSetBtn = {cx, 610, 250, 50};
+    buttons.btnPrimary = {cx, 400, 250, 50};
+    buttons.btnMenu = {cx, 480, 250, 50};
+    buttons.pauseResumeBtn = {cx, 280, 250, 50};
+    buttons.pauseMenuBtn = {cx, 350, 250, 50};
+    buttons.pauseQuitBtn = {cx, 420, 250, 50};
+    buttons.redCarBtn = {400, 500, 200, 50};
+    buttons.blueCarBtn = {650, 500, 200, 50};
 
     obstacles.resize(4);
     for (int i = 0; i < 4; i++)
         ResetObstacle(obstacles[i], -200.0f - (i * 400.0f));
 
-    bonusStar = {{0, 0, 30, 30}, false};
-    clockBuff = {{0, 0, 36, 36}, false};
-    shieldBuff = {{0, 0, 48, 48}, false};
+    bonusStar = {{0, 0, 30, 30}, false, CollectableType::Star};
+    clockBuff = {{0, 0, 36, 36}, false, CollectableType::Clock};
+    shieldBuff = {{0, 0, 48, 48}, false, CollectableType::Shield};
 
     buffActive = false;
     buffTimer = 0.0f;
@@ -159,8 +157,12 @@ void Game::Init()
 }
 
 // --- Update ---
+
 void Game::Update()
 {
+    if (shouldClose)
+        return;
+
     framesCounter++;
     if (musicLoaded)
         UpdateMusicStream(backgroundMusic);
@@ -263,15 +265,15 @@ void Game::Update()
                     volumeDragging = false;
                     SaveGameData(saveData);
                 }
-                else if (CheckCollisionPointRec(mousePoint, pauseResumeBtn))
+                else if (CheckCollisionPointRec(mousePoint, buttons.pauseResumeBtn))
                 {
                     if (musicLoaded)
                         ResumeMusicStream(backgroundMusic);
                     state = PLAYING;
                 }
-                else if (CheckCollisionPointRec(mousePoint, pauseMenuBtn))
+                else if (CheckCollisionPointRec(mousePoint, buttons.pauseMenuBtn))
                     showPauseBackConfirm = true;
-                else if (CheckCollisionPointRec(mousePoint, pauseQuitBtn))
+                else if (CheckCollisionPointRec(mousePoint, buttons.pauseQuitBtn))
                     showQuitConfirm = true;
                 else if (CheckCollisionPointRec(mousePoint, effBtn))
                 {
@@ -315,13 +317,13 @@ void Game::Update()
     case SCOREBOARD_MENU:
     case DESCRIPTION:
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
-            if (CheckCollisionPointRec(mousePoint, backMenuBtn))
+            if (CheckCollisionPointRec(mousePoint, buttons.backMenuBtn))
                 state = MAIN_MENU;
         break;
 
     case GAMEOVER:
         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
-            if (CheckCollisionPointRec(mousePoint, btnMenu))
+            if (CheckCollisionPointRec(mousePoint, buttons.btnMenu))
             {
                 if (musicLoaded)
                     StopMusicStream(backgroundMusic);
@@ -334,7 +336,49 @@ void Game::Update()
     }
 }
 
+// --- Neue Runde starten ---
+
+void Game::StartNewGame()
+{
+    currentScore = 0;
+    totalTimeSurvived = 0.0f;
+    earnedStarsThisRound = 0;
+    currentSpeed = SPEED_START;
+    isNameSaved = true;
+    saveData.lastPlayerName = playerName;
+    SaveGameData(saveData);
+    roadScrollOffset = 0.0f;
+    InitSideObjects();
+
+    Texture2D &cur = carTextures[saveData.selectedColorId];
+    player.Init(SCREEN_W, SCREEN_H,
+                45.0f, 45.0f * ((float)cur.height / cur.width));
+
+    for (int i = 0; i < (int)obstacles.size(); i++)
+        ResetObstacle(obstacles[i], -200.0f - (i * 400.0f));
+
+    bonusStar.active = false;
+    clockBuff.active = false;
+    shieldBuff.active = false;
+    buffActive = false;
+    buffTimer = 0.0f;
+    speedBeforeBuff = 0.0f;
+    shieldActive = false;
+    shieldTimer = 0.0f;
+
+    if (musicLoaded)
+    {
+        StopMusicStream(backgroundMusic);
+        SeekMusicStream(backgroundMusic, 0.0f);
+        SetMusicVolume(backgroundMusic, musicVolume);
+        PlayMusicStream(backgroundMusic);
+    }
+    showQuitConfirm = showPauseBackConfirm = false;
+    state = PLAYING;
+}
+
 // --- Spiellogik ---
+
 void Game::UpdateGameLogic(float deltaTime)
 {
     totalTimeSurvived += deltaTime;
@@ -362,7 +406,6 @@ void Game::UpdateGameLogic(float deltaTime)
             currentSpeed = speedBeforeBuff;
         }
     }
-
     if (shieldActive)
     {
         shieldTimer -= deltaTime;
@@ -375,18 +418,15 @@ void Game::UpdateGameLogic(float deltaTime)
 
     if (!buffActive)
         currentSpeed = GetCurrentSpeed(currentSpeed, deltaTime);
+
     player.speed = GetDynamicPlayerSpeed(currentSpeed);
+    player.Move(deltaTime);
 
-    if (IsKeyDown(KEY_LEFT))
-        player.rect.x -= player.speed * deltaTime;
-    if (IsKeyDown(KEY_RIGHT))
-        player.rect.x += player.speed * deltaTime;
-    player.rect.x = std::clamp(player.rect.x, 300.0f, 700.0f - player.rect.width);
-
+    // Hindernisse
     for (auto &obs : obstacles)
     {
         obs.rect.y += currentSpeed * deltaTime;
-        if (obs.rect.y > 800.0f)
+        if (obs.rect.y > (float)SCREEN_H)
         {
             float highestY = 0.0f;
             for (const auto &o : obstacles)
@@ -409,54 +449,41 @@ void Game::UpdateGameLogic(float deltaTime)
         }
     }
 
+    // Collectables
     if (!bonusStar.active && GetRandomValue(0, 600) < 3)
-        SpawnStar();
-    if (bonusStar.active)
+        bonusStar.Spawn(320, 650, 30.0f);
+    bonusStar.UpdatePosition(currentSpeed, deltaTime);
+    if (bonusStar.active && CheckCollisionRecs(player.rect, bonusStar.rect))
     {
-        bonusStar.rect.y += currentSpeed * deltaTime;
-        if (CheckCollisionRecs(player.rect, bonusStar.rect))
-        {
-            earnedStarsThisRound++;
-            bonusStar.active = false;
-        }
-        if (bonusStar.rect.y > 800.0f)
-            bonusStar.active = false;
+        earnedStarsThisRound++;
+        bonusStar.active = false;
     }
 
     if (!clockBuff.active && !buffActive && GetRandomValue(0, 3000) < 2)
-        SpawnClock();
-    if (clockBuff.active)
+        clockBuff.Spawn(320, 640, 36.0f);
+    clockBuff.UpdatePosition(currentSpeed, deltaTime);
+    if (clockBuff.active && CheckCollisionRecs(player.rect, clockBuff.rect))
     {
-        clockBuff.rect.y += currentSpeed * deltaTime;
-        if (CheckCollisionRecs(player.rect, clockBuff.rect))
-        {
-            speedBeforeBuff = currentSpeed;
-            currentSpeed *= 0.4f;
-            buffActive = true;
-            buffTimer = 3.0f;
-            clockBuff.active = false;
-        }
-        if (clockBuff.rect.y > 800.0f)
-            clockBuff.active = false;
+        speedBeforeBuff = currentSpeed;
+        currentSpeed *= 0.4f;
+        buffActive = true;
+        buffTimer = 3.0f;
+        clockBuff.active = false;
     }
 
     if (!shieldBuff.active && !shieldActive && GetRandomValue(0, 6000) < 2)
-        SpawnShield();
-    if (shieldBuff.active)
+        shieldBuff.Spawn(320, 640, 48.0f);
+    shieldBuff.UpdatePosition(currentSpeed, deltaTime);
+    if (shieldBuff.active && CheckCollisionRecs(player.rect, shieldBuff.rect))
     {
-        shieldBuff.rect.y += currentSpeed * deltaTime;
-        if (CheckCollisionRecs(player.rect, shieldBuff.rect))
-        {
-            shieldActive = true;
-            shieldTimer = 5.0f;
-            shieldBuff.active = false;
-        }
-        if (shieldBuff.rect.y > 800.0f)
-            shieldBuff.active = false;
+        shieldActive = true;
+        shieldTimer = 5.0f;
+        shieldBuff.active = false;
     }
 }
 
 // --- Eingabe-Handler ---
+
 void Game::HandleMenuInput(Vector2 mousePoint)
 {
     if (!isNameSaved)
@@ -487,52 +514,15 @@ void Game::HandleMenuInput(Vector2 mousePoint)
     if (!IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
         return;
 
-    if (CheckCollisionPointRec(mousePoint, startBtn) && (letterCount > 0 || isNameSaved))
-    {
-        currentScore = 0;
-        totalTimeSurvived = 0.0f;
-        earnedStarsThisRound = 0;
-        currentSpeed = SPEED_START;
-        isNameSaved = true;
-        saveData.lastPlayerName = playerName;
-        SaveGameData(saveData);
-        roadScrollOffset = 0.0f;
-        InitSideObjects();
-
-        Texture2D &cur = carTextures[saveData.selectedColorId];
-        InitPlayer(player, 1000, 800, 45.0f,
-                   45.0f * ((float)cur.height / cur.width),
-                   GetCarColor(saveData.selectedColorId));
-
-        for (int i = 0; i < (int)obstacles.size(); i++)
-            ResetObstacle(obstacles[i], -200.0f - (i * 400.0f));
-
-        bonusStar.active = false;
-        clockBuff.active = false;
-        shieldBuff.active = false;
-        buffActive = false;
-        buffTimer = 0.0f;
-        speedBeforeBuff = 0.0f;
-        shieldActive = false;
-        shieldTimer = 0.0f;
-
-        if (musicLoaded)
-        {
-            StopMusicStream(backgroundMusic);
-            SeekMusicStream(backgroundMusic, 0.0f);
-            SetMusicVolume(backgroundMusic, musicVolume);
-            PlayMusicStream(backgroundMusic);
-        }
-        showQuitConfirm = showPauseBackConfirm = false;
-        state = PLAYING;
-    }
-    else if (CheckCollisionPointRec(mousePoint, scoreBtn))
+    if (CheckCollisionPointRec(mousePoint, buttons.startBtn) && (letterCount > 0 || isNameSaved))
+        StartNewGame();
+    else if (CheckCollisionPointRec(mousePoint, buttons.scoreBtn))
         state = SCOREBOARD_MENU;
-    else if (CheckCollisionPointRec(mousePoint, shopBtn))
+    else if (CheckCollisionPointRec(mousePoint, buttons.shopBtn))
         state = SHOP_MENU;
-    else if (CheckCollisionPointRec(mousePoint, settingsBtn))
+    else if (CheckCollisionPointRec(mousePoint, buttons.settingsBtn))
         state = SETTINGS;
-    else if (CheckCollisionPointRec(mousePoint, descBtn))
+    else if (CheckCollisionPointRec(mousePoint, buttons.descBtn))
         state = DESCRIPTION;
 }
 
@@ -541,7 +531,7 @@ void Game::HandleShopInput(Vector2 mousePoint)
     if (!IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
         return;
 
-    if (CheckCollisionPointRec(mousePoint, backMenuBtn))
+    if (CheckCollisionPointRec(mousePoint, buttons.backMenuBtn))
     {
         state = MAIN_MENU;
         return;
@@ -549,7 +539,7 @@ void Game::HandleShopInput(Vector2 mousePoint)
     if (CheckCollisionPointRec(mousePoint, {150, 500, 200, 50}))
         saveData.selectedColorId = 0;
 
-    if (CheckCollisionPointRec(mousePoint, redCarBtn))
+    if (CheckCollisionPointRec(mousePoint, buttons.redCarBtn))
     {
         if (saveData.ownsRedCar)
             saveData.selectedColorId = 1;
@@ -560,7 +550,7 @@ void Game::HandleShopInput(Vector2 mousePoint)
             saveData.selectedColorId = 1;
         }
     }
-    if (CheckCollisionPointRec(mousePoint, blueCarBtn))
+    if (CheckCollisionPointRec(mousePoint, buttons.blueCarBtn))
     {
         if (saveData.ownsBlueCar)
             saveData.selectedColorId = 2;
@@ -576,7 +566,6 @@ void Game::HandleShopInput(Vector2 mousePoint)
 
 void Game::HandleSettingsInput(Vector2 mousePoint)
 {
-    // Lautstärke-Slider (braucht IsMouseButtonDown, vor dem early-return)
     const Rectangle settingsSlider = {350, 525, 300, 16};
     if (!showNameChangeConfirm && !showDeleteDataConfirm)
     {
@@ -647,27 +636,27 @@ void Game::HandleSettingsInput(Vector2 mousePoint)
         return;
     }
 
-    if (CheckCollisionPointRec(mousePoint, backSetBtn))
+    if (CheckCollisionPointRec(mousePoint, buttons.backSetBtn))
         state = MAIN_MENU;
-    else if (CheckCollisionPointRec(mousePoint, langBtn))
+    else if (CheckCollisionPointRec(mousePoint, buttons.langBtn))
     {
         saveData.isEnglish = !saveData.isEnglish;
         SaveGameData(saveData);
     }
-    else if (CheckCollisionPointRec(mousePoint, resBtn))
+    else if (CheckCollisionPointRec(mousePoint, buttons.resBtn))
     {
         saveData.isFullscreen = !saveData.isFullscreen;
         ToggleFullscreen();
         SaveGameData(saveData);
     }
-    else if (CheckCollisionPointRec(mousePoint, effectsBtn))
+    else if (CheckCollisionPointRec(mousePoint, buttons.effectsBtn))
     {
         saveData.effectsEnabled = !saveData.effectsEnabled;
         SaveGameData(saveData);
     }
-    else if (CheckCollisionPointRec(mousePoint, nameChangeBtn))
+    else if (CheckCollisionPointRec(mousePoint, buttons.nameChangeBtn))
         showNameChangeConfirm = true;
-    else if (CheckCollisionPointRec(mousePoint, deleteDataBtn))
+    else if (CheckCollisionPointRec(mousePoint, buttons.deleteDataBtn))
         showDeleteDataConfirm = true;
 }
 
@@ -675,11 +664,12 @@ void Game::HandleSettingsInput(Vector2 mousePoint)
 
 Vector2 Game::GetScaledMouse() const
 {
-    float s = std::min((float)GetScreenWidth() / 1000.0f, (float)GetScreenHeight() / 800.0f);
+    float s = std::min((float)GetScreenWidth() / (float)SCREEN_W,
+                       (float)GetScreenHeight() / (float)SCREEN_H);
     Vector2 m = GetMousePosition();
     return {
-        (m.x - (GetScreenWidth() - 1000.0f * s) * 0.5f) / s,
-        (m.y - (GetScreenHeight() - 800.0f * s) * 0.5f) / s};
+        (m.x - (GetScreenWidth() - (float)SCREEN_W * s) * 0.5f) / s,
+        (m.y - (GetScreenHeight() - (float)SCREEN_H * s) * 0.5f) / s};
 }
 
 void Game::ResetObstacle(Obstacle &obs, float startY)
@@ -691,26 +681,13 @@ void Game::ResetObstacle(Obstacle &obs, float startY)
         40.0f};
 }
 
-void Game::SpawnStar()
-{
-    bonusStar.rect = {(float)GetRandomValue(320, 650), -100.0f, 30.0f, 30.0f};
-    bonusStar.active = true;
-}
-void Game::SpawnClock()
-{
-    clockBuff.rect = {(float)GetRandomValue(320, 640), -100.0f, 36.0f, 36.0f};
-    clockBuff.active = true;
-}
-void Game::SpawnShield()
-{
-    shieldBuff.rect = {(float)GetRandomValue(320, 640), -100.0f, 48.0f, 48.0f};
-    shieldBuff.active = true;
-}
-
 // --- Draw ---
 
 void Game::Draw()
 {
+    if (shouldClose)
+        return;
+
     Vector2 mousePoint = GetScaledMouse();
     BeginTextureMode(target);
     DrawRoadBackground();
@@ -724,13 +701,7 @@ void Game::Draw()
         for (const auto &obs : obstacles)
             DrawTexFull(obstacleTex, obs.rect);
 
-        Texture2D &cur = carTextures[saveData.selectedColorId];
-        DrawTexFull(cur, player.rect);
-
-        if (shieldActive)
-            DrawRectangleLinesEx({player.rect.x - 4, player.rect.y - 4,
-                                  player.rect.width + 8, player.rect.height + 8},
-                                 4.0f, GOLD);
+        player.Draw(carTextures[saveData.selectedColorId], shieldActive);
 
         if (bonusStar.active)
             DrawTexFull(starTex, bonusStar.rect);
@@ -752,7 +723,6 @@ void Game::Draw()
                                         : TextFormat("LANGSAM  %.1fs", buffTimer),
                      355, 65, 18, SKYBLUE);
         }
-
         if (shieldActive)
         {
             DrawRectangleLinesEx({300, 0, 400, 800}, 4, Fade(GOLD, 0.7f));
@@ -765,46 +735,48 @@ void Game::Draw()
         }
 
         if (state == PAUSED)
-            DrawPauseMenu(mousePoint, pauseResumeBtn, pauseMenuBtn, pauseQuitBtn,
+            DrawPauseMenu(mousePoint,
+                          buttons.pauseResumeBtn, buttons.pauseMenuBtn, buttons.pauseQuitBtn,
                           saveData.isEnglish, musicVolume, saveData.effectsEnabled,
                           showQuitConfirm, showPauseBackConfirm);
         if (state == GAMEOVER)
             DrawGameOverMenu(playerName, currentScore, totalTimeSurvived,
-                             earnedStarsThisRound, mousePoint, btnMenu, saveData.isEnglish);
+                             earnedStarsThisRound, mousePoint, buttons.btnMenu, saveData.isEnglish);
     }
 
     switch (state)
     {
     case MAIN_MENU:
         DrawMainMenu(playerName, letterCount, framesCounter, mousePoint,
-                     startBtn, scoreBtn, shopBtn, settingsBtn, descBtn,
+                     buttons.startBtn, buttons.scoreBtn, buttons.shopBtn,
+                     buttons.settingsBtn, buttons.descBtn,
                      saveData.totalStars, isNameSaved, saveData.isEnglish);
         break;
     case SHOP_MENU:
-        DrawShopMenu(saveData, mousePoint, redCarBtn, blueCarBtn,
-                     backMenuBtn, saveData.isEnglish, carTextures);
+        DrawShopMenu(saveData, mousePoint, buttons.redCarBtn, buttons.blueCarBtn,
+                     buttons.backMenuBtn, saveData.isEnglish, carTextures);
         break;
     case SETTINGS:
-        DrawSettingsMenu(mousePoint, langBtn, resBtn, nameChangeBtn,
-                         deleteDataBtn, backSetBtn, effectsBtn,
+        DrawSettingsMenu(mousePoint,
+                         buttons.langBtn, buttons.resBtn, buttons.nameChangeBtn,
+                         buttons.deleteDataBtn, buttons.backSetBtn, buttons.effectsBtn,
                          saveData.isEnglish, saveData.isFullscreen,
                          musicVolume, saveData.effectsEnabled,
                          showNameChangeConfirm, showDeleteDataConfirm);
         break;
     case SCOREBOARD_MENU:
-        DrawScoreboardMenu(LoadScoreboard(), mousePoint, backMenuBtn, saveData.isEnglish);
+        DrawScoreboardMenu(LoadScoreboard(), mousePoint, buttons.backMenuBtn, saveData.isEnglish);
         break;
     case DESCRIPTION:
-        DrawDescriptionMenu(mousePoint, backMenuBtn, saveData.isEnglish);
+        DrawDescriptionMenu(mousePoint, buttons.backMenuBtn, saveData.isEnglish);
         break;
     default:
         break;
     }
 
-    // Exit-Dialog
     if (state == EXIT_PROMPT)
     {
-        DrawRectangle(0, 0, 1000, 800, Fade(BLACK, 0.55f));
+        DrawRectangle(0, 0, SCREEN_W, SCREEN_H, Fade(BLACK, 0.55f));
         Rectangle box = {300, 290, 400, 200};
         DrawRectangleRec(box, {25, 25, 25, 245});
         DrawRectangleLinesEx(box, 3, RED);
@@ -817,20 +789,23 @@ void Game::Draw()
         DrawRectangleLinesEx(nBtn, 2, {160, 160, 160, 200});
         int yw = MeasureText(saveData.isEnglish ? "YES" : "JA", 22);
         int nw = MeasureText(saveData.isEnglish ? "NO" : "NEIN", 22);
-        DrawText(saveData.isEnglish ? "YES" : "JA", (int)(yBtn.x + (yBtn.width - yw) / 2), (int)(yBtn.y + 14), 22, WHITE);
-        DrawText(saveData.isEnglish ? "NO" : "NEIN", (int)(nBtn.x + (nBtn.width - nw) / 2), (int)(nBtn.y + 14), 22, WHITE);
+        DrawText(saveData.isEnglish ? "YES" : "JA",
+                 (int)(yBtn.x + (yBtn.width - yw) / 2), (int)(yBtn.y + 14), 22, WHITE);
+        DrawText(saveData.isEnglish ? "NO" : "NEIN",
+                 (int)(nBtn.x + (nBtn.width - nw) / 2), (int)(nBtn.y + 14), 22, WHITE);
     }
 
     EndTextureMode();
 
     BeginDrawing();
     ClearBackground(BLACK);
-    float finalScale = std::min((float)GetScreenWidth() / 1000.0f, (float)GetScreenHeight() / 800.0f);
+    float finalScale = std::min((float)GetScreenWidth() / (float)SCREEN_W,
+                                (float)GetScreenHeight() / (float)SCREEN_H);
     DrawTexturePro(target.texture,
                    {0, 0, (float)target.texture.width, -(float)target.texture.height},
-                   {(GetScreenWidth() - 1000.0f * finalScale) * 0.5f,
-                    (GetScreenHeight() - 800.0f * finalScale) * 0.5f,
-                    1000.0f * finalScale, 800.0f * finalScale},
+                   {(GetScreenWidth() - (float)SCREEN_W * finalScale) * 0.5f,
+                    (GetScreenHeight() - (float)SCREEN_H * finalScale) * 0.5f,
+                    (float)SCREEN_W * finalScale, (float)SCREEN_H * finalScale},
                    {0, 0}, 0.0f, WHITE);
     EndDrawing();
 }
@@ -855,7 +830,7 @@ void Game::Cleanup()
         UnloadSound(crashSound);
     CloseAudioDevice();
     CloseWindow();
-    exit(0);
+    shouldClose = true;
 }
 
 // --- Straßenrandobjekte ---
@@ -883,11 +858,10 @@ void Game::DrawRoadBackground()
     {
         ClearBackground({5, 5, 20, 255});
 
-        // Sternenhimmel
         for (int i = 0; i < 90; i++)
         {
-            int sx = (i * 139 + 23) % 1000;
-            float sy = std::fmod(i * 91.7f + roadScrollOffset * 0.15f, 800.0f);
+            int sx = (i * 139 + 23) % SCREEN_W;
+            float sy = std::fmod(i * 91.7f + roadScrollOffset * 0.15f, (float)SCREEN_H);
             unsigned char br = (unsigned char)(120 + (i * 53) % 135);
             int sz = (i % 4 == 0) ? 2 : 1;
             DrawRectangle(sx, (int)sy, sz, sz, {br, br, br, br});
@@ -907,12 +881,12 @@ void Game::DrawRoadBackground()
                 {255, 0, 0, 160}, {255, 127, 0, 160}, {255, 255, 0, 160}, {0, 255, 0, 160}, {0, 100, 255, 160}, {148, 0, 211, 160}};
             float stripeH = 50.0f;
             float rbStart = std::fmod(roadScrollOffset, stripeH * 6) - stripeH * 6;
-            for (float ry = rbStart; ry < 800.0f; ry += stripeH)
+            for (float ry = rbStart; ry < (float)SCREEN_H; ry += stripeH)
             {
                 int ci = ((int)(ry / stripeH) % 6 + 6) % 6;
                 DrawRectangle(300, (int)ry, 400, (int)stripeH, rainbow[ci]);
             }
-            DrawRectangle(300, 0, 400, 800, {0, 0, 10, 100});
+            DrawRectangle(300, 0, 400, SCREEN_H, {0, 0, 10, 100});
 
             float t = (float)framesCounter * 0.04f;
             Color glowL = {(unsigned char)(127 + 127 * sinf(t)),
@@ -921,14 +895,14 @@ void Game::DrawRoadBackground()
             Color glowR = {(unsigned char)(127 + 127 * sinf(t + 1.0f)),
                            (unsigned char)(127 + 127 * sinf(t + 3.1f)),
                            (unsigned char)(127 + 127 * sinf(t + 5.2f)), 255};
-            DrawRectangle(295, 0, 8, 800, glowL);
-            DrawRectangle(697, 0, 8, 800, glowR);
+            DrawRectangle(295, 0, 8, SCREEN_H, glowL);
+            DrawRectangle(697, 0, 8, SCREEN_H, glowR);
         }
         else
         {
-            DrawRectangle(300, 0, 400, 800, {30, 30, 50, 255});
-            DrawRectangle(295, 0, 8, 800, {100, 100, 200, 255});
-            DrawRectangle(697, 0, 8, 800, {100, 100, 200, 255});
+            DrawRectangle(300, 0, 400, SCREEN_H, {30, 30, 50, 255});
+            DrawRectangle(295, 0, 8, SCREEN_H, {100, 100, 200, 255});
+            DrawRectangle(697, 0, 8, SCREEN_H, {100, 100, 200, 255});
         }
     }
     else
@@ -943,17 +917,17 @@ void Game::DrawRoadBackground()
                 DrawTree(obj.x, obj.y, obj.size);
         }
 
-        DrawRectangle(300, 0, 400, 800, {48, 48, 48, 255});
-        DrawRectangle(297, 0, 6, 800, {210, 210, 210, 255});
-        DrawRectangle(697, 0, 6, 800, {210, 210, 210, 255});
-        DrawRectangle(280, 0, 18, 800, {150, 150, 155, 255});
-        DrawRectangle(280, 0, 4, 800, {220, 225, 230, 255});
-        DrawRectangle(702, 0, 18, 800, {150, 150, 155, 255});
-        DrawRectangle(716, 0, 4, 800, {220, 225, 230, 255});
+        DrawRectangle(300, 0, 400, SCREEN_H, {48, 48, 48, 255});
+        DrawRectangle(297, 0, 6, SCREEN_H, {210, 210, 210, 255});
+        DrawRectangle(697, 0, 6, SCREEN_H, {210, 210, 210, 255});
+        DrawRectangle(280, 0, 18, SCREEN_H, {150, 150, 155, 255});
+        DrawRectangle(280, 0, 4, SCREEN_H, {220, 225, 230, 255});
+        DrawRectangle(702, 0, 18, SCREEN_H, {150, 150, 155, 255});
+        DrawRectangle(716, 0, 4, SCREEN_H, {220, 225, 230, 255});
 
         const float postSpacing = 90.0f;
         float postStart = std::fmod(roadScrollOffset, postSpacing) - postSpacing;
-        for (float py = postStart; py < 800.0f; py += postSpacing)
+        for (float py = postStart; py < (float)SCREEN_H; py += postSpacing)
         {
             DrawRectangle(283, (int)py, 12, 14, {90, 90, 95, 255});
             DrawRectangle(705, (int)py, 12, 14, {90, 90, 95, 255});
