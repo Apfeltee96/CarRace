@@ -55,9 +55,9 @@ Ein rasantes 2D-Autorennen, entwickelt mit **C++** und der **raylib** Library. W
 
 | Punkte | Umgebung | Besonderheit |
 |---|---|---|
-| 0 – 4.999 | 🌲 Waldstraße | Standard-Umgebung mit Bäumen |
-| 5.000 – 9.999 | 🏜️ Wüste | Kakteen, gelbe Fahrbahnmarkierungen |
-| 10.000+ | 🚀 Weltall | Regenbogenstraße, UFOs, Planeten, leuchtende Ränder |
+| 0 – 4.999 |  Waldstraße | Standard-Umgebung mit Bäumen |
+| 5.000 – 9.999 |  Wüste | Kakteen, gelbe Fahrbahnmarkierungen |
+| 10.000+ |  Weltall | Regenbogenstraße, UFOs, Planeten, leuchtende Ränder |
 
 >  **Epilepsie-Hinweis:** Der Weltall-Modus enthält blinkende Farbeffekte. Diese können in den Einstellungen deaktiviert werden.
 
@@ -150,9 +150,9 @@ A fast-paced 2D car racing game built with **C++** and the **raylib** library. D
 
 | Points | Environment | Details |
 |---|---|---|
-| 0 – 4,999 | 🌲 Forest Road | Default environment with trees |
-| 5,000 – 9,999 | 🏜️ Desert | Cacti, yellow road markings |
-| 10,000+ | 🚀 Space | Rainbow road, UFOs, planets, glowing edges |
+| 0 – 4,999 |  Forest Road | Default environment with trees |
+| 5,000 – 9,999 |  Desert | Cacti, yellow road markings |
+| 10,000+ |  Space | Rainbow road, UFOs, planets, glowing edges |
 
 >  **Epilepsy Warning:** Space mode contains flashing color effects. These can be disabled in Settings.
 
