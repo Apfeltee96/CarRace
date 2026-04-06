@@ -1,62 +1,58 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include "game.h"
 #include <algorithm>
-#include <cstring>
 #include <cmath>
 
 static void DrawTexFull(Texture2D tex, Rectangle dst)
 {
-    DrawTexturePro(tex,{0, 0, (float)tex.width, (float)tex.height},dst, {0, 0}, 0.0f, WHITE);
+    DrawTexturePro(tex, {0, 0, (float)tex.width, (float)tex.height}, dst, {0, 0}, 0.0f, WHITE);
 }
-//Baum
+// Baum
 static void DrawTree(float x, float y, float s)
 {
-    DrawRectangle((int)(x - 5*s), (int)(y - 22*s), (int)(10*s), (int)(22*s), {101, 67, 33, 255});
-    DrawCircle((int)x,             (int)(y - 30*s), 22.0f*s, {20, 100, 20, 255});
-    DrawCircle((int)(x - 10*s),    (int)(y - 42*s), 16.0f*s, {30, 130, 30, 255});
-    DrawCircle((int)(x + 10*s),    (int)(y - 42*s), 16.0f*s, {30, 130, 30, 255});
-    DrawCircle((int)x,             (int)(y - 52*s), 18.0f*s, {50, 160, 50, 255});
+    DrawRectangle((int)(x - 5 * s), (int)(y - 22 * s), (int)(10 * s), (int)(22 * s), {101, 67, 33, 255});
+    DrawCircle((int)x, (int)(y - 30 * s), 22.0f * s, {20, 100, 20, 255});
+    DrawCircle((int)(x - 10 * s), (int)(y - 42 * s), 16.0f * s, {30, 130, 30, 255});
+    DrawCircle((int)(x + 10 * s), (int)(y - 42 * s), 16.0f * s, {30, 130, 30, 255});
+    DrawCircle((int)x, (int)(y - 52 * s), 18.0f * s, {50, 160, 50, 255});
 }
 
-//Kaktus
+// Kaktus
 static void DrawCactus(float x, float y, float s)
 {
     Color cGreen = {34, 115, 34, 255};
     int bw = (int)(12 * s), bh = (int)(50 * s);
     DrawRectangle((int)(x - bw / 2), (int)(y - bh), bw, bh, cGreen);
-    DrawRectangle((int)(x - bw / 2 - (int)(16 * s)), (int)(y - (int)(32 * s)),(int)(16 * s), (int)(8 * s), cGreen);
-    DrawRectangle((int)(x - bw / 2 - (int)(9 * s)), (int)(y - (int)(44 * s)),(int)(9 * s), (int)(14 * s), cGreen);
-    DrawRectangle((int)(x + bw / 2), (int)(y - (int)(26 * s)),(int)(16 * s), (int)(8 * s), cGreen);
-    DrawRectangle((int)(x + bw / 2 + (int)(7 * s)), (int)(y - (int)(38 * s)),(int)(9 * s), (int)(14 * s), cGreen);
+    DrawRectangle((int)(x - bw / 2 - (int)(16 * s)), (int)(y - (int)(32 * s)), (int)(16 * s), (int)(8 * s), cGreen);
+    DrawRectangle((int)(x - bw / 2 - (int)(9 * s)), (int)(y - (int)(44 * s)), (int)(9 * s), (int)(14 * s), cGreen);
+    DrawRectangle((int)(x + bw / 2), (int)(y - (int)(26 * s)), (int)(16 * s), (int)(8 * s), cGreen);
+    DrawRectangle((int)(x + bw / 2 + (int)(7 * s)), (int)(y - (int)(38 * s)), (int)(9 * s), (int)(14 * s), cGreen);
 }
 
 static void DrawUFO(float x, float y, float s)
 {
-    DrawEllipse((int)x, (int)(y + 4*s), 26.0f*s, 7.0f*s, {80, 80, 100, 255});
-    DrawCircle((int)(x - 12*s), (int)(y + 7*s), 4.0f*s, {255, 140, 0, 200});
-    DrawCircle((int)x,          (int)(y + 9*s), 5.0f*s, {255, 100, 0, 200});
-    DrawCircle((int)(x + 12*s), (int)(y + 7*s), 4.0f*s, {255, 140, 0, 200});
-    DrawEllipse((int)x, (int)y, 28.0f*s, 9.0f*s, {160, 160, 185, 255});
-    DrawEllipseLines((int)x, (int)y, 28.0f*s, 9.0f*s, {220, 220, 255, 180});
-    DrawEllipse((int)x, (int)(y - 7*s), 13.0f*s, 10.0f*s, {80, 200, 255, 210});
-    DrawEllipseLines((int)x, (int)(y - 7*s), 13.0f*s, 10.0f*s, {180, 240, 255, 255});
-    DrawCircle((int)(x - 18*s), (int)(y + 2*s), 3.0f*s, {0, 255, 120, 220});
-    DrawCircle((int)(x + 18*s), (int)(y + 2*s), 3.0f*s, {255, 50, 50, 220});
+    DrawEllipse((int)x, (int)(y + 4 * s), 26.0f * s, 7.0f * s, {80, 80, 100, 255});
+    DrawCircle((int)(x - 12 * s), (int)(y + 7 * s), 4.0f * s, {255, 140, 0, 200});
+    DrawCircle((int)x, (int)(y + 9 * s), 5.0f * s, {255, 100, 0, 200});
+    DrawCircle((int)(x + 12 * s), (int)(y + 7 * s), 4.0f * s, {255, 140, 0, 200});
+    DrawEllipse((int)x, (int)y, 28.0f * s, 9.0f * s, {160, 160, 185, 255});
+    DrawEllipseLines((int)x, (int)y, 28.0f * s, 9.0f * s, {220, 220, 255, 180});
+    DrawEllipse((int)x, (int)(y - 7 * s), 13.0f * s, 10.0f * s, {80, 200, 255, 210});
+    DrawEllipseLines((int)x, (int)(y - 7 * s), 13.0f * s, 10.0f * s, {180, 240, 255, 255});
+    DrawCircle((int)(x - 18 * s), (int)(y + 2 * s), 3.0f * s, {0, 255, 120, 220});
+    DrawCircle((int)(x + 18 * s), (int)(y + 2 * s), 3.0f * s, {255, 50, 50, 220});
 }
 
 static void DrawPlanet(float x, float y, float s, int variant)
 {
-    Color colors[] = {{220, 80,  80,  255}, {80,  160, 255, 255},
-                      {255, 180, 60,  255}, {180, 80,  255, 255}};
+    Color colors[] = {{220, 80, 80, 255}, {80, 160, 255, 255}, {255, 180, 60, 255}, {180, 80, 255, 255}};
     Color c = colors[variant % 4];
     float r = 14.0f * s;
     DrawCircle((int)x, (int)y, r, c);
-    DrawCircle((int)(x + r*0.25f), (int)(y - r*0.25f), r * 0.55f, Fade(WHITE, 0.15f));
+    DrawCircle((int)(x + r * 0.25f), (int)(y - r * 0.25f), r * 0.55f, Fade(WHITE, 0.15f));
     DrawCircleLines((int)x, (int)y, r, Fade(WHITE, 0.3f));
     if (variant % 2 == 1)
-        DrawEllipseLines((int)x, (int)y, 22.0f*s, 5.0f*s, Fade(WHITE, 0.5f));
+        DrawEllipseLines((int)x, (int)y, 22.0f * s, 5.0f * s, Fade(WHITE, 0.5f));
 }
-
 
 // --- Init ---
 void Game::Init()
@@ -115,15 +111,14 @@ void Game::Init()
     showDeleteDataConfirm = false;
     isNameSaved = false;
     framesCounter = 0;
-    playerName[0] = '\0';
+    playerName.clear();
 
     if (!saveData.lastPlayerName.empty() && saveData.lastPlayerName != "Gast")
     {
-        std::strncpy(playerName, saveData.lastPlayerName.c_str(), 15);
+        playerName = saveData.lastPlayerName.substr(0, 15);
         isNameSaved = true;
     }
-    playerName[15] = '\0';
-    letterCount = static_cast<int>(std::strlen(playerName));
+    letterCount = static_cast<int>(playerName.size());
     cachedTopScore = GetTopScore();
 
     // Button-Layouts
@@ -471,14 +466,16 @@ void Game::HandleMenuInput(Vector2 mousePoint)
         {
             if (key > 32 && key <= 125 && letterCount < 15)
             {
-                playerName[letterCount] = static_cast<char>(key);
-                playerName[letterCount + 1] = '\0';
+                playerName += static_cast<char>(key);
                 letterCount++;
             }
             key = GetCharPressed();
         }
         if (IsKeyPressed(KEY_BACKSPACE) && letterCount > 0)
-            playerName[--letterCount] = '\0';
+        {
+            playerName.pop_back();
+            --letterCount;
+        }
         if (IsKeyPressed(KEY_ENTER) && letterCount > 0)
         {
             saveData.lastPlayerName = playerName;
@@ -614,7 +611,7 @@ void Game::HandleSettingsInput(Vector2 mousePoint)
         {
             showNameChangeConfirm = false;
             isNameSaved = false;
-            playerName[0] = '\0';
+            playerName.clear();
             letterCount = 0;
             state = MAIN_MENU;
         }
@@ -634,7 +631,7 @@ void Game::HandleSettingsInput(Vector2 mousePoint)
             if (IsWindowFullscreen())
                 ToggleFullscreen();
             saveData = {0, false, false, 0, saveData.isEnglish, false, "", 0.2f, true};
-            playerName[0] = '\0';
+            playerName.clear();
             letterCount = 0;
             isNameSaved = false;
             cachedTopScore = 0;

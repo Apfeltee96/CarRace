@@ -116,7 +116,7 @@ public:
     bool shieldActive;
     float shieldTimer;
 
-    char playerName[16];
+    std::string playerName;
     int letterCount;
     bool isNameSaved;
 
@@ -134,4 +134,4 @@ public:
     bool showDeleteDataConfirm;
 };
 
-#endif // GAME_H
+#endif

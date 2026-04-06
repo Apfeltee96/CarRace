@@ -5,13 +5,14 @@
 #include "scoreboard.h"
 #include "config.h"
 #include <vector>
+#include <string>
 
 // --- Hilfsfunktionen ---
 void DrawTextCentered(const char *text, int y, int fontSize, Color color);
 void DrawButton(Rectangle rect, const char *text, Vector2 mouse, Color baseColor, Color textColor);
 
 // --- HUD & In-Game UI ---
-void DrawHUD(const char *name, float time, int score, int stars, bool isEnglish, Texture2D starTex, int highScore);
+void DrawHUD(const std::string &name, float time, int score, int stars, bool isEnglish, Texture2D starTex, int highScore);
 
 void DrawPauseMenu(Vector2 mousePoint, Rectangle resumeBtn,
                    Rectangle menuBtn, Rectangle quitBtn,
@@ -19,7 +20,7 @@ void DrawPauseMenu(Vector2 mousePoint, Rectangle resumeBtn,
                    bool showQuitConfirm, bool showPauseBackConfirm);
 
 // --- Menüs ---
-void DrawMainMenu(const char *name, int letterCount, int framesCounter,
+void DrawMainMenu(const std::string &name, int letterCount, int framesCounter,
                   Vector2 mousePoint, Rectangle startBtn, Rectangle scoreBtn,
                   Rectangle shopBtn, Rectangle settingsBtn, Rectangle descBtn,
                   int totalStars, bool nameSaved, bool isEnglish);
@@ -38,7 +39,7 @@ void DrawShopMenu(const SaveGame &data, Vector2 mousePoint,
 void DrawWorkshopBackground();
 void DrawDescriptionMenu(Vector2 mousePoint, Rectangle backBtn, bool isEnglish);
 
-void DrawGameOverMenu(const char *name, int score, float time, int stars,
+void DrawGameOverMenu(const std::string &name, int score, float time, int stars,
                       Vector2 mousePoint, Rectangle menuBtn, bool isEnglish);
 
 void DrawScoreboardMenu(const std::vector<ScoreEntry> &scores,

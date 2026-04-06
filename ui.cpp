@@ -42,14 +42,14 @@ static void DrawConfirmButtons(Vector2 mouse,
 }
 
 //  HUD
-void DrawHUD(const char *name, float time, int score, int stars,
+void DrawHUD(const std::string &name, float time, int score, int stars,
              bool isEnglish, Texture2D starTex, int highScore)
 {
     constexpr int fontSize = 22;
     constexpr int margin = 20;
     constexpr int rightAlignX = 800;
 
-    DrawText(TextFormat(isEnglish ? "Driver: %s" : "Fahrer: %s", name), margin, 20, fontSize, RAYWHITE);
+    DrawText(TextFormat(isEnglish ? "Driver: %s" : "Fahrer: %s", name.c_str()), margin, 20, fontSize, RAYWHITE);
     DrawText(TextFormat(isEnglish ? "Time: %.1fs" : "Zeit: %.1fs", time), margin, 50, fontSize, RAYWHITE);
 
     DrawText(isEnglish ? "Score:" : "Punkte:", rightAlignX, 20, fontSize, RAYWHITE);
@@ -61,7 +61,7 @@ void DrawHUD(const char *name, float time, int score, int stars,
 }
 
 //  Hauptmenü
-void DrawMainMenu(const char *name, int letterCount, int framesCounter,
+void DrawMainMenu(const std::string &name, int letterCount, int framesCounter,
                   Vector2 mousePoint, Rectangle startBtn, Rectangle scoreBtn,
                   Rectangle shopBtn, Rectangle settingsBtn, Rectangle descBtn,
                   int totalStars, bool nameSaved, bool isEnglish)
@@ -78,14 +78,14 @@ void DrawMainMenu(const char *name, int letterCount, int framesCounter,
         DrawText(isEnglish ? "Please enter name here:" : "Hier bitte Namen eingeben:", 350, 190, 18, RAYWHITE);
         DrawRectangle(350, 220, 300, 40, LIGHTGRAY);
         DrawRectangleLines(350, 220, 300, 40, BLACK);
-        DrawText(name, 360, 230, 20, BLACK);
+        DrawText(name.c_str(), 360, 230, 20, BLACK);
         if (((framesCounter / 30) % 2) == 0)
-            DrawRectangle(360 + MeasureText(name, 20), 225, 2, 30, DARKGRAY);
+            DrawRectangle(360 + MeasureText(name.c_str(), 20), 225, 2, 30, DARKGRAY);
     }
     else
     {
         DrawTextCentered(
-            TextFormat(isEnglish ? "Welcome, %s!" : "Willkommen, %s!", name),
+            TextFormat(isEnglish ? "Welcome, %s!" : "Willkommen, %s!", name.c_str()),
             220, 25, RAYWHITE);
     }
 }
@@ -343,8 +343,9 @@ void DrawPauseMenu(Vector2 mousePoint, Rectangle resumeBtn,
 }
 
 //  Game Over
-void DrawGameOverMenu(const char *name, int score, float time, int stars,
+void DrawGameOverMenu(const std::string &name, int score, float time, int stars,
                       Vector2 mousePoint, Rectangle menuBtn, bool isEnglish)
+
 {
     DrawRectangle(0, 0, 1000, 800, Fade(BLACK, 0.7f));
     DrawTextCentered(isEnglish ? "GAME OVER" : "SPIEL VORBEI", 150, 60, RED);
@@ -377,7 +378,7 @@ void DrawScoreboardMenu(const std::vector<ScoreEntry> &scores,
         DrawRectangleLinesEx({200.0f, (float)rowY, 600.0f, 36.0f}, 1, {70, 70, 70, 180});
 
         DrawText(TextFormat("%d.", i + 1), 215, rowY + 7, 22, c);
-        DrawText(scores[i].name, 265, rowY + 7, 22, c);
+        DrawText(scores[i].name.c_str(), 265, rowY + 7, 22, c);
         DrawText(TextFormat("%d", scores[i].score), 590, rowY + 7, 22, c);
     }
 
