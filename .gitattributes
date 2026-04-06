@@ -1,16 +1,2 @@
-# GitHub Linguist Konfiguration für Car Race
-
-# Raylib ignorieren (als Drittanbieter-Code markieren)
-# Je nachdem, wie dein Ordner heißt, pass den Pfad an:
-raylib/* linguist-vendored
-include/raylib.h linguist-vendored
-src/raylib/* linguist-vendored
-
-# Build-Systeme verstecken
-CMakeLists.txt linguist-vendored
-*.cmake linguist-vendored
-build/* linguist-vendored
-
-# Shader als C++ werten (optional, falls du welche hast)
-*.fs linguist-language=cpp
-*.vs linguist-language=cpp
+*.h linguist-language=C++
+*.cpp linguist-language=C++
