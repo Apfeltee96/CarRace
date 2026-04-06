@@ -93,7 +93,7 @@ Ein rasantes 2D-Autorennen, entwickelt mit **C++** und der **raylib** Library. W
 
 //Sounds
 - Musik: https://www.youtube.com/watch?v=na_YhseAgBs
-- Hinderniss: https://pixabay.com/users/u_mgq59j5ayf-50948372/
+- Hindernis: https://pixabay.com/users/u_mgq59j5ayf-50948372/
 
 ---
 
