@@ -1,1 +1,21 @@
-*.h linguist-language=C++
+# GitHub Linguist Konfiguration für Car Race
+
+# Verberge Build-Systeme und Konfigurationen
+CMakeLists.txt linguist-vendored
+*.cmake linguist-vendored
+.gitignore linguist-vendored
+
+# Falls du Shader nutzt, kannst du sie entweder behalten oder als C++ werten lassen
+# Wenn sie nicht als separate Sprache auftauchen sollen:
+*.glsl linguist-language=cpp
+*.vert linguist-language=cpp
+*.frag linguist-language=cpp
+
+# Dokumentation ignorieren (falls vorhanden)
+README.md linguist-documentation
+docs/* linguist-documentation
+
+# Externe Bibliotheken (falls du z.B. GLFW oder GLAD direkt im Projekt hast)
+# Ersetze 'external/' durch deinen tatsächlichen Ordnernamen
+external/* linguist-vendored
+include/external/* linguist-vendored
