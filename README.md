@@ -2,11 +2,11 @@
 
 ---
 
-# 🏎️ Car Race <a name="deutsch"></a>
+#  Car Race <a name="deutsch"></a>
 
 Ein rasantes 2D-Autorennen, entwickelt mit **C++** und der **raylib** Library. Weiche Hindernissen aus, sammle Sterne und schalte neue Fahrzeuge im Shop frei!
 
-## ✨ Features
+##  Features
 
 - **Dynamisches Gameplay:** Die Geschwindigkeit erhöht sich, je länger du überlebst.
 - **Car Shop:** Besuche den Shop, um mit gesammelten Sternen neue Autos freizuschalten.
@@ -22,7 +22,7 @@ Ein rasantes 2D-Autorennen, entwickelt mit **C++** und der **raylib** Library. W
 - **Bestätigungsdialoge:** Kritische Aktionen (Menü verlassen, Spiel beenden, Name ändern, Daten löschen) werden mit einem Ja/Nein-Dialog abgesichert.
 - **Sound-Kontrolle:** Lautstärke in den Einstellungen und im Pause-Menü anpassbar. Einstellung wird gespeichert. Musik stoppt beim Absturz.
 
-## 🎮 Steuerung
+##  Steuerung
 
 | Taste | Aktion |
 |---|---|
@@ -42,7 +42,7 @@ Ein rasantes 2D-Autorennen, entwickelt mit **C++** und der **raylib** Library. W
 | **Effekte: AN/AUS** | Blinkeffekte im Weltall-Modus umschalten |
 | **Spiel beenden** | Anwendung beenden (Bestätigung erforderlich) |
 
-## ⚙️ Einstellungen
+##  Einstellungen
 
 - **Sprache:** Deutsch / Englisch umschalten
 - **Vollbild:** Fenster- oder Vollbildmodus
@@ -51,7 +51,7 @@ Ein rasantes 2D-Autorennen, entwickelt mit **C++** und der **raylib** Library. W
 - **Name ändern:** Spielernamen neu eingeben (Bestätigung erforderlich)
 - **Daten löschen:** Löscht Name, Bestenliste und alle Sterne & Autos (Bestätigung erforderlich)
 
-## 🌍 Umgebungen
+##  Umgebungen
 
 | Punkte | Umgebung | Besonderheit |
 |---|---|---|
@@ -59,9 +59,9 @@ Ein rasantes 2D-Autorennen, entwickelt mit **C++** und der **raylib** Library. W
 | 5.000 – 9.999 | 🏜️ Wüste | Kakteen, gelbe Fahrbahnmarkierungen |
 | 10.000+ | 🚀 Weltall | Regenbogenstraße, UFOs, Planeten, leuchtende Ränder |
 
-> ⚠️ **Epilepsie-Hinweis:** Der Weltall-Modus enthält blinkende Farbeffekte. Diese können in den Einstellungen deaktiviert werden.
+>  **Epilepsie-Hinweis:** Der Weltall-Modus enthält blinkende Farbeffekte. Diese können in den Einstellungen deaktiviert werden.
 
-## 📂 Projektstruktur
+##  Projektstruktur
 
 * `main.cpp` – Der Einstiegspunkt des Spiels.
 * `game.cpp/h` – Zentrale Spiellogik (Game Loop, Zustände, Eingabe).
@@ -97,11 +97,11 @@ Ein rasantes 2D-Autorennen, entwickelt mit **C++** und der **raylib** Library. W
 
 ---
 
-# 🏎️ Car Race <a name="english"></a>
+#  Car Race <a name="english"></a>
 
 A fast-paced 2D car racing game built with **C++** and the **raylib** library. Dodge obstacles, collect stars, and unlock new cars in the shop!
 
-## ✨ Features
+##  Features
 
 - **Dynamic Gameplay:** Speed increases the longer you survive.
 - **Car Shop:** Spend collected stars to unlock new car skins.
@@ -117,7 +117,7 @@ A fast-paced 2D car racing game built with **C++** and the **raylib** library. D
 - **Confirmation Dialogs:** Critical actions (leave menu, quit game, change name, delete data) require a yes/no confirmation.
 - **Sound Control:** Volume adjustable in Settings and Pause Menu. Setting is saved. Music stops on crash.
 
-## 🎮 Controls
+##  Controls
 
 | Key | Action |
 |---|---|
@@ -137,7 +137,7 @@ A fast-paced 2D car racing game built with **C++** and the **raylib** library. D
 | **Effects: ON/OFF** | Toggle flashing effects in space mode |
 | **Quit Game** | Exit the application (confirmation required) |
 
-## ⚙️ Settings
+##  Settings
 
 - **Language:** Toggle between German and English
 - **Fullscreen:** Switch between windowed and fullscreen mode
@@ -146,7 +146,7 @@ A fast-paced 2D car racing game built with **C++** and the **raylib** library. D
 - **Change Name:** Re-enter your player name (confirmation required)
 - **Delete Data:** Deletes name, scoreboard, and all stars & cars (confirmation required)
 
-## 🌍 Environments
+##  Environments
 
 | Points | Environment | Details |
 |---|---|---|
@@ -154,9 +154,9 @@ A fast-paced 2D car racing game built with **C++** and the **raylib** library. D
 | 5,000 – 9,999 | 🏜️ Desert | Cacti, yellow road markings |
 | 10,000+ | 🚀 Space | Rainbow road, UFOs, planets, glowing edges |
 
-> ⚠️ **Epilepsy Warning:** Space mode contains flashing color effects. These can be disabled in Settings.
+>  **Epilepsy Warning:** Space mode contains flashing color effects. These can be disabled in Settings.
 
-## 📂 Project Structure
+##  Project Structure
 
 * `main.cpp` – Entry point of the game.
 * `game.cpp/h` – Core game logic (game loop, states, input).
